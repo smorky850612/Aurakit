@@ -1,0 +1,81 @@
+# AuraKit - gitignore
+
+# AuraKit 런타임 데이터 (프로젝트별)
+.aura/
+
+# Environment
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+.env.staging
+*.env
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+.nuxt/
+.output/
+.vercel/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+*.egg-info/
+dist/
+build/
+*.egg
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Go
+/vendor/
+
+# Rust
+/target/
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V5
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.cursor/
+
+# Logs
+logs/
+*.log
+
+# Temp
+*.tmp
+*.temp
+.cache/
