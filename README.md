@@ -313,12 +313,44 @@ No. AuraKit is a local skill. Everything runs inside your Claude Code session. N
 
 ---
 
-## Roadmap
+## Compatibility
 
-- v1.1 — Multi-project workspace support
-- v1.2 — Custom security rule definitions
-- v1.3 — Team shared configuration profiles
-- v1.4 — Visual Studio Code extension integration
+AuraKit follows the **Agent Skills open standard**. The core SKILL.md files work across multiple AI coding tools.
+
+| Tool | SKILL.md | Hooks | Agents | Full Support |
+|:-----|:---------|:------|:-------|:-------------|
+| **Claude Code (Terminal)** | Yes | Yes | Yes | Yes |
+| **Claude Code (Web)** | Yes | No | No | Partial |
+| **Cursor** | Yes | No | No | Partial |
+| **GitHub Copilot** | Yes | No | No | Partial |
+| **Windsurf** | Yes | No | No | Partial |
+| **Gemini CLI** | Yes | No | No | Partial |
+| **Codex (OpenAI)** | Yes | No | No | Partial |
+| **Goose** | Yes | No | No | Partial |
+| **Amp** | Yes | No | No | Partial |
+| **Roo Code** | Yes | No | No | Partial |
+| **OpenCode** | Yes | No | No | Partial |
+| **Antigravity** | Yes | No | No | Partial |
+
+**Full support** means all features work: 4-layer security hooks, scout/worker agents, compact defense, and triple verification. With partial support, you get the core skill instructions (build, fix, clean, deploy, review modes) but without automated hook enforcement or agent delegation.
+
+### Using AuraKit with other tools
+
+Copy the skill folder into your tool's skill directory:
+
+<pre>
+# Cursor
+cp -r skills/aura .cursor/skills/aura
+
+# GitHub Copilot
+cp -r skills/aura .github/skills/aura
+
+# Codex
+cp -r skills/aura .codex/skills/aura
+
+# Gemini CLI
+cp -r skills/aura .gemini/skills/aura
+</pre>
 
 ---
 
