@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 250" width="900" height="250">
+<foreignObject width="900" height="250">
+<div xmlns="http://www.w3.org/1999/xhtml">
+<style>
+:root{--bg0:#0a0a0f;--bg1:#12121f;--t:#fff;--ts:#94a3b8;--bd:rgba(168,85,247,.25)}
+@media(prefers-color-scheme:light){:root{--bg0:#fafafa;--bg1:#f0ebff;--t:#1a1a2e;--ts:#64748b;--bd:rgba(168,85,247,.3)}}
+*{margin:0;padding:0;box-sizing:border-box}
+.w{width:900px;height:250px;background:linear-gradient(150deg,var(--bg0),var(--bg1));padding:36px 48px;border-radius:16px;overflow:hidden;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--t)}
+.h2{font-size:22px;font-weight:800;text-align:center;margin-bottom:28px;color:var(--t)}
+.flow{display:flex;align-items:center;justify-content:center;gap:0}
+.step{background:rgba(168,85,247,.1);border:1px solid var(--bd);border-radius:12px;padding:20px 24px;width:220px;text-align:center;flex-shrink:0}
+.num{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+.s1 .num{color:#6366f1}.s2 .num{color:#a855f7}.s3 .num{color:#ec4899}
+.s1{border-color:rgba(99,102,241,.35);background:rgba(99,102,241,.08)}
+.s2{border-color:rgba(168,85,247,.35);background:rgba(168,85,247,.1)}
+.s3{border-color:rgba(236,72,153,.35);background:rgba(236,72,153,.08)}
+.stitle{font-size:15px;font-weight:700;color:var(--t);margin-bottom:4px}
+.sdesc{font-size:12px;color:var(--ts)}
+.fail{font-size:11px;color:#f87171;margin-top:6px;font-weight:600}
+.arrow{width:56px;flex-shrink:0;display:flex;align-items:center;justify-content:center;position:relative}
+.arr-line{width:100%;height:2px;background:linear-gradient(90deg,rgba(168,85,247,.4),rgba(168,85,247,.7));position:relative}
+.arr-line::after{content:'';position:absolute;right:-1px;top:50%;transform:translateY(-50%);border:5px solid transparent;border-left-color:rgba(168,85,247,.7)}
+.pulse-dot{position:absolute;width:8px;height:8px;border-radius:50%;background:#a855f7;top:50%;transform:translateY(-50%);animation:pulse-move 2s ease-in-out infinite}
+@keyframes pulse-move{0%{left:0;opacity:1}100%{left:calc(100% - 8px);opacity:0}}
+@media(prefers-reduced-motion:reduce){.pulse-dot{animation:none}}
+</style>
+<div class="w">
+  <div class="h2">Triple Verification Pipeline</div>
+  <div class="flow">
+    <div class="step s1">
+      <div class="num">Step 1</div>
+      <div class="stitle">Compile Check</div>
+      <div class="sdesc">TypeScript / build errors</div>
+      <div class="fail">↻ Rewrite until pass</div>
+    </div>
+    <div class="arrow">
+      <div class="arr-line"><div class="pulse-dot"></div></div>
+    </div>
+    <div class="step s2">
+      <div class="num">Step 2</div>
+      <div class="stitle">Security Scan</div>
+      <div class="sdesc">Secrets, OWASP patterns</div>
+      <div class="fail">⊘ Block and alert</div>
+    </div>
+    <div class="arrow">
+      <div class="arr-line"><div class="pulse-dot" style="animation-delay:.7s"></div></div>
+    </div>
+    <div class="step s3">
+      <div class="num">Step 3</div>
+      <div class="stitle">Quality Score</div>
+      <div class="sdesc">Complexity, readability</div>
+      <div class="fail">↺ Refactor if low</div>
+    </div>
+  </div>
+</div>
+</div>
+</foreignObject>
+</svg>

@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 300" width="900" height="300">
+<foreignObject width="900" height="300">
+<div xmlns="http://www.w3.org/1999/xhtml">
+<style>
+:root{--bg0:#0a0a0f;--bg1:#12121f;--t:#fff;--ts:#94a3b8;--a:#a855f7;--bd:rgba(168,85,247,.25)}
+@media(prefers-color-scheme:light){:root{--bg0:#fafafa;--bg1:#f0ebff;--t:#1a1a2e;--ts:#64748b;--bd:rgba(168,85,247,.3)}}
+*{margin:0;padding:0;box-sizing:border-box}
+.w{width:900px;height:300px;background:linear-gradient(150deg,var(--bg0),var(--bg1));padding:36px 48px;border-radius:16px;overflow:hidden;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--t)}
+.h2{font-size:22px;font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.h2::before{content:'🛡️';font-size:18px}
+.sub{font-size:13px;color:var(--ts);margin-bottom:24px}
+.bar-wrap{margin-bottom:24px}
+.bar-labels{display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px;color:var(--ts)}
+.bar-labels strong{font-size:13px;color:var(--t)}
+.bar-track{height:14px;background:rgba(255,255,255,.06);border-radius:7px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:7px;background:linear-gradient(90deg,#6366f1,#a855f7,#ec4899);width:0;animation:grow-bar 1.4s cubic-bezier(.4,0,.2,1) .3s forwards}
+.bar-fill-danger{background:linear-gradient(90deg,#ef4444,#f87171)}
+.bar-fill-safe{background:linear-gradient(90deg,#6366f1,#a855f7)}
+@keyframes grow-bar{to{width:var(--w)}}
+.steps{display:flex;align-items:flex-start;gap:0;justify-content:center}
+.stp{text-align:center;width:200px;flex-shrink:0}
+.stp-icon{font-size:24px;margin-bottom:6px}
+.stp-name{font-size:13px;font-weight:700;color:var(--t);margin-bottom:3px}
+.stp-desc{font-size:11.5px;color:var(--ts)}
+.conn{flex:1;display:flex;align-items:center;padding-top:14px}
+.conn-line{width:100%;height:1px;background:linear-gradient(90deg,rgba(168,85,247,.3),rgba(168,85,247,.6));position:relative}
+.conn-line::after{content:'›';position:absolute;right:-5px;top:-9px;color:rgba(168,85,247,.7);font-size:16px}
+</style>
+<div class="w">
+  <div class="h2">Compact Defense System</div>
+  <div class="sub">Auto-triggers at 65% token usage — before context loss begins</div>
+  <div class="bar-wrap">
+    <div class="bar-labels">
+      <span><strong>AuraKit</strong> — triggers at 65%</span>
+      <span>Default — triggers at 95% (too late)</span>
+    </div>
+    <div class="bar-track" style="margin-bottom:8px">
+      <div class="bar-fill bar-fill-safe" style="--w:65%"></div>
+    </div>
+    <div class="bar-track">
+      <div class="bar-fill bar-fill-danger" style="--w:95%;animation-delay:.6s"></div>
+    </div>
+  </div>
+  <div class="steps">
+    <div class="stp">
+      <div class="stp-icon">📸</div>
+      <div class="stp-name">PreCompact Snapshot</div>
+      <div class="stp-desc">Work state saved to .aura/snapshots/ before compaction fires</div>
+    </div>
+    <div class="conn"><div class="conn-line"></div></div>
+    <div class="stp">
+      <div class="stp-icon">⚡</div>
+      <div class="stp-name">Auto-Compact</div>
+      <div class="stp-desc">Context compressed at 65% — 30% earlier than default</div>
+    </div>
+    <div class="conn"><div class="conn-line"></div></div>
+    <div class="stp">
+      <div class="stp-icon">♻️</div>
+      <div class="stp-name">PostCompact Restore</div>
+      <div class="stp-desc">Snapshot reloaded — zero memory loss, full continuity</div>
+    </div>
+  </div>
+</div>
+</div>
+</foreignObject>
+</svg>
