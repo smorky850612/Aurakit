@@ -1,5 +1,13 @@
 <div align="center">
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="assets/banner-light.svg">
+  <img src="assets/banner-dark.svg" alt="AuraKit" width="100%">
+</picture>
+
+<br />
+
 <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License" />
 <img src="https://img.shields.io/badge/Claude_Code-Skill-blueviolet?style=flat-square" alt="Claude Code Skill" />
 <img src="https://img.shields.io/badge/version-1.0.0-brightgreen?style=flat-square" alt="Version" />
@@ -7,8 +15,6 @@
 <img src="https://img.shields.io/github/stars/smorky850612/Aurakit?style=flat-square&color=yellow" alt="Stars" />
 
 <br /><br />
-
-<h1>AuraKit</h1>
 
 <h3>One command. Full stack. Zero compromise.</h3>
 
