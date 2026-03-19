@@ -2,25 +2,25 @@
 <foreignObject width="900" height="400">
 <div xmlns="http://www.w3.org/1999/xhtml">
 <style>
-:root{--bg:#0a0a0f;--glow:rgba(168,85,247,0.15);--t:#ffffff;--ts:#94a3b8;--term:#1a1a2e;--term-bd:rgba(168,85,247,0.3);--code:#e2e8f0;--pill-bg:rgba(168,85,247,0.15);--pill-t:#a855f7}
-@media(prefers-color-scheme:light){:root{--bg:#ffffff;--glow:rgba(168,85,247,0.10);--t:#1a1a2e;--ts:#64748b;--term:#f0ebff;--term-bd:rgba(168,85,247,0.4);--code:#1a1a2e;--pill-bg:rgba(168,85,247,0.12);--pill-t:#7c3aed}}
+:root{--bg:#0a0a0f;--glow:rgba(168,85,247,0.15);--t:#ffffff;--ts:#94a3b8;--term-bg:#1a1a2e;--term-bd:rgba(168,85,247,0.3);--code:#e2e8f0;--pill-bg:rgba(168,85,247,0.15);--pill-t:#a855f7}
+@media(prefers-color-scheme:light){:root{--bg:#ffffff;--glow:rgba(168,85,247,0.10);--t:#1a1a2e;--ts:#64748b;--term-bg:#f1f5f9;--term-bd:#e2e8f0;--code:#1a1a2e;--pill-bg:rgba(168,85,247,0.12);--pill-t:#7c3aed}}
 *{margin:0;padding:0;box-sizing:border-box}
-.w{width:900px;height:400px;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;position:relative;overflow:hidden;font-family:system-ui,-apple-system,'Segoe UI',sans-serif}
+.w{width:900px;height:400px;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;position:relative;overflow:hidden;font-family:system-ui,-apple-system,'Segoe UI',sans-serif}
 .glow-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,var(--glow) 0%,transparent 70%);pointer-events:none}
 .dot{position:absolute;border-radius:50%;background:#a855f7;pointer-events:none}
-.d1{width:4px;height:4px;top:12%;left:8%;opacity:.5;animation:twinkle 3.2s ease-in-out infinite}
-.d2{width:3px;height:3px;top:18%;left:82%;opacity:.4;animation:twinkle 4.1s ease-in-out infinite;animation-delay:.8s}
-.d3{width:5px;height:5px;top:72%;left:5%;opacity:.35;animation:twinkle 3.7s ease-in-out infinite;animation-delay:1.4s}
-.d4{width:3px;height:3px;top:80%;left:91%;opacity:.5;animation:twinkle 4.5s ease-in-out infinite;animation-delay:.3s}
-.d5{width:4px;height:4px;top:42%;left:3%;opacity:.3;animation:twinkle 3.0s ease-in-out infinite;animation-delay:2.1s}
-.d6{width:3px;height:3px;top:28%;left:94%;opacity:.45;animation:twinkle 5.0s ease-in-out infinite;animation-delay:.6s}
-.d7{width:4px;height:4px;top:88%;left:44%;opacity:.35;animation:twinkle 3.8s ease-in-out infinite;animation-delay:1.9s}
-.d8{width:3px;height:3px;top:8%;left:56%;opacity:.4;animation:twinkle 4.3s ease-in-out infinite;animation-delay:2.7s}
+.d1{width:4px;height:4px;top:11%;left:7%;animation:twinkle 3.2s ease-in-out infinite}
+.d2{width:3px;height:3px;top:17%;left:83%;animation:twinkle 4.1s ease-in-out infinite;animation-delay:.8s}
+.d3{width:5px;height:5px;top:73%;left:6%;animation:twinkle 3.7s ease-in-out infinite;animation-delay:1.4s}
+.d4{width:3px;height:3px;top:79%;left:92%;animation:twinkle 4.5s ease-in-out infinite;animation-delay:.3s}
+.d5{width:4px;height:4px;top:41%;left:2%;animation:twinkle 3.0s ease-in-out infinite;animation-delay:2.1s}
+.d6{width:3px;height:3px;top:27%;left:95%;animation:twinkle 5.0s ease-in-out infinite;animation-delay:.6s}
+.d7{width:4px;height:4px;top:87%;left:45%;animation:twinkle 3.8s ease-in-out infinite;animation-delay:1.9s}
+.d8{width:3px;height:3px;top:7%;left:57%;animation:twinkle 4.3s ease-in-out infinite;animation-delay:2.7s}
 @keyframes twinkle{0%,100%{opacity:0}50%{opacity:1}}
 .pill{background:var(--pill-bg);color:var(--pill-t);border-radius:9999px;padding:4px 16px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1px solid rgba(168,85,247,0.25)}
 .title{font-size:64px;font-weight:900;color:var(--t);letter-spacing:-2px;line-height:1}
 .sub{font-size:18px;color:var(--ts);font-weight:400}
-.term{background:var(--term);border-radius:8px;padding:12px 20px;border:1px solid var(--term-bd);display:flex;align-items:center;gap:0}
+.term{background:var(--term-bg);border-radius:8px;padding:12px 20px;border:1px solid var(--term-bd)}
 .cmd{font-size:14px;color:var(--code);font-family:'Cascadia Code','Consolas','Courier New',monospace}
 .prompt{color:#a855f7;font-weight:700;margin-right:8px}
 .cursor{display:inline-block;width:2px;height:16px;background:var(--code);vertical-align:middle;margin-left:2px;animation:blink 1s step-end infinite}
@@ -44,7 +44,7 @@
   <div class="term">
     <span class="cmd"><span class="prompt">$</span>/aura 로그인 기능 만들어줘<span class="cursor"></span></span>
   </div>
-  <div class="hint">Click anywhere to star this project ⭐</div>
+  <div class="hint">⭐ Star this project</div>
 </div>
 </div>
 </foreignObject>

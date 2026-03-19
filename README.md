@@ -1,6 +1,6 @@
 <div align="center">
 
-<a href="https://github.com/smorky850612/Aurakit/stargazers">
+<a href="https://github.com/smorky850612/Aurakit">
 <picture>
 <source media="(prefers-color-scheme: dark)" srcset="assets/hero-dark.svg">
 <img src="assets/hero-dark.svg" width="100%" alt="AuraKit - One command. Full stack. Zero compromise.">
@@ -14,7 +14,13 @@
 <img src="https://img.shields.io/badge/version-1.0.0-brightgreen?style=flat-square" alt="Version" />
 <img src="https://img.shields.io/github/stars/smorky850612/Aurakit?style=flat-square&color=yellow" alt="Stars" />
 
+<p>
+<a href="#what-is-aurakit">What is AuraKit</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#getting-started">Getting Started</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#features">Features</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#how-it-works">How It Works</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#compatibility">Compatibility</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#faq">FAQ</a>
+</p>
+
 </div>
+
+<br/>
 
 ---
 
@@ -279,34 +285,6 @@ DANGEROUS PATTERNS:
 
 ---
 
-## FAQ
-
-**Q: What frameworks does AuraKit support?**
-
-AuraKit is framework-agnostic. The Scout agent scans your project and adapts to whatever stack you use — Next.js, React, Vue, Svelte, Express, FastAPI, Django, and more. It reads your package.json, tsconfig, tailwind.config, prisma schema, and other config files to understand your setup.
-
-**Q: Does AuraKit work with existing projects?**
-
-Yes. AuraKit scans your existing codebase first, then generates code that matches your conventions, styling, and architecture.
-
-**Q: What happens if I already have hooks configured?**
-
-The init.sh installer merges AuraKit hooks into your existing settings.json without overwriting. Your current hooks stay intact.
-
-**Q: Can I use AuraKit with Claude Code on Windows?**
-
-Yes. The hooks use bash scripts, so on Windows you need WSL (Windows Subsystem for Linux) or Git Bash. Claude Code on Windows typically runs through WSL already.
-
-**Q: How does the compact defense actually work?**
-
-AuraKit sets CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=65, which triggers compaction at 65% token usage instead of the default 95%. Before compaction, a PreCompact hook saves your current work state (completed files, remaining plan, key decisions) to a snapshot file on disk. After compaction, a PostCompact hook reloads that snapshot into context. Result: zero memory loss.
-
-**Q: Is my code sent anywhere?**
-
-No. AuraKit is a local skill. Everything runs inside your Claude Code session. No external APIs, no telemetry, no data collection.
-
----
-
 ## Compatibility
 
 AuraKit follows the **Agent Skills open standard**. The core SKILL.md files work across multiple AI coding tools.
@@ -348,6 +326,34 @@ cp -r skills/aura .gemini/skills/aura
 
 ---
 
+## FAQ
+
+**Q: What frameworks does AuraKit support?**
+
+AuraKit is framework-agnostic. The Scout agent scans your project and adapts to whatever stack you use — Next.js, React, Vue, Svelte, Express, FastAPI, Django, and more. It reads your package.json, tsconfig, tailwind.config, prisma schema, and other config files to understand your setup.
+
+**Q: Does AuraKit work with existing projects?**
+
+Yes. AuraKit scans your existing codebase first, then generates code that matches your conventions, styling, and architecture.
+
+**Q: What happens if I already have hooks configured?**
+
+The init.sh installer merges AuraKit hooks into your existing settings.json without overwriting. Your current hooks stay intact.
+
+**Q: Can I use AuraKit with Claude Code on Windows?**
+
+Yes. The hooks use bash scripts, so on Windows you need WSL (Windows Subsystem for Linux) or Git Bash. Claude Code on Windows typically runs through WSL already.
+
+**Q: How does the compact defense actually work?**
+
+AuraKit sets CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=65, which triggers compaction at 65% token usage instead of the default 95%. Before compaction, a PreCompact hook saves your current work state (completed files, remaining plan, key decisions) to a snapshot file on disk. After compaction, a PostCompact hook reloads that snapshot into context. Result: zero memory loss.
+
+**Q: Is my code sent anywhere?**
+
+No. AuraKit is a local skill. Everything runs inside your Claude Code session. No external APIs, no telemetry, no data collection.
+
+---
+
 ## Contributing
 
 Contributions are welcome. Please open an issue first to discuss what you would like to change.
@@ -362,11 +368,11 @@ MIT License. See LICENSE file for details.
 
 <div align="center">
 
-<br />
+<br/>
 
 **Built for developers who want to ship fast without cutting corners.**
 
-<br />
+<br/>
 
 <a href="https://github.com/smorky850612/Aurakit">GitHub</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="https://github.com/smorky850612/Aurakit/issues">Issues</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="https://github.com/smorky850612/Aurakit/stargazers">Stars</a>
 
