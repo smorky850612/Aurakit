@@ -7,17 +7,49 @@
 
 ## 실행 흐름
 
-Discovery + Strategy 병렬 → PRD 순차 → BUILD 선택 전환
+Research 선행 → Discovery + Strategy 병렬 → PRD 순차 → BUILD 선택 전환
 
 ```
+[PM-Research]  ──→  [PM-Discovery] ──┐
+                     [PM-Strategy]  ──┴→ [PM-PRD] → .aura/pm/prd.md → BUILD 전환?
+```
+
+빠른 모드 (Research 생략):
+```
 [PM-Discovery] ──┐
-                 ├→ [PM-PRD] → .aura/pm/prd.md → BUILD 전환?
+                 ├→ [PM-PRD] → .aura/pm/prd.md
 [PM-Strategy]  ──┘
 ```
 
 ---
 
-## Step 1 — PM-Discovery (haiku, context:fork)
+## Step 1 — PM-Research (haiku, context:fork) [신규]
+
+**시장 조사 + 경쟁 분석 + 페르소나 정의**
+
+```
+분석 항목:
+1. 타겟 시장 규모 (TAM → SAM → SOM)
+   → 산업 규모, 접근 가능 시장, 실질 목표 시장
+
+2. 경쟁사 분석 (Top 3~5)
+   → 강점/약점, 차별화 포인트, 가격 전략
+
+3. 사용자 페르소나 (2~3개)
+   → 이름, 나이, 직업, 목표, 페인포인트, 행동 패턴
+
+4. 시장 트렌드
+   → 성장 방향, 기술 변화, 규제 환경
+
+출력: .aura/pm/research.md
+```
+
+**PRO 모드**: 웹 검색 활용 (최신 시장 데이터)
+**ECO 모드**: 일반 지식 기반 추론
+
+---
+
+## Step 2 — PM-Discovery (haiku, context:fork)
 
 **Teresa Torres Opportunity Solution Tree (OST) 방법론 적용**
 
@@ -118,15 +150,20 @@ PRD를 기반으로 BUILD 모드로 전환하시겠습니까?
 
 ## 에이전트 배정
 
-| 에이전트 | 모델 | 역할 |
-|---------|------|------|
-| PM-Discovery | haiku | OST 분석, 페인포인트 추출 |
-| PM-Strategy | haiku | JTBD, Lean Canvas |
-| PM-PRD | sonnet | PRD 8섹션 작성 |
+| 에이전트 | 모델 | 역할 | 병렬 |
+|---------|------|------|------|
+| PM-Research | haiku | TAM/SAM/SOM, 경쟁사, 페르소나 | Step 1 |
+| PM-Discovery | haiku | OST 분석, 페인포인트 추출 | Step 2 (Research 완료 후) |
+| PM-Strategy | haiku | JTBD, Lean Canvas | Step 2 (Research 완료 후, Discovery와 병렬) |
+| PM-PRD | sonnet | PRD 8섹션 작성 | Step 3 (Discovery+Strategy 완료 후) |
 
 **PRO/MAX 티어에서 PM 모드:**
 - PRO: PM-PRD만 sonnet → opus (더 정교한 PRD)
 - MAX: 전체 sonnet → opus
+
+**빠른 PM 모드 (Research 생략):**
+- `/aura pm:기능명` — Discovery + Strategy 병렬 → PRD
+- `/aura pm research:기능명` — Research 포함 전체 4단계
 
 ---
 
