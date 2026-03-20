@@ -255,6 +255,34 @@ ITERATE 비활성화: `/aura review no-iterate:` 사용.
 
 ---
 
+## Step 8: /simplify 자동 연결 [P2 신규]
+
+ITERATE 완료(Match Rate ≥ 90%) 또는 리뷰 등급 A/B 달성 시:
+
+```
+Match Rate ≥ 90% AND 코드 품질 A/B → /simplify 권고
+  → "✅ 코드 품질 양호 — /simplify로 최종 정리 권장"
+  → 사용자 확인 후 실행 (자동 실행 아님)
+
+/simplify 실행 내용:
+  - 미사용 import/변수 제거
+  - 중복 로직 통합
+  - 네이밍 일관성 검사
+  - 250줄 초과 파일 분할
+  - 기능 변경 없이 구조만 개선
+```
+
+**흐름:**
+```
+REVIEW → Gap Check → ITERATE (필요 시) → ≥90% 달성
+       → /simplify 권고 → 사용자 확인 → 정리 실행
+       → 최종 커밋 → 완료 리포트
+```
+
+`/simplify` 비활성화: `/aura review no-simplify:` 사용.
+
+---
+
 ## 완료 리포트 포맷
 
 ```
@@ -262,5 +290,6 @@ ITERATE 비활성화: `/aura review no-iterate:` 사용.
 범위: [N]개 파일
 보안: [A/B/C/D/F] | 품질: [A/B/C/D/F] | 테스트: [N/N Pass]
 Match Rate: [N]% → [자동 ITERATE 결과 있으면 표시]
+Simplify: [실행됨/건너뜀]
 다음: [권장 액션]
 ```
