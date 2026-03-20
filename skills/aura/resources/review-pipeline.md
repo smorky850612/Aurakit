@@ -4,11 +4,12 @@
 
 ---
 
-## 원칙
+## 원칙 (Mandatory — 위반 시 재실행)
 
-- **객관적 측정**: 점수 기반 리포트 (A~F)
-- **실행 가능한 피드백**: 파일:라인 + 수정 제안
-- **토큰 효율**: Worker 에이전트 3개 병렬 실행 (context:fork)
+- **객관적 측정**: 점수 기반 리포트 (A~F) [필수]
+- **실행 가능한 피드백**: 파일:라인 + 수정 제안 [필수]
+- **Tiered Model**: Worker-A/B → sonnet, Worker-C → haiku (비용 ~40% 절감) [필수]
+- **병렬 실행**: Worker 에이전트 3개 동시 실행 (context:fork) [필수]
 
 ---
 
@@ -30,14 +31,15 @@ git diff --name-only main...feature/my-branch
 
 ---
 
-## Step 2~4: Worker 에이전트 3개 병렬 실행
+## Step 2~4: Worker 에이전트 3개 병렬 실행 [Tiered Model, 필수]
 
 ```
-Worker-A: 코드 리뷰 (context:fork)
-Worker-B: 보안 L3 스캔 (context:fork)
-Worker-C: 테스트 실행 (context:fork)
+Worker-A: 코드 리뷰  (model: sonnet, context:fork)
+Worker-B: 보안 L3 스캔 (model: sonnet, context:fork)
+Worker-C: 테스트 실행  (model: haiku,  context:fork)
 
-→ 3개 동시 실행, 결과 취합
+→ 3개 동시 실행 [필수], 결과 취합
+→ 성공 시 "Pass" 한 줄 반환 (Fail-Only Output)
 ```
 
 ### Worker-A: 코드 리뷰 체크리스트
@@ -222,3 +224,43 @@ find src -name "*.ts" -o -name "*.tsx" -o -name "*.py" | \
 | C | MEDIUM 이슈 | 3~5개 | 90%+ Pass |
 | D | HIGH 이슈 | 6~10개 | 80%+ Pass |
 | F | CRITICAL 이슈 | 10개 초과 | 80% 미만 |
+
+---
+
+## Step 7: Gap Check → ITERATE 자동 체인 [P1 신규]
+
+리뷰 완료 후 자동 Gap Check 실행:
+
+```
+Gap Worker (model: haiku, context:fork):
+  → .aura/design-system.md vs 현재 구현 비교
+  → Match Rate 계산
+
+Match Rate ≥ 90% → 리뷰 완료, 커밋 권고
+  → "✅ REVIEW 완료 — Match Rate N%. 커밋 후 /aura deploy: 권장"
+
+Match Rate < 90% → 자동 ITERATE 모드 전환
+  → "⚠️ Match Rate N% — ITERATE 모드로 자동 전환합니다"
+  → resources/iterate-pipeline.md 로딩 → 최대 5회 자동 수정
+```
+
+**자동 체인 흐름:**
+```
+REVIEW → Gap Check → [Match Rate ≥90%] → 완료 리포트
+                   → [Match Rate <90%]  → ITERATE (최대 5회) → 완료 리포트
+```
+
+이 체인은 자동으로 실행된다. 사용자 확인 없이 진행.
+ITERATE 비활성화: `/aura review no-iterate:` 사용.
+
+---
+
+## 완료 리포트 포맷
+
+```
+✅ AuraKit REVIEW 완료
+범위: [N]개 파일
+보안: [A/B/C/D/F] | 품질: [A/B/C/D/F] | 테스트: [N/N Pass]
+Match Rate: [N]% → [자동 ITERATE 결과 있으면 표시]
+다음: [권장 액션]
+```
