@@ -416,7 +416,7 @@ Agent(V3, context:fork) ─┘
 
 ## Step 5: Pre-commit 보안 L4
 
-security-scan.sh가 staged 파일에서 자동 실행:
+security-scan.js가 staged 파일에서 자동 실행:
 ```bash
 # 시크릿 패턴 검사
 grep -rn "API_KEY=\|SECRET=\|PASSWORD=\|TOKEN=\|sk-\|ghp_\|aws_access_key" [staged_files]

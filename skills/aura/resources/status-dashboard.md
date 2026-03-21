@@ -62,7 +62,7 @@ BLOAT_COUNT=$(find . -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.p
 ### 5. 컨벤션 준수율
 
 ```bash
-# convention-check.sh 결과 캐시
+# scripts/convention-check.sh 결과 캐시 (build-verify.js가 호출)
 CONV_FILE=".aura/agent-memory/convention.json"
 if [ -f "$CONV_FILE" ]; then
   CONV_VIOLATIONS=$(jq -r '.violations // 0' "$CONV_FILE")
