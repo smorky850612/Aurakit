@@ -5,7 +5,7 @@
 
 ---
 
-## 에이전트 역할 분담 (12개)
+## 에이전트 역할 분담 (13개)
 
 | 에이전트 | 기본 모델 | 역할 | 활성 모드 |
 |---------|----------|------|----------|
@@ -20,6 +20,7 @@
 | Iterator | sonnet(ECO/PRO) / opus(MAX) | 미구현 항목 자동 수정 (최대 5회) | ITERATE |
 | PM-Discovery | haiku | OST 분석, 고객 페인포인트, 기회 목록 | PM |
 | PM-Strategy | haiku | JTBD 6-Part, Lean Canvas | PM |
+| PM-Research | haiku | TAM/SAM/SOM 시장조사, 경쟁사 분석, 페르소나 생성 | PM (research 모드) |
 | PM-PRD | sonnet / opus(PRO/MAX) | PRD 8섹션 자동 생성 | PM |
 
 ---
@@ -77,7 +78,17 @@ GapDetector (재실행) → 최대 5회 반복
 
 ### PM 모드 병렬→순차
 
+빠른 모드 (`/aura pm:기능명`):
 ```
+[PM-Discovery (haiku)] ─┐
+                         ├→ [PM-PRD (sonnet)] → BUILD 전환?
+[PM-Strategy  (haiku)] ─┘
+```
+
+전체 모드 (`/aura pm research:기능명`):
+```
+[PM-Research  (haiku)] → TAM/SAM/SOM + 경쟁사 + 페르소나
+        ↓
 [PM-Discovery (haiku)] ─┐
                          ├→ [PM-PRD (sonnet)] → BUILD 전환?
 [PM-Strategy  (haiku)] ─┘
@@ -88,8 +99,8 @@ GapDetector (재실행) → 최대 5회 반복
 ## Tiered Model 비용 최적화
 
 ```
-haiku  사용: Scout, TestRunner, GapDetector, Optimizer, PM-Discovery, PM-Strategy
-           → 단순 탐색·실행·비교·분석 작업
+haiku  사용: Scout, TestRunner, GapDetector, Optimizer, PM-Discovery, PM-Strategy, PM-Research
+           → 단순 탐색·실행·비교·분석·조사 작업
 
 sonnet 사용 (ECO/PRO): Builder(ECO), Reviewer, SecurityAgent, TDD-Writer, Iterator(ECO/PRO), PM-PRD(ECO)
            → 복잡한 이해·판단·생성 작업
@@ -146,8 +157,9 @@ opus   사용 (PRO/MAX): Builder(PRO/MAX), Reviewer(MAX), SecurityAgent(MAX), TD
 | Iterator | 수동 수정 후 재시도 안내 |
 | PM-Discovery | 수동 OST 입력 요청 |
 | PM-Strategy | 수동 Lean Canvas 입력 요청 |
+| PM-Research | 수동 시장 조사 결과 입력 요청 |
 | PM-PRD | Discovery/Strategy 결과 확인 후 재시도 |
 
 ---
 
-*Agent Team — 12에이전트 · Tiered Model + Fail-Only + context:fork = 토큰 ~55% 절감*
+*Agent Team — 13에이전트 · Tiered Model + Fail-Only + context:fork = 토큰 ~55% 절감*

@@ -117,14 +117,41 @@ interface [ComponentName]Props {
 - [ ] `/aura build:[기능명]` — 이 설계 기반으로 구현
 ```
 
-### Step 4 — 파일 저장
+### Step 4 — Design Cross-Check (v4.0 신규) [필수]
+
+3-Worker 결과 취합 후 일관성 자동 검증:
+
+```
+Cross-Check Worker (model: haiku, context:fork):
+  목적: DB ↔ API ↔ UI 필드 매핑 일관성 검증
+
+  검사 항목:
+    1. DB 컬럼 → API Request/Response 필드 누락 여부
+       예) users.email 컬럼 → POST /api/users body에 email 없음 → 오류
+    2. API Response 필드 → UI Props 누락 여부
+       예) API { user_id, name } → UI interface에 user_id 없음 → 오류
+    3. 외래키 관계 → API 참조 엔드포인트 존재 여부
+       예) orders.user_id → GET /api/users/:id 엔드포인트 없음 → 경고
+
+  출력 형식:
+    성공: "Design Cross-Check: Pass"
+    실패: "DESIGN-GAP-001: [field]이 [위치A]에 있으나 [위치B]에 없음"
+```
+
+Cross-Check 실패 시: 해당 Worker(DB/API/UI) 재실행으로 불일치 수정 후 재검증.
+
+### Step 5 — 파일 저장 + 문서 인덱스 업데이트
 
 ```bash
 mkdir -p .aura/docs
 # 파일명: design-[kebab-case-기능명].md
+
+# Doc Lifecycle 인덱스 업데이트
+FEATURE="[기능명]"
+# .aura/docs/index.md에 Design 완료 표시 추가
 ```
 
-### Step 5 — 완료 출력
+### Step 6 — 완료 출력
 
 ```
 ✅ DESIGN 완료 — [기능명]
@@ -134,6 +161,7 @@ mkdir -p .aura/docs
   DB: [N]개 테이블
   API: [N]개 엔드포인트
   컴포넌트: [N]개
+  Cross-Check: ✅ Pass (또는 수정됨)
 
 다음: /aura build:[기능명]
 ```
@@ -147,8 +175,9 @@ mkdir -p .aura/docs
 | Worker-DB | sonnet | DB 스키마 설계 |
 | Worker-API | sonnet | API 명세 설계 |
 | Worker-UI | haiku | 컴포넌트 트리 설계 |
+| Cross-Check Worker | haiku | DB↔API↔UI 일관성 검증 |
 
-ECO: Worker-UI → haiku (절약). PRO/MAX: 전체 sonnet/opus.
+ECO: Worker-UI + Cross-Check → haiku (절약). PRO/MAX: 전체 sonnet/opus.
 
 ---
 
@@ -162,4 +191,4 @@ ECO: Worker-UI → haiku (절약). PRO/MAX: 전체 sonnet/opus.
 
 ---
 
-*AuraKit DESIGN — 3-Worker 병렬 기술 설계, 구현 없음*
+*AuraKit DESIGN — 3-Worker 병렬 기술 설계 + Cross-Check 자동 검증, 구현 없음*

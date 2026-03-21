@@ -248,6 +248,99 @@ class ErrorBoundary extends React.Component<
   → 타입 분리: [name].types.ts
 ```
 
+### 2-10. Atomic Design 계층 구조 (v4.0 신규)
+
+React/Next.js 프로젝트에서 컴포넌트를 5계층으로 구성:
+
+```
+components/
+  atoms/         ← 최소 단위 (Button, Input, Badge, Icon)
+  molecules/     ← atoms 조합 (SearchBar, FormField, Card)
+  organisms/     ← molecules 조합 (Header, ProductList, LoginForm)
+  templates/     ← 페이지 레이아웃 (DashboardLayout, AuthLayout)
+  pages/         ← 실제 데이터 + templates (Next.js: app/ 디렉토리)
+```
+
+규칙:
+- atoms: props만 받음, 내부 상태 최소화, 재사용성 최대
+- molecules: 1~3개 atoms 조합, 단일 책임 원칙
+- organisms: 비즈니스 로직 포함 가능, API 호출 허용
+- templates: 레이아웃만 정의, 데이터 없음
+- 상위 계층이 하위 계층을 import (역방향 금지)
+
+### 2-11. Next.js App Router 패턴 (v4.0 신규)
+
+```typescript
+// app/[feature]/
+//   page.tsx        ← Server Component (기본)
+//   layout.tsx      ← 공유 레이아웃
+//   loading.tsx     ← Suspense fallback
+//   error.tsx       ← Error Boundary
+//   not-found.tsx   ← 404 처리
+
+// Server Component (기본값 — fetch, DB 직접 접근 가능)
+// app/products/page.tsx
+export default async function ProductsPage() {
+  const products = await db.product.findMany()  // 서버에서 직접 조회
+  return <ProductList products={products} />
+}
+
+// Client Component (상호작용 필요 시만)
+// components/organisms/ProductFilter.tsx
+'use client'
+import { useState } from 'react'
+export function ProductFilter({ onFilter }: { onFilter: (q: string) => void }) {
+  const [query, setQuery] = useState('')
+  return <input value={query} onChange={e => { setQuery(e.target.value); onFilter(e.target.value) }} />
+}
+
+// Server Action (폼 제출, 데이터 변경)
+// app/products/actions.ts
+'use server'
+export async function createProduct(formData: FormData) {
+  const name = formData.get('name') as string
+  await db.product.create({ data: { name } })
+  revalidatePath('/products')
+}
+```
+
+패턴 규칙:
+- Server Component 우선 → 필요 시만 'use client' 추가
+- 데이터 페칭: Server Component에서 직접 (fetch 래퍼 금지)
+- 폼 제출: Server Action 사용 (API Route 대신)
+- 상태 공유: URL SearchParams (서버) 또는 Zustand (클라이언트)
+
+### 2-12. 상태 관리 선택 가이드 (v4.0 신규)
+
+```
+상태 유형별 최적 도구:
+
+서버 상태 (API 데이터):
+  → Next.js App Router: fetch + cache (기본)
+  → 복잡한 캐싱: React Query (TanStack Query)
+  → 실시간: SWR
+
+클라이언트 전역 상태 (UI, 사용자 설정):
+  → 경량: Zustand (권장 — 간단한 API)
+  → 복잡: Redux Toolkit (예측 가능성 필요 시)
+  → 폼: React Hook Form + zod
+
+로컬 상태 (단일 컴포넌트):
+  → useState, useReducer (항상 먼저 고려)
+
+URL 상태 (공유 가능한 UI 상태):
+  → useSearchParams, useRouter (Next.js App Router)
+```
+
+선택 기준:
+```
+1. useSearchParams/URL → 공유·북마크 필요한 필터/정렬
+2. useState → 단순 토글, 폼 입력
+3. Zustand → 여러 컴포넌트 공유, 장바구니, 모달
+4. React Query → API 데이터 캐싱, 페이지네이션
+5. Redux → 대규모팀, DevTools 중요, 복잡한 상태 트리
+```
+
 ---
 
 ## Step 3: 진행 상태 기록

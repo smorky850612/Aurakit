@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 /**
  * AuraKit — PostToolUse Build Verify (Node.js 크로스 플랫폼 버전)
- * TypeScript/Python 문법 검사 (V1). matcher: Write|Edit
+ * TypeScript/Python 문법 검사 + Convention Check (V1). matcher: Write|Edit
  */
 'use strict';
+const path = require('path');
+const fs = require('fs');
 const { execSync } = require('child_process');
 const { readInput, allow } = require('./lib/common.js');
 const input = readInput();
@@ -30,6 +32,21 @@ if (/\.py$/.test(filePath)) {
   } catch (e) {
     const out = e.stdout ? e.stdout.toString() : (e.stderr ? e.stderr.toString() : '');
     if (out) process.stderr.write('⚠️  AuraKit V1: Python 오류\n' + out.substring(0, 300) + '\n');
+  }
+}
+
+// Convention Check (CONV-001~005) — 경고만, 차단 아님 (pre-commit에서 차단)
+if (/\.(ts|tsx|js|jsx|py|go)$/.test(filePath)) {
+  try {
+    const convScript = path.join(__dirname, '..', 'scripts', 'convention-check.sh');
+    if (fs.existsSync(convScript)) {
+      execSync(`bash "${convScript}" "${filePath}" 2>&1`, { timeout: 10000, stdio: 'pipe' });
+    }
+  } catch (e) {
+    const out = e.stdout ? e.stdout.toString() : '';
+    if (out && out.includes('CONV')) {
+      process.stderr.write('⚠️  AuraKit V1 Convention:\n' + out.substring(0, 400) + '\n');
+    }
   }
 }
 
