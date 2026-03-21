@@ -64,7 +64,7 @@ claude --dangerously-skip-permissions
 | FINISH | `finish:` | 브랜치 마무리, squash merge |
 | QUICK | `!` 접미사 | `/aura! 요청` — 프로토콜 최소화 |
 
-다국어 56개 명령 → `resources/mode-reference.md`
+다국어 52개 명령 → `resources/mode-reference.md`
 
 ---
 
@@ -120,7 +120,7 @@ claude --dangerously-skip-permissions
 3. **파일별 구현** — API(try-catch+응답 포맷) · SQL(parameterized) · 접근성(alt/label) · 안전한 인증 방식 · 200줄 제한 · CSS 토큰 · v4.0: Atomic Design · App Router 패턴 · 상태 관리 가이드
 4. **스냅샷 기록** — 파일 완료마다 `.aura/snapshots/current.md` 업데이트
 5. **3중 검증** — V1(빌드) + V2(Reviewer+Security, sonnet) + V3(TestRunner, haiku), V2+V3 병렬
-6. **보안 L4** — security-scan.sh pre-commit hook 자동
+6. **보안 L4** — security-scan.js pre-commit hook 자동
 7. **Convention Check** — convention-check.sh (CONV-001~005) 자동 [v4.0]
 8. **커밋** — `git commit -m "feat(scope): description"`
 9. **완료 리포트**
@@ -139,7 +139,7 @@ claude --dangerously-skip-permissions
 
 > 상세 → `resources/clean-pipeline.md`
 
-bloat-check.sh → 중복 탐색 → dead code 제거 → 250줄 초과 분할 → 3중 검증 → `refactor(scope):` 커밋
+bloat-check.js → 중복 탐색 → dead code 제거 → 250줄 초과 분할 → 3중 검증 → `refactor(scope):` 커밋
 
 ---
 
@@ -252,12 +252,12 @@ Health Dashboard: Match Rate · 보안 점수 · 테스트 커버리지 · Tech 
 
 | 규칙 | 위반 결과 |
 |------|----------|
-| SQL: parameterized query | security-scan.sh 차단 |
-| 안전한 인증 방식 사용 | security-scan.sh 차단 |
-| 시크릿 하드코딩 금지 | security-scan.sh 차단 |
-| V1 빌드 검증 필수 | build-verify.sh 차단 |
+| SQL: parameterized query | security-scan.js 차단 |
+| 안전한 인증 방식 사용 | security-scan.js 차단 |
+| 시크릿 하드코딩 금지 | security-scan.js 차단 |
+| V1 빌드 검증 필수 | build-verify.js 차단 |
 | Discovery → 플랜 → 구현 순서 | 순서 건너뛰면 재시작 |
-| 컴포넌트 250줄 초과 즉시 분할 | bloat-check.sh 경고 |
+| 컴포넌트 250줄 초과 즉시 분할 | bloat-check.js 경고 |
 | CONV-001~005 HIGH 위반 | convention-check.sh 차단 |
 
 ---
@@ -305,9 +305,9 @@ Health Dashboard: Match Rate · 보안 점수 · 테스트 커버리지 · Tech 
 
 보안 레벨: L1(역할 명시) → L2(disallowed-tools) → L3(bash-guard) → L4(Worktree) → L5(context:fork)
 
-**에이전트 메모리**: 각 에이전트 결과 `.aura/agent-memory/[agent].json` 자동 저장 (teammate-idle.js 훅)
+**에이전트 메모리**: 각 에이전트 결과 `.aura/agent-memory/[agent].json` 자동 저장 (subagent-stop.js 훅)
 **생명주기 훅**: subagent-start.js(등록) · subagent-stop.js(완료) · `.aura/agent-memory/active.json`
 
 ---
 
-*AuraKit v4.0 — Discovery-First · Tiered Model ~55% · 6중 보안 · 28모드 · 8개 언어 56명령 · 13에이전트 · Gap Detection · 에이전트 생명주기 · ConfigHash · Team Context · Cross-Check · 4-Perspective Value Table · Convention Check*
+*AuraKit v4.0 — Discovery-First · Tiered Model ~55% · 6중 보안 · 28모드 · 8개 언어 52명령 · 13에이전트 · Gap Detection · 에이전트 생명주기 · ConfigHash · Team Context · Cross-Check · 4-Perspective Value Table · Convention Check*
