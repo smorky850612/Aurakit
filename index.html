@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AuraKit — One command. Full stack. Zero compromise.</title>
-<meta name="description" content="All-in-one Claude Code skill with 4-layer security, triple verification, and compact defense. Build, fix, clean, deploy, review with /aura.">
+<meta name="description" content="All-in-one Claude Code skill with 6-layer security, 28 modes, 8 languages, and 4 quality tiers. Build, fix, clean, deploy, review, iterate, TDD, PM, QA and more with /aura.">
 <meta property="og:title" content="AuraKit — Claude Code Skill">
 <meta property="og:description" content="One command. Full stack. Zero compromise.">
 <meta property="og:url" content="https://github.com/smorky850612/Aurakit">
@@ -79,7 +79,7 @@ section{padding:100px 0}
 .feature-desc{color:#94a3b8;font-size:14px;line-height:1.5}
 
 /* SECURITY */
-.security-steps{display:grid;grid-template-columns:repeat(4,1fr);position:relative}
+.security-steps{display:grid;grid-template-columns:repeat(3,1fr);position:relative}
 .sec-step{padding:28px 20px;text-align:center;position:relative}
 .sec-step:not(:last-child)::after{content:'';position:absolute;top:44px;right:0;width:1px;height:36px;background:rgba(168,85,247,0.3)}
 .sec-num{font-size:36px;font-weight:900;color:#a855f7;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;margin-bottom:8px;line-height:1}
@@ -125,6 +125,22 @@ section{padding:100px 0}
 .compat-pill-sub{font-size:11px;color:#64748b}
 .compat-pill.featured .compat-pill-sub{color:#a855f7}
 
+/* USAGE */
+.usage-block{background:#0d0d17;border:1px solid rgba(168,85,247,0.15);border-radius:12px;overflow:hidden;margin-bottom:32px}
+.usage-block-label{padding:10px 18px;background:rgba(168,85,247,0.08);font-size:12px;font-weight:700;color:#a855f7;letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid rgba(168,85,247,0.12)}
+.usage-pre{padding:20px 22px;margin:0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;line-height:1.9;color:#e2e8f0;white-space:pre;overflow-x:auto}
+.usage-comment{color:#64748b}
+.tier-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.tier-card{background:#111119;border:1px solid rgba(168,85,247,0.12);border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:8px}
+.tier-badge{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.08em;padding:3px 10px;border-radius:999px;width:fit-content}
+.tier-badge.quick{background:rgba(100,116,139,0.2);color:#94a3b8}
+.tier-badge.eco{background:rgba(168,85,247,0.15);color:#c084fc}
+.tier-badge.pro{background:rgba(14,165,233,0.15);color:#38bdf8}
+.tier-badge.max{background:rgba(239,68,68,0.15);color:#f87171}
+.tier-invoke{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:#7c3aed;background:rgba(124,58,237,0.08);padding:2px 8px;border-radius:4px;width:fit-content}
+.tier-desc{font-size:13px;color:#94a3b8;line-height:1.5;flex:1}
+.tier-save{font-size:12px;font-weight:700;color:#10b981}
+
 /* GETTING STARTED */
 .steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
 .step-card{background:#111119;border:1px solid rgba(168,85,247,0.15);border-radius:12px;padding:28px}
@@ -155,6 +171,7 @@ footer{border-top:1px solid rgba(255,255,255,0.05);padding:60px 0 40px;text-alig
   .security-steps{grid-template-columns:1fr 1fr}
   .sec-step:not(:last-child)::after{display:none}
   .compact-steps{grid-template-columns:1fr}
+  .tier-grid{grid-template-columns:1fr 1fr}
   .steps-grid{grid-template-columns:1fr}
   .hero-ctas{gap:12px}
   .bar-label{width:110px;font-size:12px}
@@ -179,6 +196,7 @@ footer{border-top:1px solid rgba(255,255,255,0.05);padding:60px 0 40px;text-alig
   <div class="container nav-inner">
     <span class="nav-logo">AuraKit</span>
     <div class="nav-right">
+      <a class="nav-link" href="#usage" data-ko="사용법" data-en="Commands">사용법</a>
       <a class="nav-link" href="https://github.com/smorky850612/Aurakit" target="_blank" rel="noopener">GitHub</a>
       <div class="lang-toggle">
         <button class="lang-opt" data-lang="en">EN</button>
@@ -199,7 +217,7 @@ footer{border-top:1px solid rgba(255,255,255,0.05);padding:60px 0 40px;text-alig
       <span class="grad">풀스택 완성.</span><br>
       타협은 없다.
     </h1>
-    <p class="hero-sub" data-ko="4중 보안, 3중 검증, 컨텍스트 방어까지 갖춘 올인원 Claude Code 스킬. /aura 하나로 빌드, 수정, 정리, 배포, 리뷰 전부 가능." data-en="All-in-one Claude Code skill with 4-layer security, triple verification, and compact defense.">4중 보안, 3중 검증, 컨텍스트 방어까지 갖춘 올인원 Claude Code 스킬. /aura 하나로 빌드, 수정, 정리, 배포, 리뷰 전부 가능.</p>
+    <p class="hero-sub" data-ko="6중 보안 · 28가지 모드 · 8개 언어 · 4단계 품질 티어. /aura 하나로 빌드, 수정, 정리, 배포, 리뷰, GAP 분석, TDD, PM까지 전부 가능." data-en="6-layer security · 28 modes · 8 languages · 4 quality tiers. Build, fix, clean, deploy, review, iterate, TDD, PM and more with /aura.">6중 보안 · 28가지 모드 · 8개 언어 · 4단계 품질 티어. /aura 하나로 빌드, 수정, 정리, 배포, 리뷰, GAP 분석, TDD, PM까지 전부 가능.</p>
     <div class="hero-ctas">
       <a class="btn btn-primary btn-lg" href="#getting-started" data-ko="시작하기" data-en="Get Started">시작하기</a>
       <a class="btn btn-ghost btn-lg" href="https://github.com/smorky850612/Aurakit" target="_blank" rel="noopener" data-ko="GitHub에서 보기" data-en="View on GitHub">GitHub에서 보기</a>
@@ -219,7 +237,7 @@ footer{border-top:1px solid rgba(255,255,255,0.05);padding:60px 0 40px;text-alig
         <div class="term-results" id="termResults">
           <div class="term-result"><span class="ok">✓</span> Project scanned — Next.js + Prisma detected</div>
           <div class="term-result"><span class="ok">✓</span> Micro-plan created — 6 files</div>
-          <div class="term-result"><span class="ok">✓</span> Security check passed — 4 layers</div>
+          <div class="term-result"><span class="ok">✓</span> Security check passed — 6 layers</div>
           <div class="term-result"><span class="ok">✓</span> Build complete — 0 errors</div>
         </div>
       </div>
@@ -231,8 +249,8 @@ footer{border-top:1px solid rgba(255,255,255,0.05);padding:60px 0 40px;text-alig
 <section>
   <div class="container">
     <div class="section-tag fade-in">
-      <h2 data-ko="6가지 지능형 모드" data-en="6 Intelligent Modes">6가지 지능형 모드</h2>
-      <p data-ko="프롬프트를 분석해서 자동으로 모드 선택" data-en="Auto-detects what you need">프롬프트를 분석해서 자동으로 모드 선택</p>
+      <h2 data-ko="28가지 지능형 모드" data-en="28 Intelligent Modes">28가지 지능형 모드</h2>
+      <p data-ko="프롬프트를 분석해서 자동으로 모드 선택 — 한국어, 英語, 日本語, 中文, Español, Français, Deutsch, Italiano 지원" data-en="Auto-detects what you need — 8 languages supported">프롬프트를 분석해서 자동으로 모드 선택 — 한국어, 英語, 日本語, 中文, Español, Français, Deutsch, Italiano 지원</p>
     </div>
     <div class="features-grid fade-in">
       <div class="feature-card">
@@ -253,11 +271,90 @@ footer{border-top:1px solid rgba(255,255,255,0.05);padding:60px 0 40px;text-alig
       </div>
       <div class="feature-card">
         <div class="feature-top"><div class="mode-dot" style="background:#eab308"></div><span class="feature-name">REVIEW</span></div>
-        <p class="feature-desc" data-ko="보안 감사 및 코드 품질 평가" data-en="Security audit and code quality assessment">보안 감사 및 코드 품질 평가</p>
+        <p class="feature-desc" data-ko="4에이전트 병렬 보안 감사 및 코드 품질 평가" data-en="4-agent parallel security audit and code quality assessment">4에이전트 병렬 보안 감사 및 코드 품질 평가</p>
       </div>
       <div class="feature-card">
-        <div class="feature-top"><div class="mode-dot" style="background:#64748b"></div><span class="feature-name">COMPACT</span></div>
-        <p class="feature-desc" data-ko="수동 컨텍스트 압축 및 메모리 최적화" data-en="Manual context compression and memory optimization">수동 컨텍스트 압축 및 메모리 최적화</p>
+        <div class="feature-top"><div class="mode-dot" style="background:#f97316"></div><span class="feature-name">GAP</span></div>
+        <p class="feature-desc" data-ko="설계 vs 구현 Match Rate 자동 분석" data-en="Auto-detect design vs implementation gaps with Match Rate">설계 vs 구현 Match Rate 자동 분석</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-top"><div class="mode-dot" style="background:#8b5cf6"></div><span class="feature-name">ITERATE</span></div>
+        <p class="feature-desc" data-ko="Match Rate 90% 달성까지 자동 반복 개선" data-en="Auto-iterate until Match Rate ≥ 90%">Match Rate 90% 달성까지 자동 반복 개선</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-top"><div class="mode-dot" style="background:#14b8a6"></div><span class="feature-name">TDD</span></div>
+        <p class="feature-desc" data-ko="Red→Green→Refactor 테스트 주도 개발" data-en="Red→Green→Refactor test-driven development">Red→Green→Refactor 테스트 주도 개발</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-top"><div class="mode-dot" style="background:#f43f5e"></div><span class="feature-name">PM</span></div>
+        <p class="feature-desc" data-ko="Discovery · 전략 · 시장조사 · PRD 자동 생성" data-en="Discovery · strategy · market research · PRD generation">Discovery · 전략 · 시장조사 · PRD 자동 생성</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-top"><div class="mode-dot" style="background:#0ea5e9"></div><span class="feature-name">QA</span></div>
+        <p class="feature-desc" data-ko="Zero-Script QA — Docker 로그 기반 검증" data-en="Zero-Script QA — Docker log-based verification">Zero-Script QA — Docker 로그 기반 검증</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-top"><div class="mode-dot" style="background:#d946ef"></div><span class="feature-name">DEBUG</span></div>
+        <p class="feature-desc" data-ko="4-Phase 체계적 디버깅 · 5-WHY 근본 원인 분석" data-en="4-Phase systematic debugging · 5-WHY root cause analysis">4-Phase 체계적 디버깅 · 5-WHY 근본 원인 분석</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-top"><div class="mode-dot" style="background:#64748b"></div><span class="feature-name">+17 more</span></div>
+        <p class="feature-desc" data-ko="PLAN · DESIGN · REPORT · BATCH · ORCHESTRATE · MOBILE · BAAS 등" data-en="PLAN · DESIGN · REPORT · BATCH · ORCHESTRATE · MOBILE · BAAS and more">PLAN · DESIGN · REPORT · BATCH · ORCHESTRATE · MOBILE · BAAS 등</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- USAGE -->
+<section id="usage">
+  <div class="container">
+    <div class="section-tag fade-in">
+      <h2 data-ko="사용법" data-en="Commands">사용법</h2>
+      <p data-ko="자연어로 입력하면 모드 자동 감지 — 또는 네임스페이스로 명시" data-en="Type naturally and mode is auto-detected — or use a namespace prefix">자연어로 입력하면 모드 자동 감지 — 또는 네임스페이스로 명시</p>
+    </div>
+    <div class="usage-block fade-in">
+      <div class="usage-block-label" data-ko="모드 예시" data-en="Mode Examples">모드 예시</div>
+      <pre class="usage-pre"><span class="usage-comment"># 자동 감지 (권장)</span>
+/aura 로그인 기능 만들어줘             <span class="usage-comment"># → BUILD</span>
+/aura Fix the TypeError in user.tsx    <span class="usage-comment"># → FIX</span>
+/aura 코드 정리해줘                    <span class="usage-comment"># → CLEAN</span>
+/aura Vercel 배포 설정해줘             <span class="usage-comment"># → DEPLOY</span>
+/aura 코드 리뷰해줘                    <span class="usage-comment"># → REVIEW</span>
+
+<span class="usage-comment"># 네임스페이스 명시</span>
+/aura tdd:결제 모듈                    <span class="usage-comment"># → TDD (Red→Green→Refactor)</span>
+/aura pm:신규 기능 기획                <span class="usage-comment"># → PM (Discovery + PRD)</span>
+/aura gap:                             <span class="usage-comment"># → GAP (설계 vs 구현 Match Rate)</span>
+/aura iterate:                         <span class="usage-comment"># → ITERATE (Match Rate ≥90%까지 자동 반복)</span>
+/aura plan:인증 시스템                 <span class="usage-comment"># → PLAN</span>
+/aura design:DB 스키마                 <span class="usage-comment"># → DESIGN</span>
+/aura qa:API 엔드포인트 검증           <span class="usage-comment"># → QA (Zero-Script)</span>
+/aura status                           <span class="usage-comment"># → 현재 작업 상태 확인</span></pre>
+    </div>
+    <div class="tier-grid fade-in">
+      <div class="tier-card">
+        <div class="tier-badge quick">QUICK</div>
+        <div class="tier-invoke">/aura! 요청</div>
+        <div class="tier-desc" data-ko="단일 파일·단순 변경. 프로토콜 최소화." data-en="Single file, simple changes. Protocol skipped.">단일 파일·단순 변경. 프로토콜 최소화.</div>
+        <div class="tier-save" data-ko="~60% 절감" data-en="~60% token savings">~60% 절감</div>
+      </div>
+      <div class="tier-card">
+        <div class="tier-badge eco">ECO</div>
+        <div class="tier-invoke">/aura 요청</div>
+        <div class="tier-desc" data-ko="기본값. 일반 기능 구현, 대부분의 개발 작업." data-en="Default. General feature development.">기본값. 일반 기능 구현, 대부분의 개발 작업.</div>
+        <div class="tier-save" data-ko="~55% 절감" data-en="~55% token savings">~55% 절감</div>
+      </div>
+      <div class="tier-card">
+        <div class="tier-badge pro">PRO</div>
+        <div class="tier-invoke">/aura pro 요청</div>
+        <div class="tier-desc" data-ko="결제·인증·복잡한 비즈니스 로직. Builder → Opus." data-en="Payment, auth, complex business logic. Builder → Opus.">결제·인증·복잡한 비즈니스 로직. Builder → Opus.</div>
+        <div class="tier-save" data-ko="~20% 절감" data-en="~20% token savings">~20% 절감</div>
+      </div>
+      <div class="tier-card">
+        <div class="tier-badge max">MAX</div>
+        <div class="tier-invoke">/aura max 요청</div>
+        <div class="tier-desc" data-ko="보안 감사·아키텍처 설계·프로덕션 크리티컬. 전 에이전트 Opus." data-en="Security audit, architecture, production critical. All agents → Opus.">보안 감사·아키텍처 설계·프로덕션 크리티컬. 전 에이전트 Opus.</div>
+        <div class="tier-save" data-ko="최고 품질" data-en="Maximum quality">최고 품질</div>
       </div>
     </div>
   </div>
@@ -267,29 +364,39 @@ footer{border-top:1px solid rgba(255,255,255,0.05);padding:60px 0 40px;text-alig
 <section>
   <div class="container">
     <div class="section-tag fade-in">
-      <h2 data-ko="4중 보안 시스템" data-en="4-Layer Security">4중 보안 시스템</h2>
-      <p data-ko="생성되는 모든 파일이 4개의 보안 게이트를 통과합니다" data-en="Every file passes through 4 gates before it ships">생성되는 모든 파일이 4개의 보안 게이트를 통과합니다</p>
+      <h2 data-ko="6중 보안 시스템" data-en="6-Layer Security">6중 보안 시스템</h2>
+      <p data-ko="생성되는 모든 파일이 6개의 보안 게이트를 통과합니다" data-en="Every file passes through 6 security gates before it ships">생성되는 모든 파일이 6개의 보안 게이트를 통과합니다</p>
     </div>
     <div class="security-steps fade-in">
       <div class="sec-step">
-        <div class="sec-num">01</div>
-        <div class="sec-name" data-ko="스킬 규칙" data-en="Skill Rules">스킬 규칙</div>
+        <div class="sec-num">L1</div>
+        <div class="sec-name" data-ko="에이전트 역할 분리" data-en="Agent Role Isolation">에이전트 역할 분리</div>
+        <div class="sec-desc" data-ko="Scout는 읽기 전용, Builder만 파일 쓰기 허용" data-en="Scout is read-only; only Builder may write files">Scout는 읽기 전용, Builder만 파일 쓰기 허용</div>
+      </div>
+      <div class="sec-step">
+        <div class="sec-num">L2</div>
+        <div class="sec-name" data-ko="도구 제한" data-en="Disallowed Tools">도구 제한</div>
+        <div class="sec-desc" data-ko="disallowed-tools로 에이전트별 도구 권한 잠금" data-en="Per-agent tool permissions locked via disallowed-tools">disallowed-tools로 에이전트별 도구 권한 잠금</div>
+      </div>
+      <div class="sec-step">
+        <div class="sec-num">L3</div>
+        <div class="sec-name" data-ko="Bash 가드" data-en="Bash Guard">Bash 가드</div>
         <div class="sec-desc" data-ko="eval() 차단, 환경변수 노출 금지, SQL 파라미터화" data-en="No eval(), no env exposure, parameterized SQL">eval() 차단, 환경변수 노출 금지, SQL 파라미터화</div>
       </div>
       <div class="sec-step">
-        <div class="sec-num">02</div>
-        <div class="sec-name" data-ko="보안 훅" data-en="Security Hook">보안 훅</div>
+        <div class="sec-num">L4</div>
+        <div class="sec-name" data-ko="보안 스캔" data-en="Security Scan">보안 스캔</div>
         <div class="sec-desc" data-ko="시크릿 패턴, API 키, 하드코딩된 인증정보 탐지" data-en="Secret patterns, API keys, credential detection">시크릿 패턴, API 키, 하드코딩된 인증정보 탐지</div>
       </div>
       <div class="sec-step">
-        <div class="sec-num">03</div>
-        <div class="sec-name" data-ko="에이전트 리뷰" data-en="Agent Review">에이전트 리뷰</div>
-        <div class="sec-desc" data-ko="OWASP Top 10, XSS/CSRF, 입력값 검증" data-en="OWASP Top 10, XSS/CSRF, input validation">OWASP Top 10, XSS/CSRF, 입력값 검증</div>
-      </div>
-      <div class="sec-step">
-        <div class="sec-num">04</div>
+        <div class="sec-num">L5</div>
         <div class="sec-name" data-ko="마이그레이션 가드" data-en="Migration Guard">마이그레이션 가드</div>
         <div class="sec-desc" data-ko="파괴적 DB 작업 자동 차단" data-en="Destructive DB operations blocked automatically">파괴적 DB 작업 자동 차단</div>
+      </div>
+      <div class="sec-step">
+        <div class="sec-num">L6</div>
+        <div class="sec-name" data-ko="의존성 감사" data-en="Dependency Audit">의존성 감사</div>
+        <div class="sec-desc" data-ko="npm audit 자동 실행 — 고위험 취약점 즉시 차단" data-en="Auto npm audit — high-severity vulnerabilities blocked">npm audit 자동 실행 — 고위험 취약점 즉시 차단</div>
       </div>
     </div>
   </div>

@@ -15,7 +15,7 @@
 <img src="https://img.shields.io/github/stars/smorky850612/Aurakit?style=flat-square&color=yellow" alt="Stars" />
 
 <p>
-<a href="#what-is-aurakit">What is AuraKit</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#getting-started">Getting Started</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#features">Features</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#how-it-works">How It Works</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#compatibility">Compatibility</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#faq">FAQ</a>
+<a href="#what-is-aurakit">What is AuraKit</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#getting-started">Getting Started</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#features">Features</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#commands">Commands</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#how-it-works">How It Works</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#compatibility">Compatibility</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="#faq">FAQ</a>
 </p>
 
 </div>
