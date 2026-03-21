@@ -12,10 +12,13 @@ const input = readInput();
 const filePath = (input.tool_input || {}).file_path || '';
 if (!filePath) allow();
 
-// TypeScript 파일 검사
-if (/\.(ts|tsx)$/.test(filePath)) {
+// TypeScript 파일 검사 — tsconfig.json 없으면 스킵 (npx 기동비용 방지)
+if (/\.(ts|tsx)$/.test(filePath) && fs.existsSync('tsconfig.json')) {
   try {
-    execSync('npx tsc --noEmit --skipLibCheck 2>&1', { timeout: 15000, stdio: 'pipe' });
+    // 로컬 tsc 우선 사용 (npx 오버헤드 ~1s 제거)
+    const localTsc = path.join('node_modules', '.bin', 'tsc');
+    const tscCmd = fs.existsSync(localTsc) ? `"${localTsc}"` : 'npx tsc';
+    execSync(`${tscCmd} --noEmit --skipLibCheck 2>&1`, { timeout: 15000, stdio: 'pipe' });
   } catch (e) {
     const out = e.stdout ? e.stdout.toString() : '';
     if (out && out.includes('error TS')) {
