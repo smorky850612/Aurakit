@@ -107,7 +107,7 @@ pytest --tb=short
 
 ---
 
-## Step 5: bloat-check.sh 실행
+## Step 5: bloat-check.js 실행
 
 ```bash
 # 250줄 초과 파일 감지

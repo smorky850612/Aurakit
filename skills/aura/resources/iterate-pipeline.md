@@ -39,7 +39,7 @@ Step B: Iterator 에이전트 (모델은 티어에 따라):
           PRO: sonnet
           MAX: opus
         → 미구현 항목 구현 (최소 변경, 기존 코드 보존)
-Step C: V1 빌드 검증 (build-verify.sh) — 실패 시 즉시 중단 + FIX 제안
+Step C: V1 빌드 검증 (build-verify.js) — 실패 시 즉시 중단 + FIX 제안
 Step D: GapDetector 재실행 (haiku, context:fork)
         → 새 Match Rate 측정
 

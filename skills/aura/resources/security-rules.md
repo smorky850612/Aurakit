@@ -7,10 +7,10 @@
 ## 레이어 구조
 
 ```
-L1: pre-session.sh     → 세션 시작 시 .env, .gitignore 검사
+L1: pre-session.js     → 세션 시작 시 .env, .gitignore 검사
 L2: security-rules.md  → 코드 생성 시 인라인 적용 (이 파일)
 L3: Worker 에이전트    → 구현 후 보안 스캔 (context:fork)
-L4: security-scan.sh   → 커밋 전 시크릿 패턴 검사
+L4: security-scan.js   → 커밋 전 시크릿 패턴 검사
 ```
 
 ---

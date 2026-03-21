@@ -12,7 +12,7 @@
 
 ---
 
-## Step 1: bloat-check.sh 결과 수집
+## Step 1: bloat-check.js 결과 수집
 
 ```bash
 # 모든 소스 파일 줄 수 확인

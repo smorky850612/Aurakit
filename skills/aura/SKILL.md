@@ -305,7 +305,7 @@ Health Dashboard: Match Rate · 보안 점수 · 테스트 커버리지 · Tech 
 
 보안 레벨: L1(역할 명시) → L2(disallowed-tools) → L3(bash-guard) → L4(Worktree) → L5(context:fork)
 
-**에이전트 메모리**: 각 에이전트 결과 `.aura/agent-memory/[agent].json` 자동 저장 (subagent-stop.js 훅)
+**에이전트 메모리**: 각 에이전트 결과 `.aura/agent-memory/[agent].json` 자동 저장 (teammate-idle.js 훅)
 **생명주기 훅**: subagent-start.js(등록) · subagent-stop.js(완료) · `.aura/agent-memory/active.json`
 
 ---

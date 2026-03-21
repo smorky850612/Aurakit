@@ -172,7 +172,7 @@ fetch(url + '/endpoint')
 BUILD 모드 §4와 동일:
 
 ```
-V1: build-verify.sh (tsc --noEmit / py_compile)
+V1: build-verify.js (tsc --noEmit / py_compile)
 V2: Worker → 코드 리뷰 + 보안 스캔 (context:fork)
 V3: Worker → 테스트 실행 (context:fork)
 ```

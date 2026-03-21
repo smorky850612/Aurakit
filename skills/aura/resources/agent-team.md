@@ -30,7 +30,7 @@
 ### BUILD 완료 후 3중 검증 (V2+V3 병렬)
 
 ```
-V1: build-verify.sh hook (동기, 자동) ─────────── 타입 에러
+V1: build-verify.js hook (동기, 자동) ─────────── 타입 에러
 V2: Reviewer + SecurityAgent (병렬, context:fork) ─ 품질+보안
 V3: TestRunner (병렬, context:fork) ──────────── 테스트
 
@@ -55,7 +55,7 @@ GapDetector (haiku, context:fork)
   ↓ Match Rate < 90%
 Iterator (sonnet/opus, context:fork)
   ↓ 수정 완료
-build-verify.sh (자동)
+build-verify.js (자동)
   ↓ 성공
 GapDetector (재실행) → 최대 5회 반복
 ```

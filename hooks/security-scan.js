@@ -10,7 +10,7 @@ const path = require('path');
 const fs = require('fs');
 const {
   readInput, allow, block,
-  fileExists, readFileSafe, writeFileSafe,
+  fileExists, readFileSafe, writeFileSafe, mkdirSafe,
   AURA_DIR, SECRET_PATTERNS, ENV_FILE_PATTERN
 } = require('./lib/common.js');
 
@@ -48,7 +48,6 @@ if (foundSecrets.length > 0) {
   const auditLog = path.join(AURA_DIR, 'security-audit.log');
   const entry = `[${new Date().toISOString()}] BLOCKED: Secret pattern in ${filePath || 'unknown'}\n`;
   try {
-    const { mkdirSafe } = require('./lib/common.js');
     mkdirSafe(AURA_DIR);
     fs.appendFileSync(auditLog, entry, 'utf8');
   } catch {}

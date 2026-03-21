@@ -55,7 +55,7 @@
 | `/채ㅡㅔㅁㅊㅅ` | `/compact` | 두벌식 역변환 |
 | `/멱ㅁ` | `/aura` | 두벌식 역변환 |
 
-**Hook 처리**: `korean-command.sh` (UserPromptSubmit) → 두벌식 IME 역변환 → 8개 언어 명령 매핑
+**Hook 처리**: `korean-command.js` (UserPromptSubmit) → 두벌식 IME 역변환 → 8개 언어 명령 매핑
 
 ---
 
