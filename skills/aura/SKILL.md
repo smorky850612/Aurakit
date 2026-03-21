@@ -152,9 +152,9 @@ Enterprise: K8s(Deployment/HPA/Ingress) + Terraform(AWS ECS+RDS) + GitHub Action
 
 ---
 
-## H. REVIEW 모드
+## H. REVIEW · GAP 모드
 
-> 상세 → `resources/review-pipeline.md`
+> 상세 → `resources/review-pipeline.md` · GAP → `resources/gap-check.md`
 
 Worker-A(Reviewer, sonnet) + Worker-B(SecurityAgent, sonnet) + Worker-C(TestRunner, haiku) + Worker-D(GapDetector, haiku)
 → 4에이전트 병렬 → 통합 리포트 (VULN-NNN 형식, A~F 등급, Match Rate %)
@@ -221,6 +221,8 @@ GapDetector(haiku) → Match Rate ≥90%: 완료 / <90%: Iterator(sonnet/opus) �
 ---
 
 ## N. STATUS · HEALTH · CONFIG
+
+> 상세 → `resources/config-schema.md` (config 전체 스키마)
 
 ```bash
 /aura status           → .aura/snapshots/current.md 기반 현황
