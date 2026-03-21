@@ -28,15 +28,23 @@ allowed-tools: Write, Bash
 [다음에 할 일]
 ```
 
-### Step 2 — /compact 자동 실행 (Bash 도구)
+### Step 2 — /compact 자동 실행 시도 (Bash 도구)
 
 다음 Bash 명령을 그대로 실행:
 
 ```bash
 PS_SCRIPT="/tmp/aura_compact_$$.ps1"
 cat > "$PS_SCRIPT" << 'PSEOF'
-Start-Sleep -Seconds 5
+Start-Sleep -Seconds 3
 $w = New-Object -ComObject wscript.shell
+# Try to activate the terminal window (claude, bash, pwsh, cmd)
+$titles = @("claude", "bash", "pwsh", "Windows PowerShell", "Command Prompt", "cmd")
+$activated = $false
+foreach ($t in $titles) {
+  if ($w.AppActivate($t)) { $activated = $true; break }
+}
+if (-not $activated) { $w.AppActivate([System.Diagnostics.Process]::GetCurrentProcess().Id) | Out-Null }
+Start-Sleep -Milliseconds 300
 $w.SendKeys("/compact{ENTER}")
 Remove-Item $MyInvocation.MyCommand.Path -Force -ErrorAction SilentlyContinue
 PSEOF
@@ -47,5 +55,7 @@ cmd.exe /c "start \"\" /b powershell.exe -NoProfile -NonInteractive -WindowStyle
 ### Step 3 — 최종 출력 (이것만, 다른 텍스트 없음)
 
 ```
-⚡ aura-compact — 스냅샷 저장됨. 5초 후 /compact 자동 실행됩니다.
+⚡ aura-compact — 스냅샷 저장됨.
+/compact 자동 실행 시도 중 (3초 후)...
+👉 실행되지 않으면 직접 입력하세요: /compact
 ```
