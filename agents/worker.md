@@ -2,6 +2,7 @@
 name: worker
 description: "코드 리뷰 + 테스트 + 보안 스캔 전문가. 변경된 코드의 품질과 보안을 검증. Use proactively after code changes for V2/V3 verification."
 tools: Read, Grep, Glob, Bash
+disallowed-tools: Write, Edit
 model: sonnet
 ---
 

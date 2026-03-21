@@ -11,7 +11,7 @@
 
 <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License" />
 <img src="https://img.shields.io/badge/Claude_Code-Skill-blueviolet?style=flat-square" alt="Claude Code Skill" />
-<img src="https://img.shields.io/badge/version-1.0.0-brightgreen?style=flat-square" alt="Version" />
+<img src="https://img.shields.io/badge/version-3.6-brightgreen?style=flat-square" alt="Version" />
 <img src="https://img.shields.io/github/stars/smorky850612/Aurakit?style=flat-square&color=yellow" alt="Stars" />
 
 <p>
@@ -75,29 +75,32 @@ That is it. AuraKit handles the rest.
 
 ## Features
 
-### 6 Intelligent Modes
+### 28 Intelligent Modes
 
-AuraKit auto-detects what you need based on your prompt.
+AuraKit auto-detects what you need based on your prompt, or you can use a namespace prefix (e.g. `build:`, `fix:`).
 
-| Mode | Trigger Example | What It Does |
-|:-----|:---------------|:-------------|
-| **BUILD** | "로그인 기능 만들어줘" | Full-stack feature generation |
-| **FIX** | "이 에러 고쳐줘" | Root cause analysis and targeted fix |
-| **CLEAN** | "코드 정리해줘" | Dead code removal and refactoring |
-| **DEPLOY** | "배포해줘" | Build optimization and deploy config |
-| **REVIEW** | "코드 리뷰해줘" | Security and quality audit |
-| **COMPACT** | "컨텍스트 정리해줘" | Manual context compression |
+| Category | Modes | What It Does |
+|:---------|:------|:-------------|
+| **Core Dev** | BUILD, FIX, CLEAN, DEPLOY, REVIEW | Feature generation, bug fixes, refactoring, deploy config, security audit |
+| **Quality** | GAP, ITERATE, TDD, QA, DEBUG | Gap analysis, auto-iteration (≥90%), red-green-refactor, zero-script QA, 5-WHY debugging |
+| **Planning** | PM, PLAN, DESIGN, REPORT, PIPELINE, BRAINSTORM | OST discovery + PRD, implementation plan, DB/API design, completion report, 9-phase guide |
+| **Style** | STYLE, SNIPPETS, STATUS, CONFIG | Output persona switching, prompt library, work status, settings management |
+| **Platform** | MOBILE, DESKTOP, BAAS | React Native/Expo, Electron/Tauri, Supabase/Firebase/bkend |
+| **Team** | ORCHESTRATE, ARCHIVE, BATCH, FINISH | Multi-agent patterns (Leader/Swarm/Council/Watchdog), feature archive, parallel batch, branch finalize |
+| **Speed** | QUICK (`/aura!`) | Single-file, protocol-minimal — ~60% token savings |
 
-### 4-Layer Security System
+### 6-Layer Security System
 
-Every file AuraKit generates passes through 4 security gates.
+Every file AuraKit generates passes through 6 security gates.
 
 | Layer | What It Checks | How |
 |:------|:---------------|:----|
-| **L1 — Skill Rules** | No eval(), no env exposure, parameterized SQL | Rules in SKILL.md |
-| **L2 — Security Scan Hook** | Secret patterns, API keys, hardcoded credentials | hooks/security-scan.sh |
-| **L3 — Worker Agent Review** | OWASP Top 10, XSS/CSRF, rate limiting, input validation | agents/worker.md |
-| **L4 — Migration Guard** | Destructive DB migration blocking | hooks/migration-guard.sh |
+| **L1 — Agent Roles** | Per-agent security boundary (read-only vs write) | agents/*.md system prompts |
+| **L2 — Disallowed Tools** | Blocklist per agent (no Write/Edit/Bash for read-only agents) | agents/*.md frontmatter |
+| **L3 — Bash Guard** | Runtime agent bash restriction | hooks/bash-guard.js |
+| **L4 — Security Scan** | Secret patterns, API keys, hardcoded credentials | hooks/security-scan.js |
+| **L5 — Migration Guard** | Destructive DB migration blocking | hooks/migration-guard.js |
+| **L6 — Dependency Audit** | npm audit / pip check on BUILD and FIX modes | Automated in build protocol |
 
 ### Triple Verification Pipeline
 
@@ -127,12 +130,14 @@ AuraKit is designed to use as few tokens as possible.
 
 | Technique | Savings |
 |:----------|:--------|
-| Hook-First Architecture (8 bash scripts, 0 tokens) | ~40% reduction |
+| Tiered Model (Scout/V3: Haiku, V2/Review: Sonnet, Builder: ECO default) | ~40% reduction |
 | Fail-Only Output Filtering | ~25% reduction |
-| Progressive Disclosure via resources/ | ~20% reduction |
+| Progressive Disclosure via resources/ (loaded per mode only) | ~20% reduction |
 | Scan-Once Cache (.aura/project-profile.md) | ~15% reduction |
+| Context Isolation (context:fork per agent) | ~20% reduction |
+| Graceful Compact (65% threshold + checkpoint saves) | eliminates waste |
 
-Typical BUILD job uses ~4,600 tokens. Comparable setups without AuraKit use 25,000-50,000 tokens.
+Typical BUILD job: ~55% token savings vs comparable setups without AuraKit. QUICK mode (`/aura!`) saves ~60% for simple single-file edits.
 
 ---
 
@@ -204,32 +209,53 @@ Typical BUILD job uses ~4,600 tokens. Comparable setups without AuraKit use 25,0
 
 <pre>
 aurakit/
+├── .claude-plugin/
+│   └── plugin.json               # Claude Code plugin manifest
 ├── skills/
-│   ├── aura/                     # Main skill
-│   │   ├── SKILL.md              # Core instructions (under 400 lines)
-│   │   └── resources/
+│   ├── aura/                     # Main skill (single /aura entry point)
+│   │   ├── SKILL.md              # Core instructions (AuraKit v3.6)
+│   │   └── resources/            # 26 mode-specific pipeline guides
 │   │       ├── build-pipeline.md
 │   │       ├── fix-pipeline.md
 │   │       ├── clean-pipeline.md
 │   │       ├── deploy-pipeline.md
 │   │       ├── review-pipeline.md
-│   │       └── security-rules.md
+│   │       ├── security-rules.md
+│   │       ├── qa-pipeline.md
+│   │       ├── tdd-pipeline.md
+│   │       ├── pm-pipeline.md
+│   │       └── ...               # +16 more mode guides
 │   ├── aura-compact/
-│   │   └── SKILL.md              # Manual context compression
-│   └── aura-guard/
-│       └── SKILL.md              # Token budget monitor
+│   │   └── SKILL.md              # Snapshot + auto compact
+│   ├── aura-guard/
+│   │   └── SKILL.md              # Token budget monitor
+│   └── [49 multilingual shortcuts]  # 8 languages × mode commands
 ├── agents/
-│   ├── scout.md                  # Project scanner (Haiku model)
-│   └── worker.md                 # Code reviewer (Sonnet model)
+│   ├── scout.md                  # Read-only project scanner (Haiku)
+│   ├── worker.md                 # Code reviewer + test runner (Sonnet)
+│   ├── gap-detector.md           # Design-implementation gap check (Haiku)
+│   ├── security.md               # OWASP Top 10 audit (Sonnet)
+│   ├── pm-discovery.md           # OST opportunity discovery (Haiku)
+│   ├── pm-strategy.md            # JTBD + Lean Canvas strategy (Haiku)
+│   └── pm-prd.md                 # PRD generation (Sonnet)
 ├── hooks/
-│   ├── pre-session.sh            # Project profile check
-│   ├── security-scan.sh          # Secret pattern detection
-│   ├── build-verify.sh           # Compile verification
-│   ├── bloat-check.sh            # Line count warning
-│   ├── migration-guard.sh        # Destructive migration block
-│   ├── output-filter.sh          # Suppress success output
-│   ├── pre-compact-snapshot.sh   # Save state before compact
-│   └── post-compact-restore.sh   # Restore state after compact
+│   ├── lib/
+│   │   ├── common.js             # Shared utilities (addContext, allow, block)
+│   │   ├── snapshot.js           # Snapshot read/write/parse helpers
+│   │   └── python.js             # Cross-platform Python executor
+│   ├── security-scan.js          # Secret pattern detection (pre-commit)
+│   ├── bash-guard.js             # Agent bash restriction (L3)
+│   ├── build-verify.js           # Compile/type-check verification
+│   ├── bloat-check.js            # 250-line file split warning
+│   ├── migration-guard.js        # Destructive migration block
+│   ├── injection-guard.js        # Prompt injection detection
+│   ├── korean-command.js         # IME reverse-transliteration
+│   ├── subagent-start.js         # Agent lifecycle: start tracking
+│   ├── subagent-stop.js          # Agent lifecycle: stop + cache
+│   ├── pre-compact-snapshot.js   # Save state before compact
+│   ├── post-compact-restore.js   # Restore state after compact
+│   ├── token-tracker.js          # Token usage tracking
+│   └── token-stats-inject.js     # Token stats context injection
 ├── templates/
 │   ├── design-system-default.md  # CSS variable tokens
 │   ├── project-profile-template.md
@@ -342,7 +368,7 @@ The init.sh installer merges AuraKit hooks into your existing settings.json with
 
 **Q: Can I use AuraKit with Claude Code on Windows?**
 
-Yes. The hooks use bash scripts, so on Windows you need WSL (Windows Subsystem for Linux) or Git Bash. Claude Code on Windows typically runs through WSL already.
+Yes, and no WSL required. All hooks run as Node.js scripts (cross-platform). Git Bash is still recommended for running Claude Code itself, but all automation — including hook execution, snapshot saving, and Python script delegation — works natively on Windows without WSL.
 
 **Q: How does the compact defense actually work?**
 

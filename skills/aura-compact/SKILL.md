@@ -35,15 +35,15 @@ allowed-tools: Write, Bash
 ```bash
 PS_SCRIPT="/tmp/aura_compact_$$.ps1"
 cat > "$PS_SCRIPT" << 'PSEOF'
-Start-Sleep -Seconds 3
+Start-Sleep -Seconds 5
 $w = New-Object -ComObject wscript.shell
-# Try to activate the terminal window (claude, bash, pwsh, cmd)
-$titles = @("claude", "bash", "pwsh", "Windows PowerShell", "Command Prompt", "cmd")
-$activated = $false
+# Try to activate the terminal window — if all fail, SendKeys goes to whatever has focus
+# (Claude Code terminal should still have focus after 5s of response rendering)
+$titles = @("claude", "bash", "pwsh", "Windows PowerShell", "Command Prompt", "cmd", "WindowsTerminal")
 foreach ($t in $titles) {
-  if ($w.AppActivate($t)) { $activated = $true; break }
+  if ($w.AppActivate($t)) { break }
 }
-if (-not $activated) { $w.AppActivate([System.Diagnostics.Process]::GetCurrentProcess().Id) | Out-Null }
+# NOTE: No fallback AppActivate(own PID) — that would send keys to hidden PowerShell window
 Start-Sleep -Milliseconds 300
 $w.SendKeys("/compact{ENTER}")
 Remove-Item $MyInvocation.MyCommand.Path -Force -ErrorAction SilentlyContinue
@@ -56,6 +56,6 @@ cmd.exe /c "start \"\" /b powershell.exe -NoProfile -NonInteractive -WindowStyle
 
 ```
 ⚡ aura-compact — 스냅샷 저장됨.
-/compact 자동 실행 시도 중 (3초 후)...
+/compact 자동 실행 시도 중 (5초 후)...
 👉 실행되지 않으면 직접 입력하세요: /compact
 ```

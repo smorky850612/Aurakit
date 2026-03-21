@@ -2,6 +2,7 @@
 name: scout
 description: "프로젝트 스캔 전문가. 프로젝트 구조, 프레임워크, 의존성, 디자인 토큰을 초고속 탐색. Use proactively when project profile is missing or outdated."
 tools: Read, Grep, Glob
+disallowed-tools: Write, Edit, Bash
 model: haiku
 ---
 
