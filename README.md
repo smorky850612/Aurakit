@@ -192,16 +192,72 @@ Typical BUILD job: ~55% token savings vs comparable setups without AuraKit. QUIC
 /aura [your request in natural language]
 </pre>
 
-### Examples
+AuraKit detects mode automatically from your prompt. You can also use a namespace prefix or specify a quality tier.
+
+### Mode Examples
 
 <pre>
-/aura 로그인/회원가입 기능 만들어줘 (Next.js + Prisma)
-/aura Fix the TypeError in dashboard/page.tsx
-/aura 코드 정리하고 안 쓰는 import 제거해줘
-/aura 이 프로젝트 Vercel에 배포할 수 있게 설정해줘
-/aura 전체 코드 보안 리뷰해줘
-/aura 컨텍스트 정리해줘
+# Auto-detect mode (recommended)
+/aura 로그인 기능 만들어줘             # BUILD
+/aura Fix the TypeError in user.tsx    # FIX
+/aura 코드 정리해줘                    # CLEAN
+/aura Vercel 배포 설정해줘             # DEPLOY
+/aura 코드 리뷰해줘                    # REVIEW
+
+# Namespace prefix (when mode is ambiguous)
+/aura build:소셜 로그인 추가
+/aura fix:TypeError at dashboard.tsx:45
+/aura tdd:결제 모듈
+/aura pm:신규 기능 기획
+/aura plan:인증 시스템
+/aura design:DB 스키마
+/aura qa:API 엔드포인트 검증
+/aura iterate:          # auto-improve until gap ≥ 90%
+/aura status            # check current work state
 </pre>
+
+### Quality Tiers
+
+<pre>
+# QUICK — single file, no protocol (~60% token savings)
+/aura! 버튼 색상 변경
+
+# ECO — default, general development (~55% savings)
+/aura 로그인 기능 만들어줘
+
+# PRO — Builder uses Opus, best for complex logic (~20% savings)
+/aura pro 결제 시스템 만들어줘
+
+# MAX — all agents use Opus, for critical production features
+/aura max 마이크로서비스 인증 시스템 설계
+/aura max review:전체 코드베이스 보안 감사
+</pre>
+
+### Multilingual Commands
+
+AuraKit ships 52 skills across 8 languages. Type in your language without switching input methods.
+
+<pre>
+# Korean (한국어)
+/아우라 로그인 만들어줘      /아우라빌드   /아우라수정   /아우라정리
+/아우라배포                  /아우라리뷰   /아우라컴팩트
+
+# Japanese (日本語)
+/オーラ ログイン作って        /オーラビルド /オーラ修正   /オーラ整理
+/オーラデプロイ              /オーラレビュー /オーラコンパクト
+
+# Chinese (中文)
+/奥拉 创建登录功能            /奥拉构建    /奥拉修复    /奥拉清理
+/奥拉部署                    /奥拉审查    /奥拉压缩
+
+# Spanish · French · German · Italian
+/aura-construir  /aura-arreglar  /aura-limpiar  /aura-desplegar
+/aura-construire /aura-corriger  /aura-nettoyer /aura-deployer
+/aura-bauen      /aura-beheben   /aura-aufraeumen /aura-deployen
+/aura-costruire  /aura-correggere /aura-pulire  /aura-distribuire
+</pre>
+
+**IME support**: Korean and Japanese IME reverse-transliteration is handled automatically. Typing `/멱ㅁ` converts to `/aura`, `/채ㅡㅔㅁㅊㅅ` converts to `/compact`.
 
 ---
 
@@ -283,7 +339,7 @@ aurakit/
 
 ### Security Scan Patterns
 
-The security-scan.sh hook checks for these patterns on every file write:
+The security-scan.js hook checks for these patterns on every file write:
 
 <pre>
 DANGEROUS PATTERNS:
@@ -302,12 +358,15 @@ DANGEROUS PATTERNS:
 | Feature | AuraKit | Manual Prompting | Other Skills |
 |:--------|:--------|:----------------|:-------------|
 | One-command full-stack build | Yes | No | Partial |
-| Auto security scanning | 4 layers | None | 0-1 layer |
+| Auto security scanning | 6 layers | None | 0-1 layer |
 | Triple verification | Yes | No | No |
 | Context memory protection | 65% early compact | 95% (too late) | None |
 | Token usage (typical build) | ~4,600 | ~25,000 | ~15,000-50,000 |
 | Project auto-detection | Scout agent | Manual | Manual |
 | Destructive migration guard | Yes | No | No |
+| Multilingual commands | 8 languages, 56 commands | No | No |
+| Model tier selection | QUICK/ECO/PRO/MAX | No | No |
+| Agent specialization | 7 dedicated agents | No | None |
 
 ---
 
@@ -330,7 +389,7 @@ AuraKit follows the **Agent Skills open standard**. The core SKILL.md files work
 | **OpenCode** | Yes | No | No | Partial |
 | **Antigravity** | Yes | No | No | Partial |
 
-**Full support** means all features work: 4-layer security hooks, scout/worker agents, compact defense, and triple verification. With partial support, you get the core skill instructions but without automated hook enforcement or agent delegation.
+**Full support** means all features work: 6-layer security hooks, 7 specialized agents, compact defense, and triple verification. With partial support, you get the core skill instructions but without automated hook enforcement or agent delegation.
 
 ### Using AuraKit with other tools
 
