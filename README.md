@@ -11,7 +11,7 @@
 
 <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License" />
 <img src="https://img.shields.io/badge/Claude_Code-Skill-blueviolet?style=flat-square" alt="Claude Code Skill" />
-<img src="https://img.shields.io/badge/version-3.6-brightgreen?style=flat-square" alt="Version" />
+<img src="https://img.shields.io/badge/version-4.0-brightgreen?style=flat-square" alt="Version" />
 <img src="https://img.shields.io/github/stars/smorky850612/Aurakit?style=flat-square&color=yellow" alt="Stars" />
 
 <p>
