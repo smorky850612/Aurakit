@@ -1,0 +1,21 @@
+{
+  "name": "aurakit",
+  "version": "1.0.0",
+  "description": "All-in-one fullstack development engine for Claude Code. Build, fix, clean, deploy, review, QA, and brainstorm with a single /aura command. Discovery-First · Tiered Model (~55% token savings) · 6-Layer Security · 28 Modes · 8 Languages · 52 Skills.",
+  "author": {
+    "name": "smork"
+  },
+  "license": "MIT",
+  "keywords": [
+    "aura",
+    "fullstack",
+    "development",
+    "ai-coding",
+    "security",
+    "qa",
+    "multilingual",
+    "orchestration",
+    "discovery-first",
+    "tiered-model"
+  ]
+}
