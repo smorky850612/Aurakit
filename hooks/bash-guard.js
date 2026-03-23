@@ -17,7 +17,7 @@ if (!cmd) allow();
 const DANGEROUS = [
   { re: /rm\s+-rf?\s+\/(?:\s|$)/, desc: 'rm -rf /' },
   { re: /git\s+push\s+.*--force\s+(?:origin\s+)?main/, desc: 'force push to main' },
-  { re: /git\s+reset\s+--hard\s+HEAD~[2-9]/, desc: 'git reset --hard HEAD~N (N≥2)' },
+  { re: /git\s+reset\s+--hard\s+HEAD~(?:[2-9]|\d{2,})/, desc: 'git reset --hard HEAD~N (N≥2)' },
   { re: /DROP\s+DATABASE/i, desc: 'DROP DATABASE' },
   { re: /chmod\s+-R\s+777/, desc: 'chmod -R 777' },
   { re: />\s*\/etc\/(passwd|shadow|sudoers)/, desc: '/etc/passwd|shadow 쓰기' },

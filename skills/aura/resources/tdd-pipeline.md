@@ -21,7 +21,7 @@
 ### 🔴 RED — 실패 테스트 작성 [필수, 위반 시 차단]
 
 ```
-TDD-Writer (model: sonnet, context:fork)
+TDD-Writer (model: sonnet/opus(MAX))
 
 입력: 구현할 기능 설명
 출력: 실패하는 테스트 파일
@@ -31,7 +31,7 @@ TDD-Writer (model: sonnet, context:fork)
   - 실행 시 반드시 실패 (Red) 상태 확인
   - 테스트 파일 위치: [기능명].test.ts / [기능명]_test.py / [기능명]_test.go
 
-검증: TestRunner (haiku) → 실패 확인
+검증: TestRunner (haiku/sonnet(MAX)) → 실패 확인
   → 실패 확인됨: GREEN 단계 진입
   → 통과됨 (이미 구현 존재): 테스트 수정 요청
 ```
@@ -48,7 +48,7 @@ TDD-Writer (model: sonnet, context:fork)
 ### 🟢 GREEN — 최소 구현
 
 ```
-Builder (model: [tier], context:fork)
+Builder (model: [tier])
 
 입력: RED 단계 테스트 파일
 출력: 테스트를 통과하는 최소 구현
@@ -59,7 +59,7 @@ Builder (model: [tier], context:fork)
   - 성능 최적화 금지 (REFACTOR에서 처리)
   - 하드코딩 임시 허용 (명백히 임시인 경우)
 
-검증: TestRunner (haiku) → 통과 확인
+검증: TestRunner (haiku/sonnet(MAX)) → 통과 확인
   → 통과: REFACTOR 진입
   → 실패: Builder 재시도 (최대 2회)
   → 2회 실패: FIX 모드 제안
@@ -70,7 +70,7 @@ Builder (model: [tier], context:fork)
 ### 🔵 REFACTOR — 코드 개선
 
 ```
-Reviewer (model: sonnet, context:fork)
+Reviewer (model: sonnet/opus(MAX))
 
 입력: GREEN 통과 코드 + 테스트
 출력: 개선된 코드 (테스트 통과 유지 필수)
@@ -82,7 +82,7 @@ Reviewer (model: sonnet, context:fork)
   - 성능 최적화 (간단한 것만)
   - 접근성 + 보안 기본 검사
 
-검증: TestRunner (haiku) → 여전히 통과 확인
+검증: TestRunner (haiku/sonnet(MAX)) → 여전히 통과 확인
 커밋:
   git commit -m "test(scope): add RED tests for [기능명]"
   git commit -m "feat(scope): GREEN implementation for [기능명]"
@@ -96,11 +96,11 @@ Reviewer (model: sonnet, context:fork)
 | 단계 | 에이전트 | ECO | PRO | MAX |
 |------|---------|-----|-----|-----|
 | RED | TDD-Writer | sonnet | sonnet | opus |
-| RED 검증 | TestRunner | haiku | haiku | haiku |
+| RED 검증 | TestRunner | haiku | haiku | sonnet |
 | GREEN | Builder | sonnet | opus | opus |
-| GREEN 검증 | TestRunner | haiku | haiku | haiku |
+| GREEN 검증 | TestRunner | haiku | haiku | sonnet |
 | REFACTOR | Reviewer | sonnet | sonnet | opus |
-| REFACTOR 검증 | TestRunner | haiku | haiku | haiku |
+| REFACTOR 검증 | TestRunner | haiku | haiku | sonnet |
 
 ---
 
@@ -121,7 +121,7 @@ MAX: ≥ 90% (엣지 케이스 포함)
 ```bash
 /aura tdd:로그인 기능      # 로그인 기능 TDD
 /aura pro tdd:결제 시스템  # PRO 티어 TDD (Builder=opus)
-/aura max tdd:인증 미들웨어 # MAX 티어 전체 opus
+/aura max tdd:인증 미들웨어 # MAX 티어 opus(TDD-Writer/Builder/Reviewer) + sonnet(TestRunner)
 ```
 
 ---

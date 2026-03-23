@@ -122,6 +122,8 @@ AuraKit detects your intent from natural language. Use a namespace prefix (`buil
 | | CONFIG | config:set | Manage `.aura/config.json` settings |
 | | ARCHIVE | archive:list | Archive features without deleting |
 | | QUICK (`!`) | `/aura! request` | Protocol-minimal, single file, ~60% token savings |
+| **Auto** | QA:E2E | qa:e2e:setup, qa:e2e:ci | Playwright E2E — auth / CRUD / responsive / CI pipeline |
+| | BUILD_RESOLVER | *(auto on V1 fail)* | Language-specific build error resolver (7 languages) |
 
 ---
 
@@ -280,7 +282,7 @@ Each iteration runs in isolation. Loop stops when the condition is met or max it
 
 | Hook Event | Handler | What It Does |
 |:-----------|:--------|:-------------|
-| `SessionStart` | `pre-session.sh` | `.env` security · package manager detect · snapshot check |
+| `SessionStart` | `pre-session.js` | `.env` security · package manager detect · snapshot check |
 | `UserPromptSubmit` | `korean-command.js` | IME reverse-transliteration routing |
 | `PreToolUse · Bash` | `bash-guard.js` | Dangerous command blocking (L3) |
 | `PreToolUse · Write/Edit` | `security-scan.js` | Secret pattern detection (L4) |
@@ -433,8 +435,10 @@ SQL Concat:       query\s*\+=|query\s*=.*\+.*req\.(body|params|query)
 
 </details>
 
+## ❓ FAQ
+
 <details>
-<summary><strong>❓ FAQ</strong></summary>
+<summary><strong>Click to expand all questions</strong></summary>
 
 <br/>
 

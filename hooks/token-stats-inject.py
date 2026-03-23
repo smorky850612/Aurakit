@@ -73,8 +73,6 @@ if today_cache:
 context = " | ".join(parts)
 
 print(json.dumps({
-    "hookSpecificOutput": {
-        "hookEventName": "UserPromptSubmit",
-        "additionalContext": context
-    }
+    "continue": True,
+    "additionalContext": context
 }))

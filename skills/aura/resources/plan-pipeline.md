@@ -104,7 +104,7 @@ mkdir -p .aura/docs
 |---------|------|------|
 | Planner | sonnet (ECO) / opus (PRO/MAX) | Discovery + 계획 문서 작성 |
 
-단일 에이전트 실행 (context:fork 불필요 — 메인 컨텍스트에서 직접 처리).
+단일 에이전트 실행 (격리 서브에이전트 불필요 — 메인 컨텍스트에서 직접 처리).
 
 ---
 

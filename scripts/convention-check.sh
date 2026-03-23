@@ -60,8 +60,8 @@ report_violation() {
 check_conv001() {
   local file="$1"
   local hits
-  hits=$(grep -n "query\|execute\|SELECT\|INSERT\|UPDATE\|DELETE" "$file" 2>/dev/null | \
-    grep '\$[{`]' | grep -v "//\|#\|parameterized\|placeholder" | head -5 || true)
+  hits=$(grep -nE "query|execute|SELECT|INSERT|UPDATE|DELETE" "$file" 2>/dev/null | \
+    grep '\$[{`]' | grep -vE "//|#|parameterized|placeholder" | head -5 || true)
   while IFS= read -r hit; do
     [ -z "$hit" ] && continue
     local linenum
@@ -75,9 +75,9 @@ check_conv001() {
 check_conv002() {
   local file="$1"
   local hits
-  hits=$(grep -n "Set-Cookie\|setCookie" "$file" 2>/dev/null | \
-    grep -iv "httponly\|http-only" | \
-    grep -iv "//\|#" | head -5 || true)
+  hits=$(grep -nE "Set-Cookie|setCookie" "$file" 2>/dev/null | \
+    grep -ivE "httponly|http-only" | \
+    grep -ivE "//|#" | head -5 || true)
   while IFS= read -r hit; do
     [ -z "$hit" ] && continue
     local linenum
@@ -94,7 +94,7 @@ check_conv003() {
   local cred_names="sk-|ghp_|aws_access_key_id"
   local hits
   hits=$(grep -nE "(${cred_names})[a-zA-Z0-9_\-]{20,}" "$file" 2>/dev/null | \
-    grep -v "process\.env\|os\.environ\|example\|placeholder" | \
+    grep -vE "process\.env|os\.environ|example|placeholder" | \
     grep -v "^[[:space:]]*//" | head -5 || true)
   while IFS= read -r hit; do
     [ -z "$hit" ] && continue
@@ -112,9 +112,9 @@ check_conv004() {
     return
   fi
   local hits
-  hits=$(grep -n "color:\|background:\|border-color:\|fill:\|stroke:" "$file" 2>/dev/null | \
-    grep "#[0-9a-fA-F]\{3,8\}" | \
-    grep -v "var(--\|//\|/\*" | head -5 || true)
+  hits=$(grep -nE "color:|background:|border-color:|fill:|stroke:" "$file" 2>/dev/null | \
+    grep -E "#[0-9a-fA-F]{3,8}" | \
+    grep -vE "var\(--|//|/\*" | head -5 || true)
   while IFS= read -r hit; do
     [ -z "$hit" ] && continue
     local linenum
@@ -128,9 +128,9 @@ check_conv004() {
 check_conv005() {
   local file="$1"
   local hits
-  hits=$(grep -n "console\.\(log\|error\|warn\|info\)" "$file" 2>/dev/null | \
+  hits=$(grep -nE "console\.(log|error|warn|info)" "$file" 2>/dev/null | \
     grep -iE "password|credential|private" | \
-    grep -v "//\|process\.env" | head -5 || true)
+    grep -vE "//|process\.env" | head -5 || true)
   while IFS= read -r hit; do
     [ -z "$hit" ] && continue
     local linenum

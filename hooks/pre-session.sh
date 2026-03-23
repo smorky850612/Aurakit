@@ -21,6 +21,49 @@ if [ ! -d "${SNAPSHOTS_DIR}" ]; then
   mkdir -p "${SNAPSHOTS_DIR}"
 fi
 
+# ── 1.5. 패키지 매니저 자동 감지 ──────────────────────────────────────
+PKG_MGR=""
+PKG_MGR_CMD=""
+
+if [ -f "package.json" ]; then
+  if [ -f "pnpm-lock.yaml" ]; then
+    PKG_MGR="pnpm"; PKG_MGR_CMD="pnpm"
+  elif [ -f "yarn.lock" ]; then
+    PKG_MGR="yarn"; PKG_MGR_CMD="yarn"
+  elif [ -f "bun.lockb" ] || [ -f "bun.lock" ]; then
+    PKG_MGR="bun"; PKG_MGR_CMD="bun"
+  else
+    PKG_MGR="npm"; PKG_MGR_CMD="npm"
+  fi
+elif [ -f "go.mod" ]; then
+  PKG_MGR="go"; PKG_MGR_CMD="go"
+elif [ -f "Cargo.toml" ]; then
+  PKG_MGR="cargo"; PKG_MGR_CMD="cargo"
+elif [ -f "pyproject.toml" ] || [ -f "requirements.txt" ]; then
+  if command -v uv &>/dev/null; then
+    PKG_MGR="uv"; PKG_MGR_CMD="uv"
+  elif command -v poetry &>/dev/null && [ -f "pyproject.toml" ]; then
+    PKG_MGR="poetry"; PKG_MGR_CMD="poetry"
+  else
+    PKG_MGR="pip"; PKG_MGR_CMD="pip"
+  fi
+elif [ -f "build.gradle" ] || [ -f "build.gradle.kts" ]; then
+  PKG_MGR="gradle"; PKG_MGR_CMD="./gradlew"
+elif [ -f "pom.xml" ]; then
+  PKG_MGR="maven"; PKG_MGR_CMD="mvn"
+elif [ -f "composer.json" ]; then
+  PKG_MGR="composer"; PKG_MGR_CMD="composer"
+fi
+
+if [ -n "${PKG_MGR}" ]; then
+  echo "📦 AuraKit: 패키지 매니저 → ${PKG_MGR}"
+  if [ -d "${AURA_DIR}" ]; then
+    mkdir -p "${AURA_DIR}/runtime"
+    echo "{\"pkg\":\"${PKG_MGR}\",\"cmd\":\"${PKG_MGR_CMD}\",\"ts\":$(date +%s 2>/dev/null || echo 0)}" \
+      > "${AURA_DIR}/runtime/pkg-manager.json" 2>/dev/null || true
+  fi
+fi
+
 # ── 2. .env 보안 검사 ─────────────────────────────────────────────────
 ENV_ISSUE=false
 

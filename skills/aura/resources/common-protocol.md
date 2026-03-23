@@ -5,6 +5,39 @@
 
 ---
 
+## B-0. 세션 캐시 체크 [속도 최적화 — v5.0 신규]
+
+```bash
+SESSION_FILE=".aura/runtime/session.json"
+SESSION_EXPIRE=7200  # 2시간
+
+if [ -f "$SESSION_FILE" ]; then
+  SESSION_AGE=$(( $(date +%s) - $(date -r "$SESSION_FILE" +%s 2>/dev/null || echo 0) ))
+  if [ "$SESSION_AGE" -lt "$SESSION_EXPIRE" ]; then
+    # 캐시 유효 → B-1, B-5 건너뜀 (이미 로딩됨)
+    echo "⚡ 세션 캐시 유효 → 빠른 시작"
+    # B-2, B-3, B-4만 실행
+    skip_b1=true
+    skip_b5=true
+  fi
+fi
+```
+
+세션 파일 생성/갱신 (B-5 완료 후):
+```json
+{
+  "sessionId": "uuid",
+  "startedAt": "ISO",
+  "profile": "loaded",
+  "memory": "loaded",
+  "instincts": "loaded",
+  "language": "TypeScript",
+  "framework": "Next.js"
+}
+```
+
+---
+
 ## B-1. 프로젝트 프로필 체크 [필수]
 
 ### 프로필 존재 확인
@@ -48,7 +81,7 @@ MainDirs: src/, app/, api/, components/
 ### Scout 실행 (프로필 없을 때)
 
 ```
-Scout 에이전트 (model: haiku, context:fork):
+Scout 에이전트 (model: haiku):
   탐색 항목:
     - 언어/프레임워크 (package.json, go.mod, pyproject.toml)
     - 주요 디렉토리 구조
@@ -133,6 +166,19 @@ fi
 → 있으면: 아키텍처 결정사항·팀 규칙·반복 패턴 로딩
 → 없으면: 건너뜀 (중요 결정 발생 시 자동 기록)
 포맷: ## [날짜] [주제]\n내용\n
+```
+
+### Instinct 로딩 (v5.0 신규 — 쓸수록 똑똑해짐)
+
+```
+파일: .aura/instincts/index.json
+→ 없으면: 건너뜀 (첫 사용)
+→ 있으면:
+   1. 현재 language + framework로 필터
+   2. score > 40 패턴만 선택
+   3. 상위 5개 로딩 → 컨텍스트 주입
+   4. anti-patterns 전체 로딩 (실수 자동 방지)
+→ 상세: resources/instinct-system.md
 ```
 
 ### 에이전트 메모리
@@ -226,4 +272,4 @@ git worktree prune
 
 ---
 
-*AuraKit Common Protocol — B-1~B-5 상세 · ConfigHash 캐시 · 팀 컨텍스트 · Discovery 5검토*
+*AuraKit Common Protocol — B-0~B-5 상세 · 세션 캐시 · ConfigHash 캐시 · Instinct 로딩 · 팀 컨텍스트 · Discovery 5검토*

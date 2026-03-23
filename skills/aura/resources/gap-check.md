@@ -25,7 +25,7 @@ Match Rate를 0~100%로 표시하고 미구현 항목과 초과 구현 항목을
 → 없으면: "설계 문서를 찾을 수 없습니다. 경로를 지정해주세요." 안내
 ```
 
-### Step 2: 구현 파일 탐색 (Scout, model: haiku, context:fork)
+### Step 2: 구현 파일 탐색 (Scout, model: haiku/sonnet(MAX))
 
 ```bash
 # 주요 소스 파일 탐색

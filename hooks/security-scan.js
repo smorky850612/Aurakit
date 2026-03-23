@@ -62,7 +62,7 @@ if (foundSecrets.length > 0) {
 }
 
 // ── localStorage 토큰 저장 감지 ───────────────────────────────────────
-if (/localStorage\.setItem\s*\(\s*['"`][^'"]+['"`,].*[Tt]oken|[Jj][Ww][Tt]/.test(content)) {
+if (/localStorage\.setItem\s*\(\s*['"`][^'"]*['"`]\s*,\s*.*(?:[Tt]oken|[Jj][Ww][Tt])/.test(content)) {
   block(
     '🔴 AuraKit Security L4 차단\n' +
     `   파일: ${filePath}\n` +
@@ -72,7 +72,7 @@ if (/localStorage\.setItem\s*\(\s*['"`][^'"]+['"`,].*[Tt]oken|[Jj][Ww][Tt]/.test
 }
 
 // ── SQL Injection 패턴 (raw string concatenation) ────────────────────
-const sqlRaw = /`SELECT|INSERT|UPDATE|DELETE[^`]*\$\{[^}]+\}[^`]*`/;
+const sqlRaw = /`(?:SELECT|INSERT|UPDATE|DELETE)[^`]*\$\{[^}]+\}[^`]*`/i;
 if (sqlRaw.test(content)) {
   process.stderr.write(
     '⚠️  AuraKit Security L3 경고\n' +

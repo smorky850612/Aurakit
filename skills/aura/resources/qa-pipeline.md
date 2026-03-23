@@ -1,207 +1,378 @@
-# AuraKit — QA Pipeline (Zero-Script QA 3-Phase)
+# AuraKit — QA Pipeline (G7)
 
-> `/aura qa:` 또는 `/aura qa:[범위]` 호출 시 로딩.
-> 테스트 코드 없이 실제 실행 로그와 curl로 검증. Zero-Script QA.
-
----
-
-## 역할
-
-- 테스트 스크립트 없이 실제 동작 검증
-- Docker 로그 모니터링 + curl API 테스트 + 응답시간 측정
-- 산출물: QA 리포트 + 이슈 목록
+> 이 파일은 `/aura qa:` 모드 또는 `/aura review:` 완료 후 QA 단계에서 로딩된다.
 
 ---
 
-## 3-Phase 실행 순서
+## 개요: Zero-Script QA + Log-Based Testing
 
-### Phase 1 — Discovery (범위 정의)
+테스트 스크립트 없이 실제 실행 로그로 검증하는 방법.
+Docker 로그, API 응답, 브라우저 콘솔을 활용한 구조화된 QA.
 
 ```bash
-# 변경 파일 파악
+# QA 모드 진입
+/aura qa:                      → 현재 변경사항 전체 QA
+/aura qa:api                   → API 엔드포인트 집중 QA
+/aura qa:ui                    → UI 컴포넌트 QA
+/aura qa:security              → 보안 취약점 QA
+/aura qa:performance           → 성능 QA
+/aura qa:e2e                   → E2E 테스트 (Playwright)
+/aura qa:e2e:setup             → playwright.config.ts + 시나리오 자동 생성
+/aura qa:e2e:ci                → GitHub Actions E2E 워크플로우 생성
+```
+
+---
+
+## Step 1: QA 범위 결정
+
+```bash
+# 변경된 파일 감지
 git diff --name-only HEAD~1 HEAD
 
-# 관련 API 엔드포인트 탐색
-grep -r "app.get\|app.post\|router.get\|router.post\|export.*GET\|export.*POST" src/ --include="*.ts" -l
-
-# 포트 및 서비스 확인
-cat package.json | grep '"start"\|"dev"\|"port"'
-cat .env.example 2>/dev/null | grep PORT
+# 파일 유형별 QA 전략:
+*.ts / *.tsx → TypeScript + 단위 테스트
+*api*        → API 엔드포인트 테스트 (curl)
+*component*  → 컴포넌트 렌더링 + 접근성
+*service*    → 비즈니스 로직 단위 테스트
+*.sql        → 쿼리 결과 검증
+Dockerfile   → 컨테이너 빌드 + 실행 테스트
 ```
-
-탐색 결과로 테스트 대상 분류:
-- **API 엔드포인트**: curl 테스트 대상
-- **UI 컴포넌트**: 브라우저 로그 대상
-- **통합 포인트**: Docker 로그 모니터링 대상
 
 ---
 
-### Phase 2 — Execution (검증 실행)
+## Step 2: 빠른 자동 검증 (항상 실행)
 
-#### 2-1. API 테스트 (QA-API 에이전트, haiku, context:fork)
+### 2.1 빌드 검증 (V1)
 
 ```bash
-# 서비스 실행 상태 확인
-curl -s http://localhost:3000/api/health || echo "서비스 미실행"
+# TypeScript
+npx tsc --noEmit
 
-# GET 엔드포인트 테스트
-curl -s -w "\nHTTP Status: %{http_code}\nTime: %{time_total}s\n" \
-  http://localhost:3000/api/[endpoint]
+# Python
+python -m py_compile **/*.py
 
-# POST 엔드포인트 테스트 (인증 없이)
-curl -s -X POST http://localhost:3000/api/[endpoint] \
-  -H "Content-Type: application/json" \
-  -d '{"test": "data"}' \
-  -w "\nStatus: %{http_code}"
-
-# 인증 필요 엔드포인트 (쿠키 기반)
-curl -s -X POST http://localhost:3000/api/[endpoint] \
-  -H "Content-Type: application/json" \
-  -b "session=[test-session]" \
-  -d '{"field": "value"}'
-
-# 에러 케이스 — 잘못된 입력
-curl -s -X POST http://localhost:3000/api/[endpoint] \
-  -H "Content-Type: application/json" \
-  -d '{}' \
-  -w "\nStatus: %{http_code}"
-
-# 예상 응답: 400 (입력 검증 실패)
+# Go
+go build ./...
 ```
 
-응답 검증 체크리스트:
-- `200/201`: 정상 응답 + `{ success: true, data: ... }` 형식
-- `400`: 입력 검증 실패 + `{ success: false, error: "VALIDATION_ERROR" }` 형식
-- `401`: 인증 필요 + `{ success: false, error: "UNAUTHORIZED" }` 형식
-- `500`: 내부 오류 + `{ success: false, error: "INTERNAL_ERROR" }` 형식
-
-#### 2-2. Docker 로그 모니터링 (QA-Monitor 에이전트, haiku, context:fork)
+### 2.2 린트 + 포맷
 
 ```bash
-# Docker 실행 중이면 로그 수집
-docker ps --format "{{.Names}}" 2>/dev/null
+# Node.js
+npx eslint . --ext .ts,.tsx --max-warnings 0
+npx prettier --check .
 
-# 서비스 로그 실시간 모니터링 (30초)
-docker logs [container-name] --since 30s 2>&1 | tail -50
+# Python
+ruff check .
 
-# 에러 패턴 검색
-docker logs [container-name] 2>&1 | grep -iE "error|exception|fatal|crash" | tail -20
-
-# 데이터베이스 연결 확인
-docker logs [container-name] 2>&1 | grep -i "connected\|connection refused\|timeout" | tail -10
+# 실패 시: 자동 FIX 모드 전환
 ```
 
-#### 2-3. 보안 QA (QA-Security 에이전트, sonnet, context:fork)
+### 2.3 단위 테스트 (V3)
 
 ```bash
-# CORS 헤더 확인
-curl -s -I -X OPTIONS http://localhost:3000/api/[endpoint] \
-  -H "Origin: http://evil.com" | grep -i "access-control"
-# 예상: evil.com이 Allow-Origin에 없어야 함
+# Node.js
+npx vitest run --reporter=verbose
+# 또는
+npx jest --ci
 
-# 응답에 민감 정보 노출 확인
-curl -s http://localhost:3000/api/[endpoint] | \
-  grep -iE "password|secret|private_key|api_key" && \
-  echo "⚠️ 민감 정보 노출 가능성" || echo "✅ 민감 정보 없음"
+# Python
+pytest --tb=short -v
 
-# 에러 메시지 스택 트레이스 노출 확인
-curl -s -X POST http://localhost:3000/api/[endpoint] \
-  -H "Content-Type: application/json" \
-  -d '{"__proto__": {}}' | grep -i "stack\|at " && \
-  echo "⚠️ 스택 트레이스 노출" || echo "✅ 안전"
+# Go
+go test ./... -v
+
+# 결과 파싱:
+# [N] tests passed, [N] failed, [N] skipped
+# coverage: [N]%
 ```
 
-#### 2-4. 성능 측정 (QA-Performance 에이전트, haiku, context:fork)
+---
+
+## Step 3: Zero-Script QA (API)
+
+테스트 코드 없이 실제 API 호출로 검증.
+
+### 3.1 서버 기동
 
 ```bash
-# 응답시간 측정 (5회 평균)
-for i in {1..5}; do
-  curl -s -o /dev/null -w "%{time_total}\n" http://localhost:3000/api/[endpoint]
-done | awk '{ sum += $1; count++ } END { printf "평균: %.3fs (%d회)\n", sum/count, count }'
+# 개발 서버 백그라운드 시작
+npm run dev &
+DEV_PID=$!
 
-# 동시 요청 처리 (기본 부하)
-for i in {1..10}; do
-  curl -s http://localhost:3000/api/[endpoint] &
+# 준비 대기 (최대 30초)
+for i in $(seq 1 30); do
+  curl -s http://localhost:3000/health && break
+  sleep 1
 done
-wait
-echo "10개 동시 요청 완료"
+```
+
+### 3.2 API 엔드포인트 체크리스트
+
+```bash
+BASE="http://localhost:3000/api"
+
+# 인증 없이 보호된 라우트 → 401 확인
+curl -s -o /dev/null -w "%{http_code}" $BASE/users
+# 기대: 401
+
+# 잘못된 입력 → 400 확인
+curl -s -X POST $BASE/users \
+  -H "Content-Type: application/json" \
+  -d '{"email":"invalid"}' | jq .
+# 기대: {"success":false,"error":"validation_failed"}
+
+# 정상 흐름 → 200 확인
+TOKEN=$(curl -s -X POST $BASE/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@test.com","password":"test1234"}' | jq -r .token)
+
+curl -s $BASE/users \
+  -H "Authorization: Bearer $TOKEN" | jq .
+# 기대: {"success":true,"data":[...]}
+```
+
+### 3.3 응답 포맷 검증
+
+```bash
+# 표준 응답 포맷 검사 (AuraKit 규칙)
+RESPONSE=$(curl -s $BASE/users -H "Authorization: Bearer $TOKEN")
+
+echo $RESPONSE | jq 'has("success")' # true 확인
+echo $RESPONSE | jq '.success'        # true/false
+echo $RESPONSE | jq 'has("data")'    # true 확인
 ```
 
 ---
 
-### Phase 3 — Report (결과 보고)
+## Step 3.5: E2E 테스트 (Playwright)
+
+> `/aura qa:e2e` 입력 시 → `resources/e2e-pipeline.md` 로딩 → Playwright 자동 실행.
+
+```bash
+/aura qa:e2e:setup            # playwright.config.ts + 시나리오 생성
+/aura qa:e2e                  # 전체 E2E 스위트 실행
+/aura qa:e2e:auth             # 인증 플로우만 실행
+/aura qa:e2e:[url]            # 특정 URL 집중 테스트
+```
+
+### 자동 생성 시나리오
+
+```
+1. 인증: 회원가입 → 로그인 → 로그아웃
+2. CRUD: 생성 → 조회 → 수정 → 삭제
+3. 반응형: mobile(375px) · tablet(768px) · desktop(1440px)
+4. 보안: 비인증 → 보호 라우트 → 리다이렉트 확인
+```
+
+### 실패 분석 패턴
+
+```
+TimeoutError: 셀렉터 없음 → locator 수정 또는 대기 조건 추가
+NetworkError: baseURL 확인 → NEXT_PUBLIC_URL 환경변수 점검
+AssertionError: URL 불일치 → 리다이렉트 로직 점검
+```
+
+상세 → `resources/e2e-pipeline.md`
+
+---
+
+## Step 4: Docker Log-Based QA
+
+### 4.1 컨테이너 실행 + 로그 모니터링
+
+```bash
+# 컨테이너 빌드 + 실행
+docker compose up -d
+
+# 실시간 로그 구조화 출력
+docker compose logs -f --tail=100 | jq -R '
+  . as $line |
+  if test("^{") then fromjson
+  else {"raw": $line}
+  end
+' 2>/dev/null || docker compose logs -f --tail=100
+```
+
+### 4.2 구조화 로그 포맷 (AuraKit 표준)
+
+애플리케이션에서 이 포맷으로 로그를 출력해야 Zero-Script QA 가능:
+
+```json
+{"level":"info","event":"request","method":"POST","path":"/api/users","status":201,"ms":23}
+{"level":"error","event":"validation","field":"email","message":"invalid format"}
+{"level":"warn","event":"auth","message":"invalid token","ip":"::1"}
+```
+
+```bash
+# 에러 로그만 필터링
+docker compose logs | grep '"level":"error"' | jq .
+
+# 느린 요청 감지 (200ms 이상)
+docker compose logs | jq -R '
+  if test("^{") then fromjson | select(.ms > 200)
+  else empty end
+' 2>/dev/null
+```
+
+### 4.3 로그 기반 테스트 시나리오
+
+```bash
+# 시나리오 실행 + 로그 캡처
+docker compose logs -f > /tmp/qa-log.txt &
+LOG_PID=$!
+
+# 시나리오 1: 회원가입 → 로그인 → 데이터 조회
+curl -s -X POST http://localhost:3000/api/auth/signup \
+  -d '{"email":"qa@test.com","password":"qa123456"}'
+
+sleep 2
+kill $LOG_PID
+
+# 로그 분석
+grep -c '"event":"request"' /tmp/qa-log.txt   # 요청 수
+grep '"level":"error"' /tmp/qa-log.txt         # 에러 있으면 실패
+```
+
+---
+
+## Step 5: UI QA 체크리스트
+
+### 5.1 접근성 (WCAG 2.1 AA)
+
+```
+□ 모든 이미지에 alt 속성
+□ 폼 입력에 htmlFor / aria-label
+□ 버튼에 aria-label (아이콘만 있을 때)
+□ 키보드 탭 순서 논리적
+□ 색상 대비 4.5:1 이상
+□ Focus visible 스타일 존재
+```
+
+### 5.2 반응형 체크포인트
+
+```
+□ 320px (모바일 최소)
+□ 768px (태블릿)
+□ 1024px (데스크톱 작은)
+□ 1440px (데스크톱 큰)
+```
+
+### 5.3 브라우저 콘솔 에러
+
+```javascript
+// 브라우저 콘솔에서 실행
+const errors = [];
+const originalError = console.error;
+console.error = (...args) => { errors.push(args); originalError(...args); };
+
+// 페이지 조작 후
+console.log('에러 수:', errors.length);
+// 0이어야 통과
+```
+
+---
+
+## Step 6: 보안 QA (L3)
+
+```
+□ 인증 없이 보호 라우트 접근 → 401 반환 확인
+□ 다른 사용자 리소스 접근 → 403 반환 확인
+□ SQL Injection 입력 → 에러 노출 없이 400 반환
+□ XSS 입력 ("<script>") → HTML 이스케이프 확인
+□ CSRF 토큰 검증 (상태 변경 요청)
+□ Rate Limiting 동작 확인 (429 반환)
+□ 에러 응답에 스택 트레이스 미포함 확인
+```
+
+---
+
+## Step 7: 성능 QA
+
+```bash
+# API 응답시간 측정
+time curl -s $BASE/users -H "Authorization: Bearer $TOKEN" > /dev/null
+
+# 기준:
+# < 100ms → A (우수)
+# < 300ms → B (양호)
+# < 1000ms → C (개선 권장)
+# > 1000ms → D (필수 개선)
+
+# 번들 사이즈 (Next.js)
+npx next build 2>&1 | grep "First Load JS"
+
+# 기준:
+# < 100KB → A
+# < 200KB → B
+# < 400KB → C
+# > 400KB → D
+```
+
+---
+
+## QA 에이전트 배분
+
+```
+QA-Coordinator (sonnet/opus(MAX)):
+  → QA 범위 결정
+  → 체크리스트 생성
+
+동시 실행:
+  QA-API (haiku/sonnet(MAX)):      → API 엔드포인트 테스트
+  QA-UI (haiku/sonnet(MAX)):       → 접근성 + 반응형 검사
+  QA-Security (sonnet/opus(MAX)):  → 보안 L3 검사
+  QA-Performance (haiku/sonnet(MAX)): → 성능 측정
+
+QA-Monitor (haiku):
+  → Docker 로그 실시간 분석
+  → 이상 패턴 감지
+
+E2E-Worker (haiku/sonnet(MAX)):
+  → /aura qa:e2e 실행 시 활성화
+  → playwright 시나리오 실행 + 실패 스크린샷 분석
+
+종합자 (sonnet/opus(MAX)):
+  → 결과 통합
+  → QA 리포트 생성
+```
+
+---
+
+## QA 리포트 포맷
 
 ```markdown
-# QA Report: [기능명]
-날짜: [날짜]
+# AuraKit QA Report
+생성: [타임스탬프]
+범위: [N]개 파일 / [N]개 엔드포인트
 
-## 요약
+## 자동 검증
+V1 (빌드): ✅ Pass
+V3 (테스트): ✅ [N/N Pass] | 커버리지: [N]%
 
-| 항목 | 결과 |
-|------|------|
-| 테스트 범위 | [N]개 엔드포인트 |
-| API 테스트 | [Pass/Fail] |
-| 보안 검사 | [Pass/Fail] |
-| 성능 기준 | [P/F] (<500ms) |
-| Docker 로그 | [이상 없음 / N개 에러] |
+## API QA
+✅ POST /api/auth/login → 200 (23ms)
+✅ GET /api/users (인증 없음) → 401
+❌ DELETE /api/users/:id → 500 (에러 노출)
 
-## 상세 결과
+## E2E
+✅ 인증 플로우: 회원가입 → 로그인 → 로그아웃 (2.3s)
+✅ 반응형: mobile · tablet · desktop Pass
+⚠️ CRUD 삭제 버튼: locator 타임아웃 → 수동 확인 필요
 
-### API 테스트
-- ✅ GET /api/[endpoint]: 200 OK (123ms)
-- ✅ POST /api/[endpoint]: 201 Created (89ms)
-- ✅ POST /api/[endpoint] 잘못된 입력: 400 VALIDATION_ERROR
-- ❌ POST /api/[endpoint] 미인증: 200 반환 (예상: 401) → 버그
+## 접근성
+⚠️ src/components/UserAvatar.tsx:12 — img에 alt 없음
 
-### 보안
-- ✅ CORS: 화이트리스트 적용 확인
-- ✅ 민감 정보 노출 없음
-- ✅ 스택 트레이스 미노출
+## 보안
+✅ SQL Injection → 안전
+✅ XSS → 이스케이프 확인
+⚠️ Rate Limiting 미구현
 
-### 성능
-- 평균 응답시간: [N]ms (기준: <500ms)
-- 동시 10개 요청: 모두 성공
+## 성능
+API 평균 응답시간: 87ms (A)
+번들 사이즈: 156KB (B)
 
-### Docker 로그 이상
-- [없음 또는 에러 내용]
-
-## 발견된 이슈
-
-| ID | 심각도 | 내용 | 재현 방법 |
-|----|--------|------|---------|
-| QA-001 | HIGH | 미인증 접근 허용 | POST /api/endpoint 쿠키 없이 요청 |
-
-## 다음 단계
-- [ ] QA-001 수정 → `/aura fix:` 실행
-- [ ] 수정 후 QA 재실행
+## 결론
+등급: B | 주요 이슈: 2개 (에러 노출, Rate Limiting)
+권장: /aura fix:API 500 에러 수정
 ```
-
----
-
-## 에이전트 배정
-
-| 에이전트 | 모델 | 역할 |
-|---------|------|------|
-| QA-Coordinator | sonnet | 범위 결정, 리포트 종합 |
-| QA-API | haiku | curl API 테스트 실행 |
-| QA-Security | sonnet | OWASP L3 보안 검사 |
-| QA-Performance | haiku | 응답시간 측정 |
-| QA-Monitor | haiku | Docker 로그 분석 |
-
-QA-API + QA-Security + QA-Performance + QA-Monitor → 4개 병렬 실행
-
----
-
-## 빠른 시작
-
-```bash
-/aura qa:              → 현재 변경사항 전체 QA
-/aura qa:api           → API 엔드포인트 집중 QA
-/aura qa:security      → 보안 취약점 QA
-/aura qa:performance   → 성능 측정만
-/aura pro qa:결제 시스템 → opus QA-Security로 고품질 보안 검사
-```
-
----
-
-*AuraKit QA — Zero-Script · 4에이전트 병렬 · curl + Docker logs + 응답시간 측정*

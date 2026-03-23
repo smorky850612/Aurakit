@@ -1,7 +1,7 @@
 # AuraKit — Agent Team (멀티에이전트 팀 오케스트레이션)
 
 > BUILD/FIX/CLEAN/REVIEW/ITERATE/TDD/PM 모드에서 필요 시 로딩.
-> 모든 에이전트는 `context:fork`로 격리 실행 — 메인 컨텍스트 토큰 보호.
+> 모든 에이전트는 격리된 서브프로세스로 실행 — 메인 컨텍스트 토큰 보호.
 
 ---
 
@@ -9,7 +9,7 @@
 
 | 에이전트 | 기본 모델 | 역할 | 활성 모드 |
 |---------|----------|------|----------|
-| Scout | haiku | 코드베이스 탐색, 파일 구조 파악, 프로젝트 프로필 생성 | ALL |
+| Scout | haiku / sonnet(MAX) | 코드베이스 탐색, 파일 구조 파악, 프로젝트 프로필 생성 | ALL |
 | Builder | sonnet(ECO) / opus(PRO/MAX) | 핵심 구현, 복잡한 로직 | BUILD, TDD(GREEN) |
 | Reviewer | sonnet / opus(MAX) | 코드 품질 리뷰, 접근성 검사 | BUILD, REVIEW, TDD(REFACTOR) |
 | SecurityAgent | sonnet / opus(MAX) | OWASP Top 10 스캔 | BUILD, REVIEW |
@@ -31,8 +31,8 @@
 
 ```
 V1: build-verify.js hook (동기, 자동) ─────────── 타입 에러
-V2: Reviewer + SecurityAgent (병렬, context:fork) ─ 품질+보안
-V3: TestRunner (병렬, context:fork) ──────────── 테스트
+V2: Reviewer + SecurityAgent (병렬, 격리 서브에이전트) ─ 품질+보안
+V3: TestRunner (병렬, 격리 서브에이전트) ──────────── 테스트
 
 V1 실패 → 즉시 중단
 V2/V3 실패 → 이슈 목록 출력 후 FIX 자동 전환
@@ -41,19 +41,19 @@ V2/V3 실패 → 이슈 목록 출력 후 FIX 자동 전환
 ### REVIEW 모드 4에이전트 병렬
 
 ```
-Worker-A: Reviewer    (sonnet, context:fork) ─ 품질+접근성+성능
-Worker-B: SecurityAgent (sonnet, context:fork) ─ 보안 L3
-Worker-C: TestRunner  (haiku,  context:fork) ─ 테스트 실행
-Worker-D: GapDetector (haiku,  context:fork) ─ 설계 vs 구현
+Worker-A: Reviewer      (sonnet/opus(MAX)) ─ 품질+접근성+성능
+Worker-B: SecurityAgent (sonnet/opus(MAX)) ─ 보안 L3
+Worker-C: TestRunner    (haiku/sonnet(MAX)) ─ 테스트 실행
+Worker-D: GapDetector   (haiku/sonnet(MAX)) ─ 설계 vs 구현
 → 4개 동시 실행, 결과 취합
 ```
 
 ### ITERATE 모드 순차 루프
 
 ```
-GapDetector (haiku, context:fork)
+GapDetector (haiku/sonnet(MAX))
   ↓ Match Rate < 90%
-Iterator (sonnet/opus, context:fork)
+Iterator (sonnet/opus(MAX))
   ↓ 수정 완료
 build-verify.js (자동)
   ↓ 성공
@@ -63,17 +63,17 @@ GapDetector (재실행) → 최대 5회 반복
 ### TDD 모드 순차 단계
 
 ```
-🔴 TDD-Writer (sonnet, context:fork) → 실패 테스트 작성
+🔴 TDD-Writer (sonnet/opus(MAX)) → 실패 테스트 작성
        ↓
-   TestRunner (haiku) → 실패 확인 [필수]
+   TestRunner (haiku/sonnet(MAX)) → 실패 확인 [필수]
        ↓ 실패 확인됨
-🟢 Builder (tier, context:fork) → 최소 구현
+🟢 Builder (tier) → 최소 구현
        ↓
-   TestRunner (haiku) → 통과 확인
+   TestRunner (haiku/sonnet(MAX)) → 통과 확인
        ↓ 통과
-🔵 Reviewer (sonnet, context:fork) → 리팩토링
+🔵 Reviewer (sonnet/opus(MAX)) → 리팩토링
        ↓
-   TestRunner (haiku) → 여전히 통과 확인
+   TestRunner (haiku/sonnet(MAX)) → 여전히 통과 확인
 ```
 
 ### PM 모드 병렬→순차
@@ -81,7 +81,7 @@ GapDetector (재실행) → 최대 5회 반복
 빠른 모드 (`/aura pm:기능명`):
 ```
 [PM-Discovery (haiku)] ─┐
-                         ├→ [PM-PRD (sonnet)] → BUILD 전환?
+                         ├→ [PM-PRD (sonnet/opus(PRO/MAX))] → BUILD 전환?
 [PM-Strategy  (haiku)] ─┘
 ```
 
@@ -90,7 +90,7 @@ GapDetector (재실행) → 최대 5회 반복
 [PM-Research  (haiku)] → TAM/SAM/SOM + 경쟁사 + 페르소나
         ↓
 [PM-Discovery (haiku)] ─┐
-                         ├→ [PM-PRD (sonnet)] → BUILD 전환?
+                         ├→ [PM-PRD (sonnet/opus(PRO/MAX))] → BUILD 전환?
 [PM-Strategy  (haiku)] ─┘
 ```
 
@@ -99,8 +99,9 @@ GapDetector (재실행) → 최대 5회 반복
 ## Tiered Model 비용 최적화
 
 ```
-haiku  사용: Scout, TestRunner, GapDetector, Optimizer, PM-Discovery, PM-Strategy, PM-Research
+haiku  사용: Scout(ECO/PRO), TestRunner(ECO/PRO), GapDetector(ECO/PRO), Optimizer, PM-Discovery, PM-Strategy, PM-Research
            → 단순 탐색·실행·비교·분석·조사 작업
+sonnet 사용 (MAX 전용): Scout(MAX), TestRunner(MAX), GapDetector(MAX)
 
 sonnet 사용 (ECO/PRO): Builder(ECO), Reviewer, SecurityAgent, TDD-Writer, Iterator(ECO/PRO), PM-PRD(ECO)
            → 복잡한 이해·판단·생성 작업
@@ -125,7 +126,7 @@ opus   사용 (PRO/MAX): Builder(PRO/MAX), Reviewer(MAX), SecurityAgent(MAX), TD
 
 ---
 
-## Scout 에이전트 (항상 haiku)
+## Scout 에이전트 (haiku / sonnet(MAX))
 
 ```
 목적: 프로젝트 구조 파악, 관련 파일 탐색
@@ -162,4 +163,4 @@ opus   사용 (PRO/MAX): Builder(PRO/MAX), Reviewer(MAX), SecurityAgent(MAX), TD
 
 ---
 
-*Agent Team — 13에이전트 · Tiered Model + Fail-Only + context:fork = 토큰 ~55% 절감*
+*Agent Team — 13에이전트 · Tiered Model + Fail-Only + 격리 서브에이전트 = 토큰 ~55% 절감*

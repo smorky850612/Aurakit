@@ -18,7 +18,8 @@ try {
     let snap = fs.readFileSync(snapshotFile, 'utf8');
     // Remaining 섹션에서 완료된 파일 체크
     const baseName = path.basename(filePath);
-    snap = snap.replace(new RegExp(`^- \[ \] .*${baseName}.*$`, 'm'), m => m.replace('[ ]', '[x]'));
+    const escapedBase = baseName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    snap = snap.replace(new RegExp(`^- \\[ \\] .*${escapedBase}.*$`, 'm'), m => m.replace('[ ]', '[x]'));
     fs.writeFileSync(snapshotFile, snap, 'utf8');
   }
 } catch {}

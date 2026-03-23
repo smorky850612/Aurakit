@@ -13,14 +13,14 @@ const response = JSON.stringify(input.tool_response || '');
 
 // ── 인젝션 패턴 감지 ─────────────────────────────────────────────────
 const INJECTION_PATTERNS = [
-  /ignore previous instructions/i,
-  /ignore all prior instructions/i,
+  /ignore (?:previous|all prior) instructions/i,
   /disregard your system prompt/i,
-  /you are now/i,
-  /act as/i,
+  /you are now (?:a|an|the) (?!logged|connected|signed|authenticated)/i,
+  /act as (?:a|an) (?:different|new|unrestricted|jailbroken)/i,
   /jailbreak/i,
-  /new persona/i,
-  /forget your instructions/i,
+  /new (?:system )?persona/i,
+  /forget (?:your|all) instructions/i,
+  /ignore (?:your|the) (?:system|previous|above) (?:prompt|instructions|message)/i,
 ];
 
 const found = INJECTION_PATTERNS.filter(p => p.test(response));

@@ -1,7 +1,7 @@
 # AuraKit — Iterate Pipeline (자동 반복 개선)
 
 > ITERATE 모드 또는 REVIEW Gap Rate < 90% 시 자동 로딩.
-> 최대 5회 반복. context:fork 완전 격리.
+> 최대 5회 반복. 격리 서브에이전트 실행.
 
 ---
 
@@ -20,7 +20,7 @@
 ### Phase 0 — 초기 Gap 측정
 
 ```
-GapDetector (model: haiku, context:fork)
+GapDetector (model: haiku(ECO/PRO) / sonnet(MAX))
   입력: .aura/plan.md 또는 사용자 지정 spec
   출력: Match Rate N%, 미구현 항목 목록
 
@@ -40,7 +40,7 @@ Step B: Iterator 에이전트 (모델은 티어에 따라):
           MAX: opus
         → 미구현 항목 구현 (최소 변경, 기존 코드 보존)
 Step C: V1 빌드 검증 (build-verify.js) — 실패 시 즉시 중단 + FIX 제안
-Step D: GapDetector 재실행 (haiku, context:fork)
+Step D: GapDetector 재실행 (haiku(ECO/PRO) / sonnet(MAX))
         → 새 Match Rate 측정
 
 Match Rate ≥ 90% → 성공. Phase 완료.
@@ -91,7 +91,7 @@ Match Rate < 90%  → 다음 반복 (N+1)
 - 기존 통과 테스트 깨는 변경 금지 (TestRunner 확인)
 - 기능 삭제로 Gap Rate 올리기 금지 (GapDetector 감지)
 - 5회 미달성 시 강제 종료 후 수동 확인 요청
-- 각 반복은 독립 context:fork — 메인 창 오염 없음
+- 각 반복은 격리 서브에이전트 실행 — 메인 컨텍스트 토큰 보호
 ```
 
 ---

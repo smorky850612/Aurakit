@@ -8,7 +8,9 @@
 
 const fs = require('fs');
 const path = require('path');
-const { mkdirSafe, fileExists, dirExists, readFileSafe, AURA_DIR, SNAPSHOTS_DIR } = require('./lib/common.js');
+const { readInput, mkdirSafe, fileExists, dirExists, readFileSafe, AURA_DIR, SNAPSHOTS_DIR } = require('./lib/common.js');
+
+readInput(); // stdin consume (required by hook protocol)
 
 const profileFile = path.join(AURA_DIR, 'project-profile.md');
 const snapshotFile = path.join(SNAPSHOTS_DIR, 'current.md');

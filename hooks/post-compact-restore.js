@@ -4,9 +4,10 @@
  * 컴팩트 후 스냅샷에서 컨텍스트 복구
  */
 'use strict';
-const { addContext } = require('./lib/common.js');
+const { readInput, addContext } = require('./lib/common.js');
 const { readSnapshot, getSnapshotPath, parseSnapshot } = require('./lib/snapshot.js');
 
+readInput(); // stdin consume (required by hook protocol)
 const snap = readSnapshot();
 if (!snap) process.exit(0);
 

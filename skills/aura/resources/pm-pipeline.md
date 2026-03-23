@@ -23,7 +23,7 @@ Research 선행 → Discovery + Strategy 병렬 → PRD 순차 → BUILD 선택 
 
 ---
 
-## Step 1 — PM-Research (haiku, context:fork) [신규]
+## Step 1 — PM-Research (haiku, 격리 서브에이전트) [신규]
 
 **시장 조사 + 경쟁 분석 + 페르소나 정의**
 
@@ -49,7 +49,7 @@ Research 선행 → Discovery + Strategy 병렬 → PRD 순차 → BUILD 선택 
 
 ---
 
-## Step 2 — PM-Discovery (haiku, context:fork)
+## Step 2a — PM-Discovery (haiku, 격리 서브에이전트)
 
 **Teresa Torres Opportunity Solution Tree (OST) 방법론 적용**
 
@@ -72,7 +72,7 @@ Research 선행 → Discovery + Strategy 병렬 → PRD 순차 → BUILD 선택 
 
 ---
 
-## Step 2 — PM-Strategy (haiku, context:fork)
+## Step 2b — PM-Strategy (haiku, 격리 서브에이전트)
 
 **JTBD (Jobs-to-be-Done) + Lean Canvas 간략 버전**
 
@@ -98,7 +98,7 @@ Lean Canvas 핵심 항목:
 
 ---
 
-## Step 3 — PM-PRD (sonnet, context:fork)
+## Step 3 — PM-PRD (sonnet/opus(PRO/MAX), 격리 서브에이전트)
 
 **Discovery + Strategy 결과를 종합한 PRD 자동 생성**
 
@@ -155,7 +155,7 @@ PRD를 기반으로 BUILD 모드로 전환하시겠습니까?
 | PM-Research | haiku | TAM/SAM/SOM, 경쟁사, 페르소나 | Step 1 |
 | PM-Discovery | haiku | OST 분석, 페인포인트 추출 | Step 2 (Research 완료 후) |
 | PM-Strategy | haiku | JTBD, Lean Canvas | Step 2 (Research 완료 후, Discovery와 병렬) |
-| PM-PRD | sonnet | PRD 8섹션 작성 | Step 3 (Discovery+Strategy 완료 후) |
+| PM-PRD | sonnet/opus(PRO/MAX) | PRD 8섹션 작성 | Step 3 (Discovery+Strategy 완료 후) |
 
 **PRO/MAX 티어에서 PM 모드:**
 - PRO: PM-PRD만 sonnet → opus (더 정교한 PRD)

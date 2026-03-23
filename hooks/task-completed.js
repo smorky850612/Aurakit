@@ -15,9 +15,7 @@ const toolResult = input.tool_response || '';
 const filePath = toolInput.file_path || '';
 if (!filePath) allow();
 
-const resultStr = typeof toolResult === 'string' ? toolResult : JSON.stringify(toolResult);
-const isSuccess = /success|created|updated/i.test(resultStr);
-if (!isSuccess) allow();
+// PostToolUse fires only when the tool succeeded — no need to re-validate result
 
 const snapshotFile = path.join(SNAPSHOTS_DIR, 'current.md');
 if (!fileExists(snapshotFile)) allow();

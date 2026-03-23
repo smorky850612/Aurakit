@@ -1,16 +1,19 @@
 # AuraKit — Security Rules (보안 L2 인라인 규칙)
 
 > 코드 생성 시 항상 이 규칙을 적용한다. (BUILD/FIX 모드에서 로딩)
+> 총 보안 규칙: 130+ | 레이어: 6중 보안 (L1~L6) | 언어: TS/Python/Go/Java/Rust
 
 ---
 
-## 레이어 구조
+## 레이어 구조 (6중 보안)
 
 ```
-L1: pre-session.js     → 세션 시작 시 .env, .gitignore 검사
-L2: security-rules.md  → 코드 생성 시 인라인 적용 (이 파일)
-L3: Worker 에이전트    → 구현 후 보안 스캔 (context:fork)
-L4: security-scan.js   → 커밋 전 시크릿 패턴 검사
+L1: pre-session.js      → 세션 시작 시 .env/.gitignore 검사
+L2: security-rules.md   → 코드 생성 시 인라인 적용 (이 파일)
+L3: Worker 에이전트     → 구현 후 OWASP 보안 스캔 (격리 서브에이전트)
+L4: security-scan.js    → 커밋 전 시크릿 패턴 감지
+L5: convention-check.sh → CONV-001~005 코딩 컨벤션 (HIGH 위반 차단)
+L6: Agent 격리          → disallowed-tools + bash-guard + Worktree
 ```
 
 ---
@@ -274,6 +277,9 @@ const webhookSecret = 'whsec_...'   // ❌
 const awsKey = 'AKIAIOSFODNN7...'   // ❌
 ```
 
+> **자동 감지**: `security-scan.js` (L4 hook) 가 커밋 전 전체 파일 스캔 → API 키 패턴 7종 자동 차단 (OpenAI, GitHub PAT, AWS, GCP, Stripe, Twilio, PEM).
+> **프롬프트 방어**: `/aura` 대화에서 시크릿 언급 감지 시 → 저장 차단 + 경고 (instinct-auto-save.js 민감 패턴 필터).
+
 ---
 
 ## 6. 네트워크 보안 (Network Security)
@@ -392,6 +398,203 @@ npm info [패키지명]  # 다운로드 수, 저자 확인
 
 ---
 
+## 8. Python 보안 규칙 (v5.0 신규)
+
+```python
+# ❌ 절대 금지
+subprocess.call(f"rm -rf {user_input}", shell=True)  # Command Injection
+yaml.load(data)          # → yaml.safe_load(data)
+pickle.loads(user_data)  # 신뢰할 수 없는 데이터에 금지
+eval(user_expression)    # Code Injection
+
+# ✅ 올바른 패턴
+subprocess.run(["rm", "-rf", safe_path], shell=False, check=True)
+import secrets; token = secrets.token_urlsafe(32)  # 안전한 난수
+
+# SQL (SQLAlchemy)
+result = db.execute(
+    text("SELECT * FROM users WHERE email = :email"),
+    {"email": email}
+)
+
+# 파일 경로 검증 (Path Traversal 방지)
+import os
+def safe_path(base_dir: str, filename: str) -> str:
+    safe = os.path.realpath(os.path.join(base_dir, filename))
+    if not safe.startswith(os.path.realpath(base_dir)):
+        raise ValueError("Path traversal detected")
+    return safe
+```
+
+---
+
+## 9. Go 보안 규칙 (v5.0 신규)
+
+```go
+// ❌ 금지
+db.Query("SELECT * FROM users WHERE name = " + name)  // SQL Injection
+exec.Command("sh", "-c", userInput).Run()              // Command Injection
+math/rand.Int()  // 보안 난수 아님
+
+// ✅ 올바른 패턴
+// SQL Parameterized
+db.QueryContext(ctx, "SELECT * FROM users WHERE name = $1", name)
+
+// 안전한 난수
+import "crypto/rand"
+buf := make([]byte, 32)
+_, err := rand.Read(buf)
+
+// 파일 Path Traversal 방지
+func safePath(baseDir, userPath string) (string, error) {
+    cleaned := filepath.Clean(filepath.Join(baseDir, userPath))
+    if !strings.HasPrefix(cleaned, filepath.Clean(baseDir)+string(os.PathSeparator)) {
+        return "", errors.New("invalid path")
+    }
+    return cleaned, nil
+}
+
+// TLS 최소 버전 강제
+tlsConfig := &tls.Config{
+    MinVersion: tls.VersionTLS12,
+}
+```
+
+---
+
+## 10. Java/Spring 보안 규칙 (v5.0 신규)
+
+```java
+// ❌ 금지
+stmt.execute("SELECT * FROM users WHERE id = " + userId);  // SQL Injection
+Runtime.getRuntime().exec(userInput);  // Command Injection
+
+// ✅ PreparedStatement
+PreparedStatement pstmt = conn.prepareStatement(
+    "SELECT * FROM users WHERE id = ?"
+);
+pstmt.setString(1, userId);
+
+// XXE 방지 (XML 파싱)
+DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+
+// Spring Security CORS 설정
+@Bean
+public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration config = new CorsConfiguration();
+    config.setAllowedOrigins(List.of("https://myapp.com"));
+    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+    config.setAllowCredentials(true);
+    // config.addAllowedOrigin("*");  // ❌ 절대 금지
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", config);
+    return source;
+}
+```
+
+---
+
+## 11. Rust 보안 규칙 (v5.0 신규)
+
+```rust
+// ❌ 금지 패턴
+let result = query.execute(&conn);  // 에러 무시 — unwrap() 금지
+unsafe { std::mem::transmute::<T, U>(val) }  // transmute 금지
+
+// ✅ SQL (SQLx — Parameterized)
+let user = sqlx::query!(
+    "SELECT * FROM users WHERE id = $1", id
+).fetch_one(&pool).await?;  // ? 연산자 — unwrap() 대신
+
+// ✅ 안전한 난수
+use rand::RngCore;
+let mut key = [0u8; 32];
+rand::thread_rng().fill_bytes(&mut key);
+
+// ✅ Path Traversal 방지
+fn safe_path(base: &Path, user_input: &str) -> Result<PathBuf, Error> {
+    let path = base.join(user_input).canonicalize()?;
+    if !path.starts_with(base.canonicalize()?) {
+        return Err(Error::InvalidPath);
+    }
+    Ok(path)
+}
+
+// ✅ TLS 최소 버전 (rustls — safe_defaults = TLS 1.2+)
+let config = rustls::ClientConfig::builder()
+    .with_safe_defaults()
+    .with_root_certificates(roots)
+    .with_no_client_auth();
+```
+
+보안 체크리스트 (Rust):
+```
+□ unwrap()/expect() → ? 연산자 또는 명시적 에러 처리
+□ unsafe 블록: 최소화 + 반드시 // SAFETY: 주석 작성
+□ std::mem::transmute 금지 → 명시적 타입 변환 사용
+□ 정수 오버플로우: checked_add / saturating_add 사용 (release 모드 wrapping 주의)
+□ Arc<Mutex<T>> 데드락: 락 획득 순서 일관성 유지
+□ 환경변수 시크릿: std::env::var + .env (하드코딩 절대 금지)
+□ cargo audit: 의존성 취약점 주기적 확인
+□ cargo clippy -- -D warnings: 경고 전체 차단
+```
+
+---
+
+## 12. 추가 OWASP Top 10 패턴 (v5.0 신규)
+
+### Path Traversal (경로 순회)
+```typescript
+// ❌ 금지
+const filePath = path.join(__dirname, 'uploads', req.query.filename)
+fs.readFileSync(filePath)  // ../../../etc/passwd 가능
+
+// ✅ 검증 필수
+const filename = path.basename(req.query.filename as string)
+const filePath = path.join(__dirname, 'uploads', filename)
+if (!filePath.startsWith(path.join(__dirname, 'uploads'))) {
+  throw new Error('Invalid path')
+}
+```
+
+### SSRF (서버사이드 요청 위조)
+```typescript
+// ❌ 금지
+const response = await fetch(req.body.url)  // 내부망 접근 가능
+
+// ✅ URL 검증
+const allowedHosts = new Set(['api.example.com', 'cdn.example.com'])
+const parsed = new URL(req.body.url)
+if (!allowedHosts.has(parsed.hostname)) {
+  throw new Error('SSRF: URL not allowed')
+}
+```
+
+### Open Redirect
+```typescript
+// ❌ 금지
+res.redirect(req.query.returnUrl)  // 외부 사이트로 리다이렉트 가능
+
+// ✅ 상대 경로만 허용
+const returnUrl = req.query.returnUrl as string
+const safeUrl = returnUrl?.startsWith('/') ? returnUrl : '/dashboard'
+res.redirect(safeUrl)
+```
+
+### Mass Assignment
+```typescript
+// ❌ 금지 (isAdmin 같은 필드 덮어쓰기 가능)
+await db.user.update({ where: { id }, data: req.body })
+
+// ✅ 허용 필드만 추출
+const { name, email, bio } = req.body  // isAdmin, role 등 제외
+await db.user.update({ where: { id }, data: { name, email, bio } })
+```
+
+---
+
 ## 빠른 체크리스트 (코드 작성 전)
 
 ```
@@ -403,4 +606,10 @@ npm info [패키지명]  # 다운로드 수, 저자 확인
 □ CORS에 와일드카드 * 없나?
 □ 보호 라우트에 인증 미들웨어 있나?
 □ 리소스 소유권 확인 있나?
+□ 파일 경로에 path.basename() / realpath 검증 있나? (Path Traversal)
+□ 외부 URL 요청에 allowedHosts 화이트리스트 있나? (SSRF)
+□ 리다이렉트 URL이 상대 경로만 허용하나? (Open Redirect)
+□ DB update/patch에 허용 필드만 명시적으로 추출했나? (Mass Assignment)
+□ [Rust] unwrap()/unsafe 최소화, cargo audit 통과했나?
+□ [Go] _ = err 패턴 없음, context 전파 확인했나?
 ```

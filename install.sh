@@ -17,10 +17,25 @@ success() { echo -e "${GREEN}[✅]${NC} $*"; }
 warn()    { echo -e "${YELLOW}[⚠️]${NC} $*"; }
 error()   { echo -e "${RED}[❌]${NC} $*"; exit 1; }
 
+# Optional: --lang=ko,en,jp,zh,es,fr,de,it (default: all)
+LANG_FILTER=""
+for arg in "$@"; do
+  case "$arg" in
+    --lang=*) LANG_FILTER="${arg#--lang=}" ;;
+  esac
+done
+
+# 언어 필터 함수 (비어있으면 전체 설치)
+should_install_lang() {
+  [ -z "$LANG_FILTER" ] && return 0
+  echo ",$LANG_FILTER," | grep -qi ",${1}," && return 0
+  return 1
+}
+
 echo ""
 echo "  ╔══════════════════════════════════════╗"
 echo "  ║     AuraKit Installer v1.0           ║"
-echo "  ║  8-Lang · 5-Layer Security · ~55% 절감  ║"
+echo "  ║  8-Lang · 6-Layer Security · ~55% 절감  ║"
 echo "  ╚══════════════════════════════════════╝"
 echo ""
 
@@ -43,39 +58,53 @@ cp -r "$AURAKIT_REPO/skills/aura-compact" "$SKILLS_DIR/" 2>/dev/null || true
 cp -r "$AURAKIT_REPO/skills/aura-guard"   "$SKILLS_DIR/" 2>/dev/null || true
 
 # 한국어 (KR) — 7개
-for skill in 아우라 아우라빌드 아우라수정 아우라정리 아우라배포 아우라리뷰 아우라컴팩트; do
-  cp -r "$AURAKIT_REPO/skills/ko/$skill" "$SKILLS_DIR/" 2>/dev/null || true
-done
+if should_install_lang "kr"; then
+  for skill in 아우라 아우라빌드 아우라수정 아우라정리 아우라배포 아우라리뷰 아우라컴팩트; do
+    cp -r "$AURAKIT_REPO/skills/$skill" "$SKILLS_DIR/" 2>/dev/null || true
+  done
+fi
 
 # 日本語 (JP) — 7개
-for skill in オーラ オーラビルド オーラ修正 オーラ整理 オーラデプロイ オーラレビュー オーラコンパクト; do
-  cp -r "$AURAKIT_REPO/skills/ja/$skill" "$SKILLS_DIR/" 2>/dev/null || true
-done
+if should_install_lang "jp"; then
+  for skill in オーラ オーラビルド "オーラ修正" "オーラ整理" オーラデプロイ オーラレビュー オーラコンパクト; do
+    cp -r "$AURAKIT_REPO/skills/$skill" "$SKILLS_DIR/" 2>/dev/null || true
+  done
+fi
 
 # 中文 (ZH) — 7개
-for skill in 奥拉 奥拉构建 奥拉修复 奥拉清理 奥拉部署 奥拉审查 奥拉压缩; do
-  cp -r "$AURAKIT_REPO/skills/zh/$skill" "$SKILLS_DIR/" 2>/dev/null || true
-done
+if should_install_lang "zh"; then
+  for skill in 奥拉 奥拉构建 奥拉修复 奥拉清理 奥拉部署 奥拉审查 奥拉压缩; do
+    cp -r "$AURAKIT_REPO/skills/$skill" "$SKILLS_DIR/" 2>/dev/null || true
+  done
+fi
 
 # Español (ES) — 7개
-for skill in aura-es aura-construir aura-arreglar aura-limpiar aura-desplegar aura-revisar aura-compactar; do
-  cp -r "$AURAKIT_REPO/skills/es/$skill" "$SKILLS_DIR/" 2>/dev/null || true
-done
+if should_install_lang "es"; then
+  for skill in aura-es aura-construir aura-arreglar aura-limpiar aura-desplegar aura-revisar aura-compactar; do
+    cp -r "$AURAKIT_REPO/skills/$skill" "$SKILLS_DIR/" 2>/dev/null || true
+  done
+fi
 
 # Français (FR) — 7개
-for skill in aura-fr aura-construire aura-corriger aura-nettoyer aura-deployer aura-reviser aura-compresser; do
-  cp -r "$AURAKIT_REPO/skills/fr/$skill" "$SKILLS_DIR/" 2>/dev/null || true
-done
+if should_install_lang "fr"; then
+  for skill in aura-fr aura-construire aura-corriger aura-nettoyer aura-deployer aura-reviser aura-compresser; do
+    cp -r "$AURAKIT_REPO/skills/$skill" "$SKILLS_DIR/" 2>/dev/null || true
+  done
+fi
 
 # Deutsch (DE) — 7개
-for skill in aura-de aura-bauen aura-beheben aura-aufraeumen aura-deployen aura-pruefen aura-komprimieren; do
-  cp -r "$AURAKIT_REPO/skills/de/$skill" "$SKILLS_DIR/" 2>/dev/null || true
-done
+if should_install_lang "de"; then
+  for skill in aura-de aura-bauen aura-beheben aura-aufraeumen aura-deployen aura-pruefen aura-komprimieren; do
+    cp -r "$AURAKIT_REPO/skills/$skill" "$SKILLS_DIR/" 2>/dev/null || true
+  done
+fi
 
 # Italiano (IT) — 7개
-for skill in aura-it aura-costruire aura-correggere aura-pulire aura-distribuire aura-rivedere aura-compattare; do
-  cp -r "$AURAKIT_REPO/skills/it/$skill" "$SKILLS_DIR/" 2>/dev/null || true
-done
+if should_install_lang "it"; then
+  for skill in aura-it aura-costruire aura-correggere aura-pulire aura-distribuire aura-rivedere aura-compattare; do
+    cp -r "$AURAKIT_REPO/skills/$skill" "$SKILLS_DIR/" 2>/dev/null || true
+  done
+fi
 
 success "스킬 설치 완료 (8개 언어, 56개 명령어)"
 
@@ -83,11 +112,24 @@ success "스킬 설치 완료 (8개 언어, 56개 명령어)"
 info "Hooks 설정 중..."
 HOOKS_SRC="$AURAKIT_REPO/hooks"
 HOOKS_DEST="$HOME/.claude/skills/aurakit/hooks"
-mkdir -p "$HOOKS_DEST"
+mkdir -p "$HOOKS_DEST/lib"
 cp "$HOOKS_SRC"/*.sh  "$HOOKS_DEST/" 2>/dev/null || true
 cp "$HOOKS_SRC"/*.py  "$HOOKS_DEST/" 2>/dev/null || true
+cp "$HOOKS_SRC"/*.js  "$HOOKS_DEST/" 2>/dev/null || true
+cp "$HOOKS_SRC/lib"/*.js "$HOOKS_DEST/lib/" 2>/dev/null || true
 chmod +x "$HOOKS_DEST"/*.sh 2>/dev/null || true
-success "Hooks 설치 완료"
+success "Hooks 설치 완료 (sh/py/js + lib/)"
+
+# ── 3.5. 글로벌 규칙 설치 (~/.claude/rules/) ──────────────────────────
+info "글로벌 보안 규칙 설치 중 (~/.claude/rules/)..."
+RULES_DIR="$HOME/.claude/rules"
+mkdir -p "$RULES_DIR"
+if [ -f "$AURAKIT_REPO/rules/aurakit-security.md" ]; then
+  cp "$AURAKIT_REPO/rules/aurakit-security.md" "$RULES_DIR/"
+  success "~/.claude/rules/aurakit-security.md 설치 완료 (항상-활성 보안 규칙)"
+else
+  warn "rules/aurakit-security.md 없음 — 건너뜀 (기능 영향 없음)"
+fi
 
 # ── 4. settings.json 업데이트 ────────────────────────────────
 info "settings.json 설정 중..."
@@ -115,14 +157,24 @@ if command -v jq &>/dev/null; then
     --arg sc "$HOOKS_PATH_WIN\\security-scan.sh" \
     --arg pre "$HOOKS_PATH_WIN\\pre-compact-snapshot.sh" \
     --arg post "$HOOKS_PATH_WIN\\post-compact-restore.sh" \
+    --arg ia "node $HOOKS_PATH_WIN\\instinct-auto-save.js" \
+    --arg ptf "node $HOOKS_PATH_WIN\\post-tool-failure.js" \
+    --arg stp "node $HOOKS_PATH_WIN\\session-stop.js" \
+    --arg af "node $HOOKS_PATH_WIN\\auto-format.js" \
+    --arg gc "node $HOOKS_PATH_WIN\\governance-capture.js" \
     '.hooks = {
       "SessionStart": [{"type": "command", "command": $ss}],
       "UserPromptSubmit": [{"type": "command", "command": $kc}],
       "PostToolUse": [
         {"type": "command", "command": $bv},
-        {"type": "command", "command": $bc}
+        {"type": "command", "command": $bc},
+        {"type": "command", "command": $ia},
+        {"type": "command", "command": $af},
+        {"type": "command", "command": $gc}
       ],
+      "PostToolUseFailure": [{"type": "command", "command": $ptf}],
       "PreToolUse": [{"type": "command", "command": $sc}],
+      "Stop": [{"type": "command", "command": $stp}],
       "PreCompact": [{"type": "command", "command": $pre}],
       "PostCompact": [{"type": "command", "command": $post}]
     }')
@@ -133,8 +185,18 @@ else
   warn "다음 hooks를 settings.json에 추가하세요:"
   echo ""
   echo '  "hooks": {'
-  echo '    "SessionStart": [{"type":"command","command":"~/.claude/skills/aurakit/hooks/pre-session.sh"}],'
-  echo '    "UserPromptSubmit": [{"type":"command","command":"~/.claude/skills/aurakit/hooks/korean-command.sh"}]'
+  echo '    "SessionStart":        [{"type":"command","command":"~/.claude/skills/aurakit/hooks/pre-session.sh"}],'
+  echo '    "UserPromptSubmit":    [{"type":"command","command":"~/.claude/skills/aurakit/hooks/korean-command.sh"}],'
+  echo '    "PreToolUse":         [{"type":"command","command":"~/.claude/skills/aurakit/hooks/security-scan.sh"}],'
+  echo '    "PostToolUse":        ['
+  echo '      {"type":"command","command":"~/.claude/skills/aurakit/hooks/build-verify.sh"},'
+  echo '      {"type":"command","command":"node ~/.claude/skills/aurakit/hooks/auto-format.js"},'
+  echo '      {"type":"command","command":"node ~/.claude/skills/aurakit/hooks/governance-capture.js"}'
+  echo '    ],'
+  echo '    "PostToolUseFailure": [{"type":"command","command":"node ~/.claude/skills/aurakit/hooks/post-tool-failure.js"}],'
+  echo '    "Stop":               [{"type":"command","command":"node ~/.claude/skills/aurakit/hooks/session-stop.js"}],'
+  echo '    "PreCompact":         [{"type":"command","command":"~/.claude/skills/aurakit/hooks/pre-compact-snapshot.sh"}],'
+  echo '    "PostCompact":        [{"type":"command","command":"~/.claude/skills/aurakit/hooks/post-compact-restore.sh"}]'
   echo '  }'
 fi
 

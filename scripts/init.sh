@@ -120,11 +120,11 @@ if [ "${MANUAL_HOOKS}" = false ]; then
 {
   "SessionStart": [
     {
-      "matcher": "startup|resume",
+      "matcher": "",
       "hooks": [
         {
           "type": "command",
-          "command": "\"$HOME/.claude/skills/aurakit/hooks/pre-session.sh\""
+          "command": "node \"$HOME/.claude/skills/aurakit/hooks/pre-session.js\""
         }
       ]
     }
@@ -135,11 +135,29 @@ if [ "${MANUAL_HOOKS}" = false ]; then
       "hooks": [
         {
           "type": "command",
-          "command": "\"$HOME/.claude/skills/aurakit/hooks/security-scan.sh\""
+          "command": "node \"$HOME/.claude/skills/aurakit/hooks/security-scan.js\""
         },
         {
           "type": "command",
-          "command": "\"$HOME/.claude/skills/aurakit/hooks/migration-guard.sh\""
+          "command": "node \"$HOME/.claude/skills/aurakit/hooks/migration-guard.js\""
+        }
+      ]
+    },
+    {
+      "matcher": "Bash",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "node \"$HOME/.claude/skills/aurakit/hooks/bash-guard.js\""
+        }
+      ]
+    },
+    {
+      "matcher": "Agent",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "node \"$HOME/.claude/skills/aurakit/hooks/subagent-start.js\""
         }
       ]
     }
@@ -150,11 +168,19 @@ if [ "${MANUAL_HOOKS}" = false ]; then
       "hooks": [
         {
           "type": "command",
-          "command": "\"$HOME/.claude/skills/aurakit/hooks/build-verify.sh\""
+          "command": "node \"$HOME/.claude/skills/aurakit/hooks/build-verify.js\""
         },
         {
           "type": "command",
-          "command": "\"$HOME/.claude/skills/aurakit/hooks/bloat-check.sh\""
+          "command": "node \"$HOME/.claude/skills/aurakit/hooks/bloat-check.js\""
+        },
+        {
+          "type": "command",
+          "command": "node \"$HOME/.claude/skills/aurakit/hooks/build-progress.js\""
+        },
+        {
+          "type": "command",
+          "command": "node \"$HOME/.claude/skills/aurakit/hooks/task-completed.js\""
         }
       ]
     },
@@ -163,29 +189,46 @@ if [ "${MANUAL_HOOKS}" = false ]; then
       "hooks": [
         {
           "type": "command",
-          "command": "\"$HOME/.claude/skills/aurakit/hooks/output-filter.sh\""
+          "command": "node \"$HOME/.claude/skills/aurakit/hooks/output-filter.js\""
+        },
+        {
+          "type": "command",
+          "command": "node \"$HOME/.claude/skills/aurakit/hooks/teammate-idle.js\""
+        },
+        {
+          "type": "command",
+          "command": "node \"$HOME/.claude/skills/aurakit/hooks/subagent-stop.js\""
+        }
+      ]
+    },
+    {
+      "matcher": "WebFetch",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "node \"$HOME/.claude/skills/aurakit/hooks/injection-guard.js\""
         }
       ]
     }
   ],
   "PreCompact": [
     {
-      "matcher": "auto",
+      "matcher": "",
       "hooks": [
         {
           "type": "command",
-          "command": "\"$HOME/.claude/skills/aurakit/hooks/pre-compact-snapshot.sh\""
+          "command": "node \"$HOME/.claude/skills/aurakit/hooks/pre-compact-snapshot.js\""
         }
       ]
     }
   ],
   "PostCompact": [
     {
-      "matcher": "auto",
+      "matcher": "",
       "hooks": [
         {
           "type": "command",
-          "command": "\"$HOME/.claude/skills/aurakit/hooks/post-compact-restore.sh\""
+          "command": "node \"$HOME/.claude/skills/aurakit/hooks/post-compact-restore.js\""
         }
       ]
     }
@@ -250,14 +293,22 @@ REQUIRED_FILES=(
   "skills/aura-guard/SKILL.md"
   "agents/scout.md"
   "agents/worker.md"
-  "hooks/pre-session.sh"
-  "hooks/security-scan.sh"
-  "hooks/build-verify.sh"
-  "hooks/bloat-check.sh"
-  "hooks/migration-guard.sh"
-  "hooks/output-filter.sh"
-  "hooks/pre-compact-snapshot.sh"
-  "hooks/post-compact-restore.sh"
+  "hooks/lib/common.js"
+  "hooks/lib/snapshot.js"
+  "hooks/lib/python.js"
+  "hooks/pre-session.js"
+  "hooks/security-scan.js"
+  "hooks/bash-guard.js"
+  "hooks/build-verify.js"
+  "hooks/bloat-check.js"
+  "hooks/migration-guard.js"
+  "hooks/output-filter.js"
+  "hooks/pre-compact-snapshot.js"
+  "hooks/post-compact-restore.js"
+  "hooks/token-tracker.js"
+  "hooks/token-tracker.py"
+  "hooks/token-stats-inject.js"
+  "hooks/token-stats-inject.py"
 )
 
 for file in "${REQUIRED_FILES[@]}"; do

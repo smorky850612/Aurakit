@@ -33,7 +33,7 @@ npm test --ci 2>&1 | tail -5
 `.aura/docs/design-[기능명].md` — 설계 문서 (있으면)
 `.aura/token-stats.json` — 토큰 사용량 (있으면)
 
-### Step 2 — Gap Check (haiku, context:fork)
+### Step 2 — Gap Check (haiku/sonnet(MAX), 격리 서브에이전트)
 
 ```
 설계 문서 vs 실제 구현 비교
@@ -61,17 +61,6 @@ npm test --ci 2>&1 | tail -5
 | 변경 파일 | [N]개 |
 | 추가 줄 수 | +[N] |
 | 삭제 줄 수 | -[N] |
-
----
-
-## 가치 분석 (4-Perspective Value Table) [v4.0 신규]
-
-| 관점 | 문제 | 솔루션 | 기능/UX 효과 | 핵심 가치 |
-|------|------|--------|-------------|---------|
-| **사용자** | [사용자가 겪던 불편] | [이 기능이 해결하는 방식] | [UX 개선 효과] | [사용자가 얻는 핵심 가치] |
-| **비즈니스** | [비즈니스 문제] | [비즈니스 솔루션] | [수익/전환/유지율 효과] | [비즈니스 핵심 가치] |
-| **기술** | [기술 부채/한계] | [기술 솔루션] | [성능/유지보수 효과] | [기술 핵심 가치] |
-| **운영** | [운영 부담] | [운영 솔루션] | [모니터링/배포 효과] | [운영 핵심 가치] |
 
 ---
 
@@ -125,7 +114,7 @@ npm test --ci 2>&1 | tail -5
 - [ ] `/aura deploy:` — 배포 진행
 ```
 
-### Step 4 — 파일 저장 + memory 기록 + 문서 인덱스 업데이트
+### Step 4 — 파일 저장 + memory 기록
 
 ```bash
 # 보고서 저장
@@ -135,10 +124,6 @@ npm test --ci 2>&1 | tail -5
 .aura/memory.md에 추가:
 ## [날짜] [기능명] 완료
 Match Rate: [N]% | 주요 결정: [아키텍처 결정사항]
-
-# Doc Lifecycle 인덱스 업데이트
-# .aura/docs/index.md → 해당 기능 Report 완료 + Match Rate 기록
-# (status-dashboard.md의 인덱스 형식 참조)
 ```
 
 ### Step 5 — 완료 출력
@@ -161,8 +146,8 @@ Match Rate: [N]% | 주요 결정: [아키텍처 결정사항]
 
 | 에이전트 | 모델 | 역할 |
 |---------|------|------|
-| Gap Worker | haiku | Match Rate 계산 |
-| Reporter | sonnet | 보고서 종합 작성 |
+| Gap Worker | haiku/sonnet(MAX) | Match Rate 계산 |
+| Reporter | sonnet/opus(MAX) | 보고서 종합 작성 |
 
 ---
 
@@ -176,4 +161,4 @@ Match Rate: [N]% | 주요 결정: [아키텍처 결정사항]
 
 ---
 
-*AuraKit REPORT — Gap Check + 4-Perspective Value Table + 품질 지표 + 학습 사항 종합*
+*AuraKit REPORT — Gap Check + 품질 지표 + 학습 사항 종합*

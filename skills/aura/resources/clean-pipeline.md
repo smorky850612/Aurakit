@@ -33,7 +33,7 @@ find src -name "*.ts" -o -name "*.tsx" -o -name "*.py" | \
 ## Step 2: Scout 에이전트로 중복 코드 탐색
 
 ```
-Scout 에이전트 실행 (context:fork):
+Scout 에이전트 실행 (model: haiku/sonnet(MAX)):
   탐색 대상:
     - 동일/유사 함수 패턴
     - 반복되는 코드 블록 (3회 이상)
@@ -148,7 +148,7 @@ API 라우트 분할 (Next.js):
   → users/users.schema.ts (zod 스키마)
 
 유틸리티 분할:
-  utils.ts (200줄 이상)
+  utils.ts (250줄 이상)
   → date.utils.ts
   → string.utils.ts
   → array.utils.ts
@@ -249,8 +249,8 @@ UserProfile.utils.ts  ❌
 
 ```
 V1: tsc --noEmit (분할 후 import 오류 없는지)
-V2: Worker → 코드 리뷰 (context:fork)
-V3: Worker → 전체 테스트 실행 (context:fork) — 기능 변화 없는지 확인
+V2: Worker → 코드 리뷰 (격리 서브에이전트)
+V3: Worker → 전체 테스트 실행 (격리 서브에이전트) — 기능 변화 없는지 확인
 ```
 
 ---

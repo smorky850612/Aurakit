@@ -8,8 +8,8 @@
 
 - **객관적 측정**: 점수 기반 리포트 (A~F) [필수]
 - **실행 가능한 피드백**: 파일:라인 + 수정 제안 [필수]
-- **Tiered Model**: Worker-A/B → sonnet, Worker-C → haiku (비용 ~40% 절감) [필수]
-- **병렬 실행**: Worker 에이전트 3개 동시 실행 (context:fork) [필수]
+- **Tiered Model**: Worker-A/B → sonnet/opus(MAX), Worker-C/D → haiku/sonnet(MAX) (비용 ~40% 절감, ECO 기준) [필수]
+- **병렬 실행**: Worker 에이전트 4개 동시 실행 (격리 서브에이전트) [필수]
 
 ---
 
@@ -31,14 +31,15 @@ git diff --name-only main...feature/my-branch
 
 ---
 
-## Step 2~4: Worker 에이전트 3개 병렬 실행 [Tiered Model, 필수]
+## Step 2: Worker 에이전트 4개 병렬 실행 [Tiered Model, 필수]
 
 ```
-Worker-A: 코드 리뷰  (model: sonnet, context:fork)
-Worker-B: 보안 L3 스캔 (model: sonnet, context:fork)
-Worker-C: 테스트 실행  (model: haiku,  context:fork)
+Worker-A: 코드 리뷰  (model: sonnet/opus(MAX))
+Worker-B: 보안 L3 스캔 (model: sonnet/opus(MAX))
+Worker-C: 테스트 실행  (model: haiku/sonnet(MAX))
+Worker-D: Gap 분석    (model: haiku/sonnet(MAX))
 
-→ 3개 동시 실행 [필수], 결과 취합
+→ 4개 동시 실행 [필수], 결과 취합
 → 성공 시 "Pass" 한 줄 반환 (Fail-Only Output)
 ```
 
@@ -51,7 +52,7 @@ Worker-C: 테스트 실행  (model: haiku,  context:fork)
   □ 타입 안정성 — any 타입, 타입 캐스팅 남용
   □ 네이밍 — 의미있는 이름, 일관성
   □ 중복 코드 — DRY 원칙
-  □ 컴포넌트 크기 — 200줄 이내
+  □ 컴포넌트 크기 — 250줄 이내
   □ 단일 책임 — 함수/컴포넌트가 한 가지 일만
   □ loading/error 상태 — UI 처리
   □ 접근성 — alt, label, ARIA
@@ -219,7 +220,7 @@ find src -name "*.ts" -o -name "*.tsx" -o -name "*.py" | \
 
 | 등급 | 보안 | 품질 | 테스트 |
 |------|------|------|--------|
-| A | 이슈 없음 | 이슈 없음 | 100% + 80%+ 커버리지 |
+| A | 이슈 없음 | 이슈 없음 | 100% Pass + 80%+ 커버리지 |
 | B | LOW 이슈만 | 1~2개 | 98%+ Pass |
 | C | MEDIUM 이슈 | 3~5개 | 90%+ Pass |
 | D | HIGH 이슈 | 6~10개 | 80%+ Pass |
@@ -232,7 +233,7 @@ find src -name "*.ts" -o -name "*.tsx" -o -name "*.py" | \
 리뷰 완료 후 자동 Gap Check 실행:
 
 ```
-Gap Worker (model: haiku, context:fork):
+Gap Worker (model: haiku/sonnet(MAX)):
   → .aura/design-system.md vs 현재 구현 비교
   → Match Rate 계산
 

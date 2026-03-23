@@ -51,7 +51,7 @@ C의 경우:
 ## Step 2: Scout 에이전트로 파일 탐색
 
 ```
-Scout 에이전트 실행 (context:fork):
+Scout 에이전트 실행 (model: haiku/sonnet(MAX)):
   목적: 에러 관련 파일 탐색
   탐색 대상:
     - 에러 스택에서 언급된 파일
@@ -173,8 +173,8 @@ BUILD 모드 §4와 동일:
 
 ```
 V1: build-verify.js (tsc --noEmit / py_compile)
-V2: Worker → 코드 리뷰 + 보안 스캔 (context:fork)
-V3: Worker → 테스트 실행 (context:fork)
+V2: Worker → 코드 리뷰 + 보안 스캔 (격리 서브에이전트)
+V3: Worker → 테스트 실행 (격리 서브에이전트)
 ```
 
 수정 후 원래 버그가 재현되지 않는지 특별 확인:

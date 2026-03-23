@@ -96,9 +96,9 @@ const SECRET_PATTERNS = [
   /github_pat_[a-zA-Z0-9_]{82}/,
   /xoxb-[0-9]+-[a-zA-Z0-9]+/,        // Slack Bot Token
   /AKIA[0-9A-Z]{16}/,                  // AWS Access Key
-  /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,  // UUID-like secret
+  /(?:key|secret|token|password)\s*[:=]\s*['"]?[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i,  // UUID-format secret (context-bound)
   /AIza[0-9A-Za-z-_]{35}/,            // Google API Key
-  /eyJ[a-zA-Z0-9+/]+=*\.[a-zA-Z0-9+/]+=*\.[a-zA-Z0-9+/]+=*/,  // JWT
+  /eyJ[a-zA-Z0-9+/\-_]+=*\.[a-zA-Z0-9+/\-_]+=*\.[a-zA-Z0-9+/\-_]+=*/,  // JWT (base64url)
   /-----BEGIN (?:RSA |EC )?PRIVATE KEY-----/,
   /SG\.[a-zA-Z0-9]{22}\.[a-zA-Z0-9]{43}/, // SendGrid
 ];

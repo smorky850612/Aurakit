@@ -241,7 +241,7 @@ class ErrorBoundary extends React.Component<
 ### 2-9. 컴포넌트 분할 기준
 
 ```
-파일이 200줄 초과 시:
+파일이 250줄 초과 시:
   → 커스텀 훅 분리: use[Name].ts
   → 서브 컴포넌트 분리: [Name]Item.tsx, [Name]List.tsx
   → 유틸리티 분리: [name].utils.ts
@@ -389,17 +389,17 @@ python -m py_compile [file_path]
 ```
 에러 시: 빌드 중단, 에러 출력 후 FIX 모드 제안
 
-### V2 — 코드리뷰 + 보안 L3 (Worker 에이전트, context:fork)
+### V2 — 코드리뷰 + 보안 L3 (격리 서브에이전트)
 ```
-Worker 에이전트 실행 (context:fork):
+격리 서브에이전트 실행:
   입력: 변경된 파일 목록
   체크: 에러 핸들링, 입력 검증, SQL injection, XSS, 하드코딩 시크릿
   출력: "Pass" 또는 "VULN-001: [설명] 파일:라인"
 ```
 
-### V3 — 테스트 실행 (Worker 에이전트, context:fork)
+### V3 — 테스트 실행 (격리 서브에이전트)
 ```
-Worker 에이전트 실행 (context:fork):
+격리 서브에이전트 실행:
   입력: 테스트 파일 목록
   실행: npm test / pytest
   출력: "N/N Pass" 또는 "N Failed: [테스트명]"
@@ -407,9 +407,9 @@ Worker 에이전트 실행 (context:fork):
 
 V2 + V3 병렬 실행 (독립적이므로):
 ```
-Agent(V2, context:fork) ─┐
-                           ├→ 결과 취합 → 이슈 있으면 수정
-Agent(V3, context:fork) ─┘
+Agent(V2) ─┐
+             ├→ 결과 취합 → 이슈 있으면 수정
+Agent(V3) ─┘
 ```
 
 ---

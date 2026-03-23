@@ -149,7 +149,7 @@ AuraKit에서 에이전트를 호출할 때 프롬프트에 역할을 명시:
   L2: disallowed-tools frontmatter (Skills 2.0)
   L3: bash-guard.js 명령 필터 (런타임)
   L4: Git Worktree 파일시스템 격리
-  L5: context:fork (부모 컨텍스트 상속 차단)
+  L5: security-scan.js pre-commit 자동 스캔
 ```
 
 **ECO 티어**: L1 + L3 + L5
@@ -165,6 +165,6 @@ AGENT SECURITY 규칙:
   Scout/Reviewer/Security 에이전트: Write/Edit 도구 금지
   에이전트 프롬프트에 API 키/시크릿 포함 금지
   에이전트 간 데이터: .aura/agent-memory/ 경유 (직접 전달 금지)
-  모든 에이전트: context:fork 필수 (부모 컨텍스트 격리)
+  모든 에이전트: 격리 서브프로세스로 실행 (메인 컨텍스트 토큰 보호)
   CTO 에이전트만 하위 에이전트 호출 권한 보유
 ```
