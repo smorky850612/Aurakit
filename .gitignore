@@ -40,8 +40,6 @@ venv/
 .venv/
 ENV/
 *.egg-info/
-dist/
-build/
 *.egg
 .pytest_cache/
 .coverage
@@ -79,4 +77,6 @@ logs/
 *.tmp
 *.temp
 .cache/
+
+# Local dev files (not for GitHub)
 index.html
