@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 300" width="900" height="300">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="900" y2="300" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#07070f"/>
+      <stop offset="100%" stop-color="#0d0820"/>
+    </linearGradient>
+    <radialGradient id="glow1" cx="450" cy="150" r="280" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#a855f7" stop-opacity="0.14"/>
+      <stop offset="60%" stop-color="#7c3aed" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#a855f7" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="termGrad" x1="220" y1="230" x2="220" y2="280" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1e1b30"/>
+      <stop offset="100%" stop-color="#16132a"/>
+    </linearGradient>
+    <linearGradient id="topLine" x1="310" y1="0" x2="590" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#a855f7" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#a855f7" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#a855f7" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="divLine" x1="0" y1="0" x2="0" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#a855f7" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#a855f7" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#a855f7" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="300" fill="url(#bg)" rx="0"/>
+  <!-- Glow -->
+  <rect width="900" height="300" fill="url(#glow1)"/>
+  <!-- Top accent line -->
+  <rect x="310" y="0" width="280" height="1.5" fill="url(#topLine)"/>
+
+  <!-- Subtle grid -->
+  <line x1="0" y1="75" x2="900" y2="75" stroke="#ffffff" stroke-opacity="0.025" stroke-width="1"/>
+  <line x1="0" y1="150" x2="900" y2="150" stroke="#ffffff" stroke-opacity="0.025" stroke-width="1"/>
+  <line x1="0" y1="225" x2="900" y2="225" stroke="#ffffff" stroke-opacity="0.025" stroke-width="1"/>
+  <line x1="300" y1="0" x2="300" y2="300" stroke="#ffffff" stroke-opacity="0.025" stroke-width="1"/>
+  <line x1="600" y1="0" x2="600" y2="300" stroke="#ffffff" stroke-opacity="0.025" stroke-width="1"/>
+
+  <!-- Decorative dots -->
+  <circle cx="55"  cy="38"  r="2.5" fill="#a855f7" opacity="0.45"/>
+  <circle cx="845" cy="38"  r="2"   fill="#a855f7" opacity="0.35"/>
+  <circle cx="55"  cy="262" r="2"   fill="#a855f7" opacity="0.35"/>
+  <circle cx="845" cy="262" r="2.5" fill="#a855f7" opacity="0.45"/>
+  <circle cx="450" cy="14"  r="1.5" fill="#c084fc" opacity="0.55"/>
+  <circle cx="148" cy="148" r="1.5" fill="#c084fc" opacity="0.25"/>
+  <circle cx="752" cy="148" r="1.5" fill="#c084fc" opacity="0.25"/>
+  <circle cx="225" cy="56"  r="1.5" fill="#a855f7" opacity="0.3"/>
+  <circle cx="675" cy="56"  r="1.5" fill="#a855f7" opacity="0.3"/>
+  <circle cx="80"  cy="148" r="1"   fill="#7c3aed" opacity="0.4"/>
+  <circle cx="820" cy="148" r="1"   fill="#7c3aed" opacity="0.4"/>
+
+  <!-- Version badge -->
+  <rect x="370" y="38" width="160" height="22" rx="11" fill="#a855f7" fill-opacity="0.15" stroke="#a855f7" stroke-opacity="0.4" stroke-width="1"/>
+  <text x="450" y="53" text-anchor="middle" fill="#c084fc"
+        font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,'Courier New',monospace"
+        font-size="10" font-weight="700" letter-spacing="1.8">CLAUDE CODE SKILL</text>
+
+  <!-- Main title -->
+  <text x="450" y="136" text-anchor="middle" fill="#ffffff"
+        font-family="ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif"
+        font-size="74" font-weight="900" letter-spacing="-2.5">AuraKit</text>
+
+  <!-- v5.1 superscript -->
+  <text x="700" y="116" fill="#a855f7"
+        font-family="ui-monospace,SFMono-Regular,monospace"
+        font-size="15" font-weight="700" opacity="0.9">v5.1</text>
+
+  <!-- Subtitle -->
+  <text x="450" y="164" text-anchor="middle" fill="#8898b0"
+        font-family="ui-sans-serif,system-ui,-apple-system,sans-serif"
+        font-size="16" font-weight="400" letter-spacing="0.2">One command. Full stack. Zero compromise.</text>
+
+  <!-- Terminal window -->
+  <rect x="220" y="196" width="460" height="52" rx="8"
+        fill="url(#termGrad)" stroke="#a855f7" stroke-opacity="0.2" stroke-width="1"/>
+  <!-- Traffic lights -->
+  <circle cx="244" cy="222" r="5" fill="#ff5f57"/>
+  <circle cx="263" cy="222" r="5" fill="#febc2e"/>
+  <circle cx="282" cy="222" r="5" fill="#28c840"/>
+  <!-- Divider -->
+  <line x1="302" y1="200" x2="302" y2="244" stroke="url(#divLine)" stroke-width="1"/>
+  <!-- Prompt -->
+  <text x="320" y="227" fill="#a855f7"
+        font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace"
+        font-size="14" font-weight="700">$</text>
+  <text x="338" y="227" fill="#e2e8f0"
+        font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace"
+        font-size="14">/aura build: login + auth + JWT</text>
+  <!-- Cursor -->
+  <rect x="637" y="215" width="2" height="13" fill="#e2e8f0" opacity="0.75"/>
+
+  <!-- Stats strip -->
+  <text x="450" y="278" text-anchor="middle" fill="#4a5568"
+        font-family="ui-sans-serif,system-ui,-apple-system,sans-serif"
+        font-size="11.5" letter-spacing="0.3">35 Modes  ·  17 Agents  ·  8 Languages  ·  6-Layer Security  ·  ~55% Token Savings</text>
+</svg>
