@@ -80,3 +80,12 @@ logs/
 
 # Local dev files (not for GitHub)
 index.html
+
+# bkit runtime (not part of AuraKit)
+.bkit/
+
+# User-specific Claude settings
+.claude/settings.local.json
+
+# Obsolete docs
+docs/aurakit-v4.0-improvement-plan.md
