@@ -151,7 +151,7 @@ if command -v jq &>/dev/null; then
   CURRENT=$(cat "$SETTINGS_FILE")
   UPDATED=$(echo "$CURRENT" | jq \
     --arg ss "$HOOKS_PATH_WIN\\pre-session.sh" \
-    --arg kc "$HOOKS_PATH_WIN\\korean-command.sh" \
+    --arg kc "node $HOOKS_PATH_WIN\\korean-command.js" \
     --arg bv "$HOOKS_PATH_WIN\\build-verify.sh" \
     --arg bc "$HOOKS_PATH_WIN\\bloat-check.sh" \
     --arg sc "$HOOKS_PATH_WIN\\security-scan.sh" \
@@ -162,6 +162,7 @@ if command -v jq &>/dev/null; then
     --arg stp "node $HOOKS_PATH_WIN\\session-stop.js" \
     --arg af "node $HOOKS_PATH_WIN\\auto-format.js" \
     --arg gc "node $HOOKS_PATH_WIN\\governance-capture.js" \
+    --arg bg "node $HOOKS_PATH_WIN\\bash-guard.js" \
     '.hooks = {
       "SessionStart": [{"type": "command", "command": $ss}],
       "UserPromptSubmit": [{"type": "command", "command": $kc}],
@@ -173,7 +174,10 @@ if command -v jq &>/dev/null; then
         {"type": "command", "command": $gc}
       ],
       "PostToolUseFailure": [{"type": "command", "command": $ptf}],
-      "PreToolUse": [{"type": "command", "command": $sc}],
+      "PreToolUse": [
+        {"type": "command", "command": $sc},
+        {"type": "command", "command": $bg}
+      ],
       "Stop": [{"type": "command", "command": $stp}],
       "PreCompact": [{"type": "command", "command": $pre}],
       "PostCompact": [{"type": "command", "command": $post}]
@@ -186,10 +190,15 @@ else
   echo ""
   echo '  "hooks": {'
   echo '    "SessionStart":        [{"type":"command","command":"~/.claude/skills/aurakit/hooks/pre-session.sh"}],'
-  echo '    "UserPromptSubmit":    [{"type":"command","command":"~/.claude/skills/aurakit/hooks/korean-command.sh"}],'
-  echo '    "PreToolUse":         [{"type":"command","command":"~/.claude/skills/aurakit/hooks/security-scan.sh"}],'
+  echo '    "UserPromptSubmit":    [{"type":"command","command":"node ~/.claude/skills/aurakit/hooks/korean-command.js"}],'
+  echo '    "PreToolUse":         ['
+  echo '      {"type":"command","command":"~/.claude/skills/aurakit/hooks/security-scan.sh"},'
+  echo '      {"type":"command","command":"node ~/.claude/skills/aurakit/hooks/bash-guard.js"}'
+  echo '    ],'
   echo '    "PostToolUse":        ['
   echo '      {"type":"command","command":"~/.claude/skills/aurakit/hooks/build-verify.sh"},'
+  echo '      {"type":"command","command":"node ~/.claude/skills/aurakit/hooks/bloat-check.js"},'
+  echo '      {"type":"command","command":"node ~/.claude/skills/aurakit/hooks/instinct-auto-save.js"},'
   echo '      {"type":"command","command":"node ~/.claude/skills/aurakit/hooks/auto-format.js"},'
   echo '      {"type":"command","command":"node ~/.claude/skills/aurakit/hooks/governance-capture.js"}'
   echo '    ],'

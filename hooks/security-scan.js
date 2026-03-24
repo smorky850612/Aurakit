@@ -22,6 +22,10 @@ const filePath = toolInput.file_path || '';
 
 if (!content) allow();
 
+// ── 문서 파일 여부 확인 (코드 패턴 검사에서 제외) ───────────────────────
+const DOC_EXTENSIONS = /\.(md|mdx|txt|rst|adoc|html|csv|json|yaml|yml)$/i;
+const isDocFile = DOC_EXTENSIONS.test(filePath);
+
 // ── .env 파일 쓰기 보안 검사 ──────────────────────────────────────────
 if (ENV_FILE_PATTERN.test(filePath)) {
   if (/^[A-Z_]+=.{8,}/m.test(content)) {
@@ -61,8 +65,8 @@ if (foundSecrets.length > 0) {
   );
 }
 
-// ── localStorage 토큰 저장 감지 ───────────────────────────────────────
-if (/localStorage\.setItem\s*\(\s*['"`][^'"]*['"`]\s*,\s*.*(?:[Tt]oken|[Jj][Ww][Tt])/.test(content)) {
+// ── localStorage 토큰 저장 감지 (문서 파일 제외) ──────────────────────
+if (!isDocFile && /localStorage\.setItem\s*\(\s*['"`][^'"]*['"`]\s*,\s*.*(?:[Tt]oken|[Jj][Ww][Tt])/.test(content)) {
   block(
     '🔴 AuraKit Security L4 차단\n' +
     `   파일: ${filePath}\n` +
@@ -71,9 +75,9 @@ if (/localStorage\.setItem\s*\(\s*['"`][^'"]*['"`]\s*,\s*.*(?:[Tt]oken|[Jj][Ww][
   );
 }
 
-// ── SQL Injection 패턴 (raw string concatenation) ────────────────────
+// ── SQL Injection 패턴 (raw string concatenation, 문서 파일 제외) ────
 const sqlRaw = /`(?:SELECT|INSERT|UPDATE|DELETE)[^`]*\$\{[^}]+\}[^`]*`/i;
-if (sqlRaw.test(content)) {
+if (!isDocFile && sqlRaw.test(content)) {
   process.stderr.write(
     '⚠️  AuraKit Security L3 경고\n' +
     `   파일: ${filePath}\n` +

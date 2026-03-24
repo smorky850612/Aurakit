@@ -129,7 +129,7 @@ function savePattern(index, toolInput, toolName) {
     const dirs = [INSTINCT_DIR, PATTERNS_DIR, ANTI_DIR]
     dirs.forEach(d => { if (!fs.existsSync(d)) fs.mkdirSync(d, { recursive: true }) })
 
-    const id = `pattern-${String(index.patterns.length + 1).padStart('001', '0').padStart(3, '0')}`
+    const id = `pattern-${String(index.patterns.length + 1).padStart(3, '0')}`
     const patternFile = path.join(PATTERNS_DIR, `${id}.md`)
 
     // 패턴 파일 생성 (처음 100줄만 저장)

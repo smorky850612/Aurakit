@@ -4,23 +4,25 @@
 
 <br/>
 
-[![Version](https://img.shields.io/badge/version-5.1.0-a855f7?style=flat-square)](https://github.com/smorky850612/Aurakit/releases)
+[![Version](https://img.shields.io/badge/version-6.0.0-a855f7?style=flat-square)](https://github.com/smorky850612/Aurakit/releases)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-Skill-7c3aed?style=flat-square)](https://claude.ai/code)
 [![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=flat-square)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/smorky850612/Aurakit?style=flat-square&color=f59e0b)](https://github.com/smorky850612/Aurakit/stargazers)
 [![Install](https://img.shields.io/badge/install-bash_install.sh-3b82f6?style=flat-square)](install.sh)
+[![npm](https://img.shields.io/badge/npx-aurakit-cb3837?style=flat-square)](https://www.npmjs.com/package/aurakit)
 
 <br/>
 
 <p>
 <a href="#-what-is-aurakit">What is AuraKit</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#-quick-start">Quick Start</a>&nbsp;&nbsp;·&nbsp;&nbsp;
-<a href="#-35-intelligent-modes">35 Modes</a>&nbsp;&nbsp;·&nbsp;&nbsp;
+<a href="#-34-intelligent-modes">34 Modes</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#-quality-tiers">Tiers</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#-how-it-works">Pipeline</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#-6-layer-security">Security</a>&nbsp;&nbsp;·&nbsp;&nbsp;
-<a href="#-new-in-v51">New in v5.1</a>&nbsp;&nbsp;·&nbsp;&nbsp;
+<a href="#-new-in-v6">New in v6</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#-compatibility">Compatibility</a>&nbsp;&nbsp;·&nbsp;&nbsp;
+<a href="#-contributing">Contributing</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#-faq">FAQ</a>
 </p>
 
@@ -59,13 +61,15 @@ git clone https://github.com/smorky850612/Aurakit.git
 cd Aurakit
 ```
 
-**2 — Install**
+**2 — Install** (choose one)
 
 ```bash
-bash install.sh
+bash install.sh          # Full install (recommended)
+# or
+npx aurakit              # One-click npm install (coming soon)
 ```
 
-Copies skills, hooks, and agents into your Claude Code environment. Merges hooks into `settings.json` without overwriting your existing configuration.
+Copies skills, hooks (13 handlers), and agents into your Claude Code environment. Merges hooks into `settings.json` without overwriting your existing configuration.
 
 **3 — Use**
 
@@ -83,7 +87,7 @@ claude --dangerously-skip-permissions
 
 ---
 
-## 🎯 35 Intelligent Modes
+## 🎯 34 Intelligent Modes
 
 AuraKit detects your intent from natural language. Use a namespace prefix (`build:`, `fix:`) when the mode is ambiguous.
 
@@ -193,7 +197,60 @@ Hardcoded API keys / passwords        → blocked
 
 ---
 
-## ✨ New in v5.1
+## ✨ New in v6
+
+<details>
+<summary><strong>Sonnet Amplifier</strong> — Opus-level quality from Sonnet</summary>
+
+<br/>
+
+AuraKit v6 makes Sonnet produce Opus-quality code by forcing structured reasoning before every file:
+
+1. **I/O Contract** — Define types, return values, error cases
+2. **Existing Code Check** — Verify import/naming/style compatibility
+3. **Edge Case Discovery** — Side effects? Concurrency? Input boundaries? External failures? State dependencies?
+4. **SEC/Q Rule Selection** — Pick applicable security & quality rules
+5. **Then implement** — Only after all 4 steps
+
+This eliminates Sonnet's tendency to rush to code, producing measurably better output.
+
+</details>
+
+<details>
+<summary><strong>75% Token Reduction</strong> — Verified, not estimated</summary>
+
+<br/>
+
+v6 loads only what's needed: 1 language reviewer (not all 10), 1 framework pattern (not all 5), keywords instead of code examples. Measured: v5.1 BUILD loaded 82KB → v6 loads 20KB.
+
+| What Changed | v5.1 | v6 |
+|:-------------|:-----|:---|
+| SKILL.md | 20KB (408 lines) | 14KB (318 lines) |
+| BUILD total load | 82KB | 20KB |
+| Security rules | 6 (duplicated) | SEC-01~15 (OWASP complete) |
+| Hooks registered | 12 | 13 (bash-guard added) |
+
+</details>
+
+<details>
+<summary><strong>SEC-01~15 OWASP-Complete Security</strong> — 15 inline rules + 13 runtime hooks</summary>
+
+<br/>
+
+```
+SEC-01  SQL injection          SEC-09  HTTPS only
+SEC-02  Auth (httpOnly)        SEC-10  .gitignore enforcement
+SEC-03  Secret management      SEC-11  NoSQL/Command/XML/LDAP injection
+SEC-04  Input validation       SEC-12  Cryptography (AES-256+)
+SEC-05  eval/exec blocking     SEC-13  Dependency audit
+SEC-06  Error info leakage     SEC-14  Security logging
+SEC-07  CORS whitelist         SEC-15  SSRF prevention
+SEC-08  Secure random
+```
+
+Plus 13 runtime hooks enforce these at write-time — zero tokens, zero escape.
+
+</details>
 
 <details>
 <summary><strong>🧠 Instinct Learning Engine</strong> — AuraKit gets smarter with every session</summary>
@@ -276,7 +333,7 @@ Each iteration runs in isolation. Loop stops when the condition is met or max it
 </details>
 
 <details>
-<summary><strong>🪝 12 Hook Events</strong> — Full automation lifecycle</summary>
+<summary><strong>🪝 13 Hook Events</strong> — Full automation lifecycle</summary>
 
 <br/>
 
@@ -301,7 +358,7 @@ Each iteration runs in isolation. Loop stops when the condition is met or max it
 
 ## 💰 Token Optimization
 
-**Typical ECO build: ~4,600 tokens vs ~25,000 without AuraKit — ~55% savings**
+**v6 BUILD: ~6,700 tokens vs ~27,000 in v5.1 — 75% reduction (verified)**
 
 | Technique | How | Savings |
 |:----------|:----|:--------|
@@ -435,6 +492,26 @@ SQL Concat:       query\s*\+=|query\s*=.*\+.*req\.(body|params|query)
 
 </details>
 
+## 🤝 Contributing
+
+We welcome contributions! Add language reviewers, framework patterns, hooks, or security rules.
+
+```bash
+# Quick contribution workflow
+fork → branch (feat/reviewer-csharp) → create files → node -c hooks/*.js → PR
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for templates and quality requirements.
+
+| Contribution | Path | Requirements |
+|:-------------|:-----|:-------------|
+| Language Reviewer | `resources/reviewers/[lang].md` | 10 rules + 5 checklist items + V1 command |
+| Framework Pattern | `resources/frameworks/[fw].md` | File structure + 10 rules |
+| Hook | `hooks/[name].js` | Shebang + error handling + install.sh registration |
+| Security Rule | `SKILL.md SEC-16+` | OWASP/CWE mapping + no duplicates |
+
+---
+
 ## ❓ FAQ
 
 <details>
@@ -477,6 +554,8 @@ Manual prompting requires you to re-explain your project, conventions, and requi
 <div align="center">
 
 <br/>
+
+**AuraKit v6 — Sonnet Amplified. 34 modes. SEC-01~15. 13 hooks. 75% token reduction.**
 
 **Built for developers who want to ship fast without cutting corners.**
 

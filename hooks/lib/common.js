@@ -13,12 +13,12 @@ const { execSync } = require('child_process');
 function readInput() {
   try {
     const raw = fs.readFileSync('/dev/stdin', 'utf8');
-    return JSON.parse(raw);
+    return JSON.parse(raw) || {};
   } catch {
     try {
       // Windows fallback
       const raw = fs.readFileSync(0, 'utf8'); // fd 0 = stdin
-      return JSON.parse(raw);
+      return JSON.parse(raw) || {};
     } catch {
       return {};
     }
