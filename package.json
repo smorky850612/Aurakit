@@ -1,0 +1,48 @@
+{
+  "name": "@smorky85/aurakit",
+  "version": "6.0.0",
+  "description": "Sonnet Amplified fullstack engine for Claude Code. 34 modes, SEC-01~15, 13 hooks, 75% token reduction.",
+  "bin": {
+    "aurakit": "./bin/install.js"
+  },
+  "scripts": {
+    "postinstall": "node bin/install.js"
+  },
+  "keywords": [
+    "claude-code",
+    "skill",
+    "fullstack",
+    "security",
+    "sonnet-amplifier",
+    "agentic",
+    "hooks",
+    "claude",
+    "ai-coding",
+    "developer-tools"
+  ],
+  "files": [
+    "skills/",
+    "hooks/",
+    "agents/",
+    "rules/",
+    "templates/",
+    "install.sh",
+    "bin/",
+    "README.md",
+    "CONTRIBUTING.md",
+    ".claude-plugin/"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smorky850612/Aurakit.git"
+  },
+  "homepage": "https://github.com/smorky850612/Aurakit#readme",
+  "bugs": {
+    "url": "https://github.com/smorky850612/Aurakit/issues"
+  },
+  "author": "smorky85",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -9,7 +9,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=flat-square)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/smorky850612/Aurakit?style=flat-square&color=f59e0b)](https://github.com/smorky850612/Aurakit/stargazers)
 [![Install](https://img.shields.io/badge/install-bash_install.sh-3b82f6?style=flat-square)](install.sh)
-[![npm](https://img.shields.io/badge/npx-aurakit-cb3837?style=flat-square)](https://www.npmjs.com/package/aurakit)
+[![npm](https://img.shields.io/npm/v/%40smorky85/aurakit?style=flat-square&color=cb3837&label=npm)](https://www.npmjs.com/package/@smorky85/aurakit)
 
 <br/>
 
@@ -64,9 +64,9 @@ cd Aurakit
 **2 — Install** (choose one)
 
 ```bash
-bash install.sh          # Full install (recommended)
+bash install.sh                    # Full install (recommended)
 # or
-npx aurakit              # One-click npm install (coming soon)
+npx @smorky85/aurakit              # One-click npm install
 ```
 
 Copies skills, hooks (13 handlers), and agents into your Claude Code environment. Merges hooks into `settings.json` without overwriting your existing configuration.
