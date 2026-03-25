@@ -14,15 +14,14 @@
 <br/>
 
 <p>
-<a href="#-what-is-aurakit">What is AuraKit</a>&nbsp;&nbsp;·&nbsp;&nbsp;
+<a href="#-before--after">Before & After</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#-quick-start">Quick Start</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#-34-intelligent-modes">34 Modes</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#-quality-tiers">Tiers</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#-how-it-works">Pipeline</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#-6-layer-security">Security</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#-new-in-v6">New in v6</a>&nbsp;&nbsp;·&nbsp;&nbsp;
-<a href="#-compatibility">Compatibility</a>&nbsp;&nbsp;·&nbsp;&nbsp;
-<a href="#-contributing">Contributing</a>&nbsp;&nbsp;·&nbsp;&nbsp;
+<a href="#-why-aurakit">Why AuraKit</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#-faq">FAQ</a>
 </p>
 
@@ -30,25 +29,69 @@
 
 ---
 
-## 🤔 What is AuraKit?
+## What is AuraKit?
 
-AuraKit is a **Claude Code skill** that transforms a single `/aura` command into a complete, production-grade development pipeline. Instead of writing 20 instructions every session, AuraKit pre-loads security rules, quality gates, token optimization, and smart context management — so Claude just *knows* what to do.
+**One command. Full-stack app. Production-ready.**
+
+AuraKit is a [Claude Code](https://claude.ai/code) skill that replaces 20+ manual instructions with a single `/aura` command. It auto-detects what you need, scans your project, generates code with security checks on every file, and commits — all in one shot.
 
 ```bash
-# You type this:
-/aura 로그인 기능 만들어줘
-
-# AuraKit automatically does all of this:
-#  1. Scout Agent scans your project → .aura/project-profile.md
-#  2. Builds a 200-token micro-plan (file-by-file build order)
-#  3. Generates each file with security hooks on every write
-#  4. Triple Verify: V1 compile · V2 security+review · V3 tests
-#  5. Saves snapshot checkpoints — context never lost
-#  6. Commits: feat(auth): add login with JWT authentication
+npx @smorky85/aurakit        # Install once (30 seconds)
+/aura build: login with JWT   # That's it. AuraKit handles the rest.
 ```
 
+<!-- DEMO: Replace this comment with your recorded GIF
+<img src="assets/demo.gif" width="800" alt="AuraKit demo — /aura build: login with JWT">
+-->
+
 > [!TIP]
-> **First time?** Run `bash install.sh` once, then open any project and type `/aura`.
+> **30-second install** → `npx @smorky85/aurakit` or `bash install.sh`, then type `/aura` in any project.
+
+---
+
+## 🔄 Before & After
+
+<table>
+<tr>
+<th width="50%">Without AuraKit</th>
+<th width="50%">With AuraKit</th>
+</tr>
+<tr>
+<td>
+
+```
+You: "Build a login API"
+Claude: *generates code*
+You: "Wait, add input validation"
+Claude: *regenerates*
+You: "You forgot error handling"
+Claude: *patches*
+You: "Check for SQL injection"
+Claude: *patches again*
+You: "Now write tests"
+Claude: *generates tests*
+You: "The types are wrong..."
+(30 min later, still going)
+```
+
+</td>
+<td>
+
+```bash
+/aura build: login with JWT
+
+# AuraKit automatically:
+# → Scans your project stack
+# → Plans file-by-file build order
+# → Generates with SEC-01~15 rules
+# → Validates types + security + tests
+# → Commits: feat(auth): add login
+# Done. One command. ~3 minutes.
+```
+
+</td>
+</tr>
+</table>
 
 ---
 
@@ -83,7 +126,23 @@ claude --dangerously-skip-permissions
 ```
 
 > [!NOTE]
-> AuraKit is **framework-agnostic**. Scout reads your `package.json`, `tsconfig`, `Dockerfile`, and config files to adapt to any stack automatically.
+> AuraKit is **framework-agnostic** — Next.js, FastAPI, Spring, Go, Rust, or anything else. Scout auto-detects your stack.
+
+---
+
+## 🏆 Why AuraKit?
+
+> "I can just prompt Claude myself" — Yes, but you'll repeat the same 20 instructions every session.
+
+| | Manual Prompting | CLAUDE.md File | **AuraKit** |
+|:---|:---:|:---:|:---:|
+| Security enforcement | Hope for the best | Rules, no enforcement | **13 hooks enforce at write-time** |
+| Context survival | Lost on compact | Partial | **Snapshot + auto-restore** |
+| Token efficiency | Wasteful | Manual | **75% reduction (verified)** |
+| Code review | Manual | Manual | **4 agents in parallel** |
+| Multi-language support | English only | English only | **8 languages, 56+ commands** |
+| Learning over time | Starts fresh | Starts fresh | **Instinct engine remembers** |
+| Install time | — | 30 min writing rules | **30 seconds** |
 
 ---
 
@@ -555,17 +614,27 @@ Manual prompting requires you to re-explain your project, conventions, and requi
 
 <br/>
 
-**AuraKit v6 — Sonnet Amplified. 34 modes. SEC-01~15. 13 hooks. 75% token reduction.**
+### Try it now — it takes 30 seconds:
 
-**Built for developers who want to ship fast without cutting corners.**
+```bash
+npx @smorky85/aurakit
+```
+
+Then open any project and type `/aura`.
 
 <br/>
+
+**AuraKit v6 — Sonnet Amplified. 34 modes. SEC-01~15. 13 hooks. 75% token reduction.**
 
 [![Star on GitHub](https://img.shields.io/github/stars/smorky850612/Aurakit?style=social)](https://github.com/smorky850612/Aurakit/stargazers)
 
 <br/>
 
-<a href="https://github.com/smorky850612/Aurakit">GitHub</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="https://github.com/smorky850612/Aurakit/issues">Issues</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="https://github.com/smorky850612/Aurakit/blob/main/LICENSE">License</a>
+If AuraKit saves you time, [give it a star](https://github.com/smorky850612/Aurakit/stargazers) — it helps others find it.
+
+<br/>
+
+<a href="https://github.com/smorky850612/Aurakit">GitHub</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="https://www.npmjs.com/package/@smorky85/aurakit">npm</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="https://github.com/smorky850612/Aurakit/issues">Issues</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="CONTRIBUTING.md">Contribute</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="LICENSE">MIT License</a>
 
 <br/>
 
