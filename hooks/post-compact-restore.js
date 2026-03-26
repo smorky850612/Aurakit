@@ -8,6 +8,12 @@ const { readInput, addContext } = require('./lib/common.js');
 const { readSnapshot, getSnapshotPath, parseSnapshot } = require('./lib/snapshot.js');
 
 readInput(); // stdin consume (required by hook protocol)
+
+// 자동 컴팩트 후 환경변수 복원 (aura-compact가 1%로 낮춘 경우)
+if (process.env.CLAUDE_AUTOCOMPACT_PCT_OVERRIDE === '1') {
+  process.env.CLAUDE_AUTOCOMPACT_PCT_OVERRIDE = '65';
+}
+
 const snap = readSnapshot();
 if (!snap) process.exit(0);
 

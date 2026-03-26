@@ -1,18 +1,20 @@
 ---
 name: aura-compact
-description: "스냅샷 저장 + /compact 자동 실행. 단일 명령으로 완료."
-allowed-tools: Write, Read, Bash
+description: "스냅샷 저장 + /compact 안내. 단일 명령으로 완료."
+allowed-tools: Read, Bash
 ---
 
 # /aura-compact — 스냅샷 저장 + 컴팩트
 
 ## 실행 순서 (순서대로, 생략 없이)
 
-### Step 1 — 스냅샷 저장 (Write 도구)
+### Step 1 — 스냅샷 저장 (Bash 도구로 직접 작성)
 
-`.aura/` 디렉토리 존재 시 `.aura/snapshots/current.md` 갱신. 없으면 스킵.
+**Write 도구 사용 금지** — Read-before-Write 충돌 방지를 위해 Bash `cat >` 사용.
 
-```
+```bash
+mkdir -p .aura/snapshots
+cat > .aura/snapshots/current.md << 'SNAPEOF'
 # AuraKit Snapshot
 - Timestamp: [현재 UTC ISO 8601]
 - Mode: [진행 중인 모드]
@@ -26,33 +28,24 @@ allowed-tools: Write, Read, Bash
 
 ## Next Action
 [다음에 할 일]
+SNAPEOF
 ```
 
-### Step 2 — 컴팩트 실행
+### Step 2 — 최종 출력 (이것만, 짧게)
 
-**중요**: PowerShell SendKeys 사용하지 않는다. 아래 방법을 순서대로 시도:
-
-**방법 A** — `claude` CLI 서브프로세스 (추천):
-```bash
-echo '/compact' | claude --resume 2>/dev/null
-```
-
-**방법 B** — 방법 A 실패 시, 사용자에게 즉시 안내:
-아무 대기 없이 바로 출력:
-```
-⚡ 스냅샷 저장 완료.
-👉 /compact 를 입력해주세요.
-```
-
-### Step 3 — 최종 출력
+스냅샷 저장 완료 후 즉시 아래만 출력:
 
 ```
-⚡ aura-compact — 스냅샷 저장 완료.
-🗜️ 컴팩트 [실행됨 / 수동 입력 필요].
+⚡ aura-compact 완료 — 스냅샷 저장됨.
+👉 /compact
 ```
+
+`👉 /compact` 를 반드시 마지막 줄에 단독으로 출력한다.
+사용자가 이것만 복사해서 붙여넣으면 끝나도록.
 
 ## 금지 사항
-- ❌ PowerShell SendKeys 사용 금지
-- ❌ wscript.shell 사용 금지
-- ❌ Start-Sleep 대기 금지
-- ❌ "5초 후 실행" 같은 비동기 해킹 금지
+- ❌ Write 도구 사용 금지 (Read-before-Write 충돌)
+- ❌ PowerShell SendKeys 금지
+- ❌ export CLAUDE_AUTOCOMPACT_PCT_OVERRIDE 변경 금지 (자식 프로세스 한정, 효과 없음)
+- ❌ Start-Sleep / 대기 금지
+- ❌ 장황한 설명 금지 — 스냅샷 + 한 줄 안내만
