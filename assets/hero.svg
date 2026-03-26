@@ -63,10 +63,10 @@
         font-family="ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif"
         font-size="74" font-weight="900" letter-spacing="-2.5">AuraKit</text>
 
-  <!-- v5.1 superscript -->
+  <!-- version superscript -->
   <text x="700" y="116" fill="#a855f7"
         font-family="ui-monospace,SFMono-Regular,monospace"
-        font-size="15" font-weight="700" opacity="0.9">v5.1</text>
+        font-size="15" font-weight="700" opacity="0.9">v6.2</text>
 
   <!-- Subtitle -->
   <text x="450" y="164" text-anchor="middle" fill="#8898b0"
