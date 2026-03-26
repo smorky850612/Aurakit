@@ -26,8 +26,12 @@ if (!content) allow();
 const DOC_EXTENSIONS = /\.(md|mdx|txt|rst|adoc|html|csv|json|yaml|yml)$/i;
 const isDocFile = DOC_EXTENSIONS.test(filePath);
 
-// ── .env 파일 쓰기 보안 검사 ──────────────────────────────────────────
-if (ENV_FILE_PATTERN.test(filePath)) {
+// ── .env 샘플/예제 파일 여부 (시크릿 검사에서 제외) ─────────────────────
+const ENV_SAMPLE_PATTERN = /\.env\.(example|sample|template|defaults|test|ci|development)$|\.env\..*\.example$/i;
+const isEnvSample = ENV_SAMPLE_PATTERN.test(filePath);
+
+// ── .env 파일 쓰기 보안 검사 (샘플 파일은 제외) ──────────────────────
+if (ENV_FILE_PATTERN.test(filePath) && !isEnvSample) {
   if (/^[A-Z_]+=.{8,}/m.test(content)) {
     if (fileExists('.gitignore')) {
       const gi = readFileSafe('.gitignore');
@@ -38,12 +42,14 @@ if (ENV_FILE_PATTERN.test(filePath)) {
   }
 }
 
-// ── 시크릿 패턴 감지 ─────────────────────────────────────────────────
+// ── 시크릿 패턴 감지 (.env 샘플 파일은 제외) ────────────────────────
 const foundSecrets = [];
-for (const pattern of SECRET_PATTERNS) {
-  if (pattern.test(content)) {
-    const match = content.match(pattern);
-    if (match) foundSecrets.push(match[0].substring(0, 20) + '...');
+if (!isEnvSample) {
+  for (const pattern of SECRET_PATTERNS) {
+    if (pattern.test(content)) {
+      const match = content.match(pattern);
+      if (match) foundSecrets.push(match[0].substring(0, 20) + '...');
+    }
   }
 }
 

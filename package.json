@@ -1,6 +1,6 @@
 {
   "name": "@smorky85/aurakit",
-  "version": "6.0.2",
+  "version": "6.0.3",
   "description": "Sonnet Amplified fullstack engine for Claude Code. 34 modes, SEC-01~15, 13 hooks, 75% token reduction.",
   "bin": {
     "aurakit": "bin/install.js"
