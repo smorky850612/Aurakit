@@ -79,6 +79,7 @@ logs/
 .cache/
 
 # Local dev files (not for GitHub)
+index.html
 
 # bkit runtime (not part of AuraKit)
 .bkit/
