@@ -1,11 +1,11 @@
 ---
 name: aura
-description: "올인원 풀스택 개발 엔진. 빌드, 수정, 정리, 배포, 리뷰를 한 줄 명령으로. Discovery-First · Tiered Model · 6중 보안 · 4중 오케스트레이션 · Gap Detection · QA Pipeline · Instinct 학습 엔진 · 언어별 전문 리뷰어 · 다국어 UI · 토큰 ~55% 절감. Use when user asks to build, fix, clean, deploy, review, debug, qa, brainstorm, orchestrate, or create content."
+description: "All-in-one fullstack dev engine for Claude Code. Build, fix, clean, deploy, review in one /aura command. Discovery-First · Tiered Model · 6-Layer Security · 33 Modes · 8 Languages · 23 Hooks · 75% Token Savings. Use when user asks to build, fix, clean, deploy, review, debug, qa, brainstorm, orchestrate, or create content."
 argument-hint: "[자연어 설명]"
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob, Agent, WebFetch
 ---
 
-# AuraKit v5.1 — /aura
+# AuraKit v6 — /aura
 
 > 한 줄 명령으로 풀스택 앱을 완성하는 Claude Code 스킬.
 > Discovery-First · Tiered Model · 6중 보안 · 4패턴 오케스트레이션 · Gap Detection · QA Pipeline · Instinct 학습 엔진 · 언어별 리뷰어 · 크로스 하네스 · 토큰 ~55% 절감.
@@ -338,8 +338,14 @@ Health Dashboard: Match Rate · 보안 점수 · 테스트 커버리지 · Tech 
 보안 레벨: L1(역할 명시, 프롬프트) → L2(disallowed-tools, 조건부) → L3(bash-guard.js, 자동) → L4(Worktree, 격리) → L5(security-scan.js, 자동)
 ⚠️ 자동화 확인: L3·L5는 install.sh 실행 시에만 활성화. 상세 → `resources/install-guide.md`
 
+**동적 에이전트 증식** [v6 신규]: 에이전트가 필요에 따라 자식 에이전트를 생성할 수 있음. 상세 → `resources/agent-spawning.md`
+- **하드 리밋**: 최대 깊이 3, 세션당 총 12개, 동시 5개, 에이전트당 5분 타임아웃
+- **서킷 브레이커**: 연속 3회 실패 → 증식 중단 + 사용자 알림
+- **토큰 예산**: 잔여 컨텍스트의 30% 초과 시 증식 동결 (freeze)
+- **추적**: `.aura/agent-memory/active.json`에 실시간 상태 기록
+
 **에이전트 메모리**: 각 에이전트 결과 `.aura/agent-memory/[agent].json` 자동 저장 (teammate-idle.js 훅)
-**생명주기 훅**: subagent-start.js(등록) · subagent-stop.js(완료) · `.aura/agent-memory/active.json`
+**생명주기 훅**: subagent-start.js(등록+증식 제한) · subagent-stop.js(완료) · `.aura/agent-memory/active.json`
 
 **훅 이벤트 전체 목록** (install.sh 자동 설정):
 
@@ -360,28 +366,36 @@ Health Dashboard: Match Rate · 보안 점수 · 테스트 커버리지 · Tech 
 
 ---
 
-## T. 크로스 하네스 지원 (v5.0 신규)
+## T. 크로스 하네스 지원 (v6 — 풀 호환 업그레이드)
 
-> AuraKit은 Claude Code 네이티브이지만, SKILL.md 표준 포맷으로 다른 하네스에서도 동작.
+> SKILL.md 오픈 스탠다드 (2025.12 Anthropic → Linux Foundation AAIF 기증) 기반.
+> AuraKit은 Claude Code 네이티브이지만, 주요 AI 코딩 도구와 동일 수준으로 동작.
+> 상세 → `resources/cross-harness.md`
 
-| 하네스 | 지원 수준 | 제한사항 |
-|--------|----------|---------|
-| **Claude Code** | ✅ 풀 지원 | 없음 — 네이티브 환경 |
-| **Cursor** | ⚠️ 수동 설정 필요 | `.cursorrules` 등록 필요, 에이전트 격리 수동, 훅 미지원 |
-| **OpenAI Codex** | ⚠️ 부분 지원 | 에이전트 모델 선택 수동, 훅 미지원 (CLI 버전 확인 필요) |
-| **OpenCode** | ⚠️ 부분 지원 | 훅 미지원, 에이전트 격리 수동 |
-| **Gemini CLI** | 🔬 실험적 | 에이전트 격리 수동, 미검증 |
+| 하네스 | 지원 수준 | 설정 | 모델 매핑 |
+|--------|----------|------|----------|
+| **Claude Code** | ✅ 풀 | 네이티브 — 추가 설정 불필요 | haiku/sonnet/opus 그대로 |
+| **OpenAI Codex CLI** | ✅ 풀 | SKILL.md 자동 인식, agents.md 호환 | haiku→gpt-4o-mini, sonnet→gpt-4o, opus→o3 |
+| **Cursor** | ✅ 지원 | `.cursorrules` 등록, Agent Mode 사용 | Cursor 모델 선택기 사용 |
+| **Manus** | ✅ 지원 | 시스템 프롬프트 + 멀티에이전트 매핑 | Manus 자체 라우팅 |
+| **Windsurf** | ✅ 지원 | `.windsurfrules` 등록, Cascade 모드 | Windsurf 모델 선택기 |
+| **Aider** | ⚠️ 부분 | `.aider.conf.yml` 설정 | BUILD/FIX 모드만 |
+| **Gemini CLI** | 🔬 실험적 | 시스템 프롬프트 등록 | 미검증 |
 
-**Cursor에서 수동 설정:**
+**설치 (플랫폼별):**
+```bash
+npx @smorky85/aurakit                    # Claude Code (기본)
+npx @smorky85/aurakit --platform=codex   # Codex CLI 어댑터
+npx @smorky85/aurakit --platform=cursor  # Cursor 어댑터
+npx @smorky85/aurakit --platform=manus   # Manus 어댑터
 ```
-# 1. SKILL.md 내용을 .cursorrules 또는 User Rules에 붙여넣기
-# 2. /aura 명령어 → Cursor Chat에 동일하게 입력 가능
-# 3. context:fork → 새 Chat 창 수동으로 열어서 대체
-# 4. 훅(pre-commit 등) → Cursor Terminal에서 수동 실행 필요
-# 제한: 에이전트 자동 격리·훅 자동 실행 불가 → 핵심 보안 기능 일부 누락
-```
 
-**핵심**: AuraKit은 Claude Code 네이티브. 다른 하네스는 SKILL.md 내용을 참조해 수동 모방 가능하나 자동화 수준은 낮음. `/aura 명령어` 단일 진입점 아이덴티티는 유지.
+**훅 호환성:**
+- Claude Code: 23개 훅 자동 설정
+- Codex CLI: sandbox pre/post 명령으로 대체
+- Cursor/Windsurf: VS Code Tasks로 대체
+- Manus: 이벤트 시스템 매핑
+- 훅 미지원 플랫폼: `node hooks/[hook].js` 수동 실행 가이드 제공
 
 ---
 
@@ -405,4 +419,4 @@ Health Dashboard: Match Rate · 보안 점수 · 테스트 커버리지 · Tech 
 
 ---
 
-*AuraKit v5.1 — Discovery-First · Tiered Model ~55% · 6중 보안 · 35모드 · 8개 언어 · 17에이전트 · Instinct 학습 엔진 · 언어별 리뷰어(10언어) · 프레임워크 패턴 · 비즈니스 스킬 · 크로스 하네스 · Gap Detection · ConfigHash · Team Context · Convention Check · OWASP+ · Build Resolver(7언어) · E2E Playwright · MCP 14종 · Loop 오퍼레이터 · 항상-활성 보안 규칙 · Stop 훅 · 자동 포매터 · Governance 캡처 · 패키지 매니저 자동 감지*
+*AuraKit v6 — Discovery-First · Tiered Model ~75% · 6중 보안 · 33모드 · 8개 언어 · 23훅 · 7에이전트 정의 · Instinct 학습 엔진 · 언어별 리뷰어(10언어) · 프레임워크 패턴 · 비즈니스 스킬 · 크로스 하네스 · Gap Detection · ConfigHash · Team Context · Convention Check · OWASP+ · Build Resolver(7언어) · E2E Playwright · MCP 14종 · Loop 오퍼레이터 · 항상-활성 보안 규칙 · Stop 훅 · 자동 포매터 · Governance 캡처 · 패키지 매니저 자동 감지*

@@ -16,7 +16,8 @@ project-profile.md: Language: Kotlin     → kotlin-reviewer 로딩
 project-profile.md: Language: Rust       → rust-reviewer 로딩
 project-profile.md: Language: C++        → cpp-reviewer 로딩
 project-profile.md: Language: Swift      → swift-reviewer 로딩
-...
+project-profile.md: Language: PHP        → php-reviewer 로딩
+project-profile.md: Language: Perl       → perl-reviewer 로딩
 
 V1 빌드 실패 시: build-resolvers.md → 언어별 Build Resolver 자동 실행
 ```
@@ -258,32 +259,91 @@ CONV-SW-005: @MainActor (UI 업데이트는 메인 스레드)
 ## PHP Reviewer
 
 ```
-CONV-PHP-001: 타입 힌트 필수 (PHP 8.0+) — 함수 인자 + 반환 타입
+CONV-PHP-001: 타입 힌트 필수 (PHP 8.0+) — 함수 인자 + 반환 타입 + 프로퍼티
 CONV-PHP-002: PDO / 준비된 구문 필수 (mysql_query() 금지)
 CONV-PHP-003: password_hash() / password_verify() (md5/sha1 저장 금지)
 CONV-PHP-004: htmlspecialchars() — 출력 시 이스케이프 필수
-CONV-PHP-005: Composer 의존성 관리 (수동 include 최소화)
+CONV-PHP-005: Composer 의존성 관리 (수동 include/require 최소화)
 
 보안 체크:
 □ SQL Injection: PDO prepare() + bindParam() 필수
 □ XSS: htmlspecialchars($var, ENT_QUOTES, 'UTF-8') 출력 시 항상 적용
-□ CSRF: 폼에 CSRF 토큰 필수 (Laravel: @csrf)
-□ 파일 업로드: MIME 타입 검증 + 저장 경로 웹 루트 외부
+□ CSRF: 폼에 CSRF 토큰 필수 (Laravel: @csrf / Symfony: csrf_token())
+□ 파일 업로드: MIME 타입 검증 + 크기 제한 + 저장 경로 웹 루트 외부
 □ session_regenerate_id(true) — 로그인 후 세션 ID 갱신
 □ eval() 사용자 입력 절대 금지
-□ shell_exec() / exec() — 사용자 입력 전달 금지
+□ shell_exec() / exec() / system() — 사용자 입력 전달 금지
+□ open_basedir / disable_functions 프로덕션 설정 확인
+□ error_reporting: 프로덕션에서 display_errors=Off (로그만 기록)
 
-Laravel 패턴:
-✅ Eloquent ORM (raw DB::statement 최소화)
-✅ Form Request 클래스로 입력 검증 분리
-✅ 미들웨어로 인증/인가 처리
-✅ .env → config() 헬퍼 (환경변수 직접 접근 금지)
-✅ Artisan 마이그레이션 관리
+패턴 권장:
+✅ PHP 8.1+ enum (상수 그룹 대신 타입 안전 열거형)
+✅ readonly 프로퍼티 (PHP 8.1+) / readonly class (PHP 8.2+)
+✅ match 표현식 (switch 대신 — 엄격 비교 + 반환값)
+✅ named arguments (가독성 향상)
+✅ Fiber (비동기 작업 — PHP 8.1+)
+✅ null safe operator (?->) — null 체크 체인 간소화
+✅ PHPStan / Psalm 정적 분석 (level max 권장)
 
 금지 패턴:
 ❌ mysql_* 함수 (PHP 7 이후 제거)
-❌ $_REQUEST 직접 사용 (명시적 $_GET/$_POST 사용)
-❌ include($_GET['page']) — 경로에 사용자 입력 금지
+❌ $_REQUEST 직접 사용 (명시적 $_GET/$_POST/$_SERVER 사용)
+❌ include($_GET['page']) — 경로에 사용자 입력 금지 (LFI/RFI 취약점)
+❌ extract($_POST) — 변수 오염 위험
+❌ serialize()/unserialize() 사용자 입력에 적용 금지 (객체 주입 공격)
+❌ == 비교 (=== 사용 — PHP 타입 저글링 방지)
+❌ @ 에러 억제 연산자 (예외 처리로 대체)
+
+성능 팁:
+□ OPcache 활성화 (프로덕션 필수)
+□ preload (PHP 7.4+): 자주 사용하는 클래스 사전 로딩
+□ JIT 컴파일러 (PHP 8.0+): CPU-intensive 작업 시 활성화
+□ 배열 대신 SplFixedArray (고정 크기 대량 데이터)
+□ Generator (yield) — 대용량 데이터 순회 시 메모리 절약
+□ 문자열 연결: . 반복 대신 implode() 또는 sprintf()
+□ composer dump-autoload --optimize (프로덕션 배포)
+```
+
+---
+
+## PHP Framework Reviewers
+
+### Laravel
+```
+□ Eloquent ORM (raw DB::statement 최소화)
+□ Form Request 클래스로 입력 검증 분리
+□ 미들웨어로 인증/인가 처리
+□ .env → config() 헬퍼 (환경변수 직접 접근 금지: env() 금지 in code)
+□ Artisan 마이그레이션 관리 (수동 SQL 스키마 변경 금지)
+□ Route Model Binding 활용 (수동 find/findOrFail 최소화)
+□ Policy / Gate (인가 로직 컨트롤러에서 분리)
+□ Queue (time-consuming 작업: 이메일, 외부 API 호출)
+□ Laravel Sanctum / Passport (API 인증)
+
+금지:
+❌ 컨트롤러에 비즈니스 로직 직접 작성 (Service 계층 분리)
+❌ N+1 쿼리: with() / load() eager loading 필수
+❌ Mass Assignment 취약점: $fillable 또는 $guarded 명시
+❌ blade에서 {!! $var !!} — 검증된 HTML만 허용
+```
+
+### Symfony
+```
+□ Doctrine ORM: DQL 또는 QueryBuilder (raw SQL 최소화)
+□ Form Component: 입력 검증 + CSRF 자동 처리
+□ Voter / Access Decision Manager (인가 로직)
+□ .env → parameters.yaml → 서비스 주입 (getenv() 직접 사용 금지)
+□ Messenger Component (비동기 메시지 처리)
+□ Security Bundle: firewall + authenticator 설정
+□ Dependency Injection: autowiring + 인터페이스 바인딩
+□ Event Dispatcher: 도메인 이벤트 처리
+□ Serializer: normalize/denormalize (수동 JSON 변환 금지)
+
+금지:
+❌ 컨트롤러에서 EntityManager 직접 호출 (Repository 패턴 사용)
+❌ Twig에서 raw 필터 무분별 사용 (XSS 위험)
+❌ kernel.secret: 환경변수 필수 (하드코딩 금지)
+❌ Doctrine: lazy loading N+1 → fetch join / batch processing
 ```
 
 ---
@@ -291,29 +351,87 @@ Laravel 패턴:
 ## Perl Reviewer
 
 ```
-CONV-PL-001: use strict; use warnings; — 모든 스크립트 최상단 필수
-CONV-PL-002: use Modern::Perl 또는 명시적 버전 선언 (use 5.036;)
-CONV-PL-003: DBI placeholders 필수 (문자열 연결 SQL 금지)
-CONV-PL-004: open(my $fh, '<', $file) — 3-arg open 필수
-CONV-PL-005: Carp 모듈 (croak/carp) — die/warn 대신
+CONV-PERL-001: use strict; use warnings; — 모든 스크립트 최상단 필수
+CONV-PERL-002: use Modern::Perl 또는 명시적 버전 선언 (use v5.36;)
+CONV-PERL-003: DBI placeholders 필수 (문자열 연결/보간 SQL 금지)
+CONV-PERL-004: open(my $fh, '<', $file) or croak — 3-arg open + 에러 처리 필수
+CONV-PERL-005: Carp 모듈 (croak/carp) — die/warn 대신 (호출자 관점 에러 보고)
 
 보안 체크:
-□ SQL: DBI->prepare() + execute($param) — 문자열 보간 금지
-□ 시스템 호출: system(LIST) 형태 (shell 해석 방지)
-□ eval "string": 금지 (블록 eval만 허용)
+□ SQL: DBI->prepare() + execute(@params) — 문자열 보간 금지
+□ 시스템 호출: system(LIST) 형태 (shell 해석 방지) — system($cmd) 금지
+□ eval "string": 절대 금지 (블록 eval { } 만 허용)
 □ CGI: 에러를 브라우저에 노출하지 않도록 Carp 설정
-□ taint 모드: -T 플래그 (CGI/setuid 스크립트)
+□ taint 모드: -T 플래그 (CGI/setuid/setgid 스크립트 필수)
+□ 정규식: 사용자 입력 직접 삽입 금지 → quotemeta() / \Q...\E 사용
+□ File::Temp (임시 파일 안전 생성 — 예측 가능 경로 금지)
+□ 역직렬화: Storable::thaw 사용자 입력에 금지 → JSON::XS / Cpanel::JSON::XS 사용
 
 패턴 권장:
-✅ Moose / Moo (객체 시스템)
-✅ Try::Tiny (예외 처리)
-✅ Path::Tiny (파일 경로)
-✅ Log::Log4perl (로깅)
+✅ Moose / Moo (객체 시스템 — 순수 OOP)
+✅ Type::Tiny (타입 제약 — Moose/Moo 통합)
+✅ Try::Tiny (예외 처리 — eval {} 래퍼)
+✅ Path::Tiny (파일 경로 — 안전하고 간결)
+✅ Log::Log4perl / Log::Any (로깅 — print/warn 대신)
+✅ namespace::autoclean (네임스페이스 오염 방지)
+✅ cpanfile + Carton (의존성 잠금 관리)
+✅ Perl::Critic (정적 분석 — severity 1~5)
 
 금지 패턴:
 ❌ no strict; (디버깅 외 사용 금지)
 ❌ 2-arg open: open(FH, ">$file") — 경로 주입 위험
 ❌ 백틱/qx//에 사용자 입력 전달
+❌ AUTOLOAD 남용 (명시적 메서드 정의 선호)
+❌ goto (절대 금지 — 유지보수 불가)
+❌ 심볼릭 레퍼런스: $$var_name (use strict 'refs' 위반)
+
+성능 팁:
+□ 정규식: /o 플래그 (변하지 않는 패턴 사전 컴파일)
+□ 대용량 파일: readline 또는 while (<$fh>) — slurp 방지
+□ 해시 슬라이스: @hash{@keys} (반복 조회 대신 일괄 추출)
+□ Benchmark / Devel::NYTProf (성능 프로파일링)
+□ Memoize (순수 함수 결과 캐싱)
+□ XS 모듈: 성능 병목 시 C 확장 고려 (Inline::C / XS)
+□ 문자열: join() (반복적 . 연결 대신)
+□ List::Util (sum, max, min — 순수 Perl 루프 대신)
+```
+
+---
+
+## Perl Framework Reviewers
+
+### Mojolicious
+```
+□ Mojolicious::Lite (프로토타입) → 풀 앱 전환 시 Mojolicious 사용
+□ 라우팅: $r->get('/path')->to('Controller#action') (명확한 컨트롤러 분리)
+□ Mojo::Template: <%= %> (자동 이스케이프) / <%== %> (raw — 검증된 HTML만)
+□ Mojo::Pg / Mojo::mysql: 비동기 DB 쿼리 + 마이그레이션
+□ Mojo::UserAgent: 비동기 HTTP 클라이언트 (non-blocking I/O)
+□ 입력 검증: $c->validation 또는 Mojolicious::Validator
+□ 세션: $c->session (서명된 쿠키 — secret 필수 설정)
+□ 웹소켓: Mojo::WebSocket (실시간 통신)
+
+금지:
+❌ blocking 호출을 non-blocking 컨텍스트에 혼용
+❌ $c->param() 미검증 사용 (항상 validation 거쳐야 함)
+❌ 앱 secret 미설정 (기본값은 안전하지 않음)
+```
+
+### Dancer2
+```
+□ 라우팅: get/post/put/del (HTTP 메서드별 명시적 핸들러)
+□ 플러그인 시스템: Dancer2::Plugin::* (기능 확장)
+□ Dancer2::Plugin::DBIC (DBIx::Class ORM 통합)
+□ Template::Toolkit (템플릿 엔진 — 자동 이스케이프 설정)
+□ config.yml → 환경별 설정 분리 (environments/*.yml)
+□ Plack::Middleware (PSGI 미들웨어 스택 활용)
+□ 세션: Dancer2::Session::Cookie (암호화 세션)
+□ 입력 검증: Dancer2::Plugin::FormValidator 또는 수동 검증
+
+금지:
+❌ request->params 미검증 직접 사용
+❌ 시크릿 키 config.yml에 평문 저장 (환경변수 사용)
+❌ send_file()에 사용자 입력 경로 전달 (경로 탐색 공격)
 ```
 
 ---
@@ -403,8 +521,10 @@ Kotlin 빌드 실패 → Kotlin-Resolver 에이전트 (haiku)
 C++ 빌드 실패  → Cpp-Resolver 에이전트 (sonnet — 링커 에러 복잡도)
 Swift 빌드 실패 → Swift-Resolver 에이전트 (haiku)
 Python 오류    → Python-Resolver 에이전트 (haiku)
+PHP 빌드 실패  → PHP-Resolver 에이전트 (haiku)
+Perl 빌드 실패 → Perl-Resolver 에이전트 (haiku)
 ```
 
 ---
 
-*AuraKit Language Reviewers — TS/JS · Python · Go · Java · Rust · Kotlin · C++ · Swift · Framework-Specific · Build Resolver 연동*
+*AuraKit Language Reviewers — TS/JS · Python · Go · Java · Rust · Kotlin · C++ · Swift · PHP · Perl · Framework-Specific · Build Resolver 연동*

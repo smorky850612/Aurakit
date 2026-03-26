@@ -87,9 +87,39 @@ if (!isDocFile && sqlRaw.test(content)) {
   process.stderr.write(
     '⚠️  AuraKit Security L3 경고\n' +
     `   파일: ${filePath}\n` +
-    '   SQL 문자열 연결 감지. Parameterized query 사용을 권장합니다.\n'
+    '   SQL 템플릿 리터럴 인젝션 감지. Parameterized query 사용을 권장합니다.\n'
   );
   // 경고만 (차단 아님)
+}
+
+// ── SQL Injection 패턴 — 문자열 연결 (+ 연산자, 문서 파일 제외) ──────
+const sqlConcat = /["'](?:SELECT|INSERT|UPDATE|DELETE)\b[^"']*["']\s*\+/i;
+if (!isDocFile && sqlConcat.test(content)) {
+  process.stderr.write(
+    '⚠️  AuraKit Security L3 경고\n' +
+    `   파일: ${filePath}\n` +
+    '   SQL 문자열 연결(+ 연산자) 감지. Parameterized query 사용을 권장합니다.\n'
+  );
+}
+
+// ── SQL Injection 패턴 — Python % 포맷 스트링 (문서 파일 제외) ───────
+const sqlPythonFmt = /["'](?:SELECT|INSERT|UPDATE|DELETE)\b[^"']*%s[^"']*["']\s*%/i;
+if (!isDocFile && sqlPythonFmt.test(content)) {
+  process.stderr.write(
+    '⚠️  AuraKit Security L3 경고\n' +
+    `   파일: ${filePath}\n` +
+    '   SQL % 포맷 스트링 감지 (Python). Parameterized query 사용을 권장합니다.\n'
+  );
+}
+
+// ── SQL Injection 패턴 — Python f-string (문서 파일 제외) ────────────
+const sqlFstring = /f["'](?:SELECT|INSERT|UPDATE|DELETE)\b[^"']*\{[^}]+\}[^"']*["']/i;
+if (!isDocFile && sqlFstring.test(content)) {
+  process.stderr.write(
+    '⚠️  AuraKit Security L3 경고\n' +
+    `   파일: ${filePath}\n` +
+    '   SQL f-string 인젝션 감지 (Python). Parameterized query 사용을 권장합니다.\n'
+  );
 }
 
 allow();

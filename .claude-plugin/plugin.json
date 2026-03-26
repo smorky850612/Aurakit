@@ -1,21 +1,29 @@
 {
   "name": "aurakit",
-  "version": "4.0.0",
-  "description": "All-in-one fullstack development engine for Claude Code. Build, fix, clean, deploy, review, QA, and brainstorm with a single /aura command. Discovery-First · Tiered Model (~55% token savings) · 6-Layer Security · 28 Modes · 8 Languages · 52 Skills.",
+  "version": "6.0.3",
+  "description": "All-in-one Claude Code skill: build, fix, review, deploy with one /aura command. 33 modes, 6-layer security (OWASP+), 23 hooks, 8 languages, 75% token savings.",
   "author": {
-    "name": "smork"
+    "name": "smorky85"
   },
   "license": "MIT",
   "keywords": [
     "aura",
     "fullstack",
-    "development",
+    "claude-code-skill",
+    "claude-code-plugin",
+    "agent-skill",
+    "agent-skills",
+    "SKILL.md",
     "ai-coding",
     "security",
+    "owasp",
     "qa",
+    "tdd",
     "multilingual",
     "orchestration",
     "discovery-first",
-    "tiered-model"
+    "tiered-model",
+    "slash-command",
+    "developer-tools"
   ]
 }
