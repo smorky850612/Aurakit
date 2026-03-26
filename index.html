@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AuraKit — One Command. Full Stack. Zero Compromise.</title>
+<meta name="description" content="All-in-one Claude Code skill. 33 modes, 6-layer security, 75% token savings.">
+<meta name="theme-color" content="#7c3aed">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#050508;--bg2:#0a0a12;--bg3:#111119;--bg4:#1a1a28;
+  --text:#f0f0f5;--text2:#a0a0b8;--text3:#606078;
+  --v1:#a855f7;--v2:#7c3aed;--v3:#c084fc;--v4:#e9d5ff;
+  --blue:#6366f1;--cyan:#22d3ee;--green:#34d399;--pink:#f472b6;
+  --glass:rgba(255,255,255,.03);--glass-border:rgba(255,255,255,.06);
+  --radius:20px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6}
+::selection{background:var(--v2);color:#fff}
+a{color:var(--v3);text-decoration:none}
+code{font-family:'JetBrains Mono',monospace;background:rgba(168,85,247,.12);padding:.15em .4em;border-radius:4px;font-size:.85em}
+
+/* ── 3D Canvas ── */
+#hero-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* ── Nav ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:1.2rem 2.5rem;display:flex;align-items:center;justify-content:space-between;
+  transition:all .4s;
+}
+nav.scrolled{
+  background:rgba(5,5,8,.85);backdrop-filter:blur(30px) saturate(1.5);
+  border-bottom:1px solid var(--glass-border);padding:.8rem 2.5rem;
+}
+.nav-logo{font-size:1.3rem;font-weight:800;display:flex;align-items:center;gap:.6rem;z-index:1}
+.nav-logo span{background:linear-gradient(135deg,var(--v3),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-right{display:flex;align-items:center;gap:1.5rem;z-index:1}
+.nav-right a{color:var(--text2);font-size:.85rem;font-weight:500;transition:all .2s;position:relative}
+.nav-right a:hover{color:#fff}
+.nav-right a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:2px;background:var(--v1);transition:width .3s}
+.nav-right a:hover::after{width:100%}
+.lang-btn{
+  background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.25);
+  color:var(--v3);padding:.4rem .9rem;border-radius:8px;
+  cursor:pointer;font-size:.78rem;font-weight:700;transition:all .3s;font-family:'Inter',sans-serif;
+}
+.lang-btn:hover{background:rgba(168,85,247,.2);border-color:var(--v1);transform:scale(1.05)}
+
+/* ── Hero ── */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;
+  padding:8rem 2rem 6rem;position:relative;z-index:1;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:.6rem;
+  padding:.5rem 1.2rem;border-radius:100px;
+  background:rgba(168,85,247,.06);
+  border:1px solid rgba(168,85,247,.15);
+  font-size:.78rem;color:var(--v3);font-weight:600;
+  backdrop-filter:blur(10px);
+  animation:fadeUp .8s ease both;
+}
+.dot-live{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.4)}}
+
+.hero h1{
+  font-size:clamp(3rem,8vw,6.5rem);font-weight:900;
+  letter-spacing:-.05em;line-height:.95;
+  margin:2rem 0 1.5rem;
+  animation:fadeUp .8s ease .15s both;
+}
+.hero h1 .line{display:block}
+.hero h1 .glow{
+  background:linear-gradient(135deg,var(--v3),var(--cyan),var(--v1),var(--pink));
+  background-size:300% 300%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:gradientFlow 6s ease infinite,fadeUp .8s ease .15s both;
+}
+@keyframes gradientFlow{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}
+
+.hero-sub{
+  font-size:clamp(1rem,2.2vw,1.35rem);color:var(--text2);
+  max-width:580px;font-weight:400;line-height:1.7;
+  margin-bottom:3rem;animation:fadeUp .8s ease .3s both;
+}
+.hero-actions{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;animation:fadeUp .8s ease .4s both}
+
+/* Buttons */
+.btn{
+  padding:1rem 2.2rem;border-radius:14px;font-weight:700;
+  font-size:.95rem;cursor:pointer;border:none;
+  transition:all .35s cubic-bezier(.4,0,.2,1);
+  display:inline-flex;align-items:center;gap:.6rem;position:relative;overflow:hidden;
+  font-family:'Inter',sans-serif;
+}
+.btn-glow{
+  background:linear-gradient(135deg,var(--v2),var(--blue));
+  color:#fff;
+  box-shadow:0 0 30px rgba(124,58,237,.3),0 0 60px rgba(124,58,237,.1);
+}
+.btn-glow:hover{
+  transform:translateY(-3px) scale(1.02);
+  box-shadow:0 0 40px rgba(124,58,237,.5),0 0 80px rgba(124,58,237,.2);
+}
+.btn-glow::before{
+  content:'';position:absolute;inset:-2px;border-radius:16px;
+  background:linear-gradient(135deg,var(--v3),var(--cyan),var(--v1));
+  z-index:-1;opacity:0;transition:opacity .3s;filter:blur(8px);
+}
+.btn-glow:hover::before{opacity:1}
+.btn-glass{
+  background:var(--glass);color:var(--text);
+  border:1px solid var(--glass-border);
+  backdrop-filter:blur(10px);
+}
+.btn-glass:hover{border-color:rgba(168,85,247,.3);background:rgba(168,85,247,.06);transform:translateY(-2px)}
+
+/* ── Terminal (3D float) ── */
+.hero-terminal{
+  margin-top:4rem;max-width:680px;width:100%;
+  background:rgba(10,10,18,.7);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:var(--radius);overflow:hidden;
+  backdrop-filter:blur(20px);
+  box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 40px rgba(168,85,247,.06);
+  animation:termFloat 6s ease-in-out infinite,fadeUp .8s ease .5s both;
+  transform-style:preserve-3d;
+}
+@keyframes termFloat{
+  0%,100%{transform:perspective(1000px) rotateX(2deg) rotateY(-1deg) translateY(0)}
+  50%{transform:perspective(1000px) rotateX(-1deg) rotateY(1deg) translateY(-8px)}
+}
+.term-bar{
+  display:flex;align-items:center;gap:.5rem;
+  padding:.7rem 1rem;background:rgba(255,255,255,.02);
+  border-bottom:1px solid rgba(255,255,255,.04);
+}
+.term-dot{width:11px;height:11px;border-radius:50%}
+.term-dot:nth-child(1){background:#ff5f57}
+.term-dot:nth-child(2){background:#ffbd2e}
+.term-dot:nth-child(3){background:#28ca41}
+.term-title{margin-left:auto;font-size:.7rem;color:var(--text3);font-family:'JetBrains Mono',monospace}
+.term-body{
+  padding:1.2rem 1.5rem;
+  font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:2;
+}
+.term-body .p{color:var(--green)}
+.term-body .c{color:#fff}
+.term-body .o{color:var(--v3)}
+.term-body .dim{color:var(--text3)}
+.cursor-blink{border-right:2px solid var(--v1);animation:blink .8s step-end infinite}
+@keyframes blink{50%{border-color:transparent}}
+
+/* ── Glass cards (3D tilt + glow border) ── */
+.glass-card{
+  background:rgba(12,12,20,.6);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:var(--radius);
+  backdrop-filter:blur(24px);
+  transition:border-color .4s,box-shadow .4s;
+  position:relative;overflow:hidden;
+  transform-style:preserve-3d;
+  will-change:transform;
+}
+/* animated gradient border on hover */
+.glass-card::before{
+  content:'';position:absolute;inset:-1px;border-radius:var(--radius);
+  background:conic-gradient(from var(--angle,0deg),var(--v1),var(--cyan),var(--blue),var(--pink),var(--v3),var(--v1));
+  opacity:0;transition:opacity .5s;z-index:-2;
+  animation:rotateBorder 4s linear infinite;
+}
+@keyframes rotateBorder{to{--angle:360deg}}
+@property --angle{syntax:'<angle>';initial-value:0deg;inherits:false}
+/* inner bg to mask border gradient */
+.glass-card::after{
+  content:'';position:absolute;inset:1px;border-radius:calc(var(--radius) - 1px);
+  background:rgba(12,12,20,.85);z-index:-1;
+}
+/* spotlight that follows mouse */
+.glass-card .card-spotlight{
+  position:absolute;width:250px;height:250px;border-radius:50%;
+  background:radial-gradient(circle,rgba(168,85,247,.12),transparent 70%);
+  pointer-events:none;opacity:0;transition:opacity .3s;
+  transform:translate(-50%,-50%);z-index:0;
+}
+.glass-card:hover .card-spotlight{opacity:1}
+.glass-card:hover::before{opacity:1}
+.glass-card:hover{
+  border-color:transparent;
+  box-shadow:0 25px 60px rgba(0,0,0,.4),0 0 40px rgba(168,85,247,.08);
+}
+
+/* ── Stats ── */
+.stats{
+  padding:5rem 2rem;position:relative;z-index:1;
+  background:linear-gradient(180deg,transparent,rgba(168,85,247,.02),transparent);
+}
+.stats-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:2rem}
+.stat{text-align:center;padding:2rem}
+.stat h3{
+  font-size:clamp(2.5rem,5vw,3.5rem);font-weight:900;
+  background:linear-gradient(135deg,var(--v3),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.stat p{color:var(--text2);font-size:.9rem;margin-top:.3rem;font-weight:500}
+
+/* ── Sections ── */
+section{padding:7rem 2rem;position:relative;z-index:1}
+.sec-inner{max-width:1100px;margin:0 auto}
+.sec-label{
+  display:inline-block;font-size:.7rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.15em;
+  color:var(--v1);margin-bottom:.75rem;
+}
+.sec-title{
+  font-size:clamp(2rem,4.5vw,3.25rem);font-weight:900;
+  letter-spacing:-.04em;margin-bottom:1rem;line-height:1.1;
+}
+.sec-desc{color:var(--text2);max-width:550px;margin-bottom:3.5rem;font-size:1.05rem}
+
+/* ── Before/After (3D stacked) ── */
+.compare-wrap{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;perspective:1200px}
+.compare-card{
+  padding:2.5rem;font-family:'JetBrains Mono',monospace;font-size:.8rem;line-height:1.9;
+  border-radius:var(--radius);position:relative;overflow:hidden;
+  transition:all .5s cubic-bezier(.4,0,.2,1);
+}
+.compare-card.bad{
+  background:linear-gradient(145deg,rgba(20,10,15,.8),rgba(10,5,8,.9));
+  border:1px solid rgba(239,68,68,.12);
+  transform:perspective(800px) rotateY(3deg);
+}
+.compare-card.bad::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,transparent,#ef4444,transparent);
+}
+.compare-card.bad:hover{transform:perspective(800px) rotateY(0deg) scale(1.02);box-shadow:0 25px 60px rgba(239,68,68,.08)}
+.compare-card.good{
+  background:linear-gradient(145deg,rgba(10,20,15,.8),rgba(5,15,10,.9));
+  border:1px solid rgba(52,211,153,.12);
+  transform:perspective(800px) rotateY(-3deg);
+}
+.compare-card.good::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,transparent,var(--green),transparent);
+}
+.compare-card.good:hover{transform:perspective(800px) rotateY(0deg) scale(1.02);box-shadow:0 25px 60px rgba(52,211,153,.08)}
+.compare-card .tag{
+  position:absolute;top:1.5rem;right:1.5rem;
+  padding:.3rem .8rem;border-radius:6px;font-family:'Inter',sans-serif;
+  font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+}
+.compare-card.bad .tag{background:rgba(239,68,68,.15);color:#f87171}
+.compare-card.good .tag{background:rgba(52,211,153,.15);color:var(--green)}
+.compare-card h4{font-family:'Inter',sans-serif;font-size:1.1rem;font-weight:800;margin-bottom:1.2rem}
+.compare-card.bad h4{color:#f87171}
+.compare-card.good h4{color:var(--green)}
+.compare-card pre{white-space:pre-wrap;color:var(--text2)}
+.compare-card.good pre{color:rgba(52,211,153,.8)}
+.compare-timer{
+  display:inline-flex;align-items:center;gap:.4rem;margin-top:1rem;
+  padding:.4rem .8rem;border-radius:8px;font-family:'Inter',sans-serif;
+  font-size:.78rem;font-weight:700;
+}
+.bad .compare-timer{background:rgba(239,68,68,.1);color:#f87171}
+.good .compare-timer{background:rgba(52,211,153,.1);color:var(--green)}
+
+/* ── Feature grid ── */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;perspective:1000px}
+.feat{padding:2.5rem;cursor:default;position:relative;z-index:1}
+.feat-icon{
+  width:56px;height:56px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.7rem;margin-bottom:1.5rem;
+  background:linear-gradient(135deg,rgba(168,85,247,.12),rgba(99,102,241,.08));
+  border:1px solid rgba(168,85,247,.15);
+  box-shadow:0 0 20px rgba(168,85,247,.08);
+  transition:all .4s;
+}
+.glass-card:hover .feat-icon{
+  box-shadow:0 0 30px rgba(168,85,247,.2);
+  transform:translateZ(20px) scale(1.1);
+  border-color:var(--v1);
+}
+.feat h3{font-size:1.15rem;font-weight:700;margin-bottom:.6rem;transition:all .3s;position:relative;z-index:1}
+.glass-card:hover .feat h3{color:var(--v4)}
+.feat p{color:var(--text2);font-size:.88rem;line-height:1.7;position:relative;z-index:1}
+
+/* ── Modes (hex-style grid) ── */
+.modes-section{
+  background:linear-gradient(180deg,var(--bg),var(--bg2),var(--bg));
+  position:relative;overflow:hidden;
+}
+.modes-section::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(168,85,247,.04),transparent);
+}
+.modes-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1rem;
+  max-width:1000px;margin:0 auto;position:relative;
+}
+.mode-cell{
+  padding:1.2rem 1rem;border-radius:16px;text-align:center;
+  background:linear-gradient(145deg,rgba(15,15,25,.7),rgba(8,8,16,.8));
+  border:1px solid rgba(255,255,255,.04);
+  transition:all .4s cubic-bezier(.4,0,.2,1);cursor:default;
+  position:relative;overflow:hidden;
+}
+.mode-cell::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 0%,rgba(168,85,247,.1),transparent 70%);
+  opacity:0;transition:opacity .4s;
+}
+.mode-cell:hover{
+  border-color:rgba(168,85,247,.3);
+  transform:translateY(-6px) scale(1.05);
+  box-shadow:0 12px 30px rgba(168,85,247,.12),0 0 20px rgba(168,85,247,.06);
+}
+.mode-cell:hover::before{opacity:1}
+.mode-cell .m-name{
+  font-size:.9rem;font-weight:800;display:block;
+  background:linear-gradient(135deg,#fff,var(--v3));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  transition:all .3s;
+}
+.mode-cell:hover .m-name{
+  background:linear-gradient(135deg,var(--v4),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.mode-cell .m-ns{
+  display:block;font-size:.68rem;color:var(--text3);font-weight:500;
+  margin-top:.3rem;font-family:'JetBrains Mono',monospace;
+}
+
+/* ── Security (layered shield) ── */
+.shield-wrap{display:grid;grid-template-columns:200px 1fr;gap:3rem;align-items:center}
+.shield-visual{position:relative;width:200px;height:200px;margin:0 auto}
+.shield-ring{
+  position:absolute;border-radius:50%;
+  border:1px solid rgba(168,85,247,.1);
+  animation:shieldPulse 3s ease-in-out infinite;
+}
+.shield-ring:nth-child(1){inset:0;border-color:rgba(168,85,247,.2);animation-delay:0s}
+.shield-ring:nth-child(2){inset:15px;border-color:rgba(99,102,241,.18);animation-delay:.3s}
+.shield-ring:nth-child(3){inset:30px;border-color:rgba(34,211,238,.15);animation-delay:.6s}
+.shield-ring:nth-child(4){inset:45px;border-color:rgba(52,211,153,.12);animation-delay:.9s}
+.shield-ring:nth-child(5){inset:60px;border-color:rgba(244,114,182,.1);animation-delay:1.2s}
+.shield-ring:nth-child(6){inset:75px;border-color:rgba(168,85,247,.15);animation-delay:1.5s}
+.shield-core{
+  position:absolute;inset:85px;border-radius:50%;
+  background:radial-gradient(circle,rgba(168,85,247,.2),rgba(99,102,241,.1));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;
+  box-shadow:0 0 30px rgba(168,85,247,.15);
+}
+@keyframes shieldPulse{
+  0%,100%{transform:scale(1);opacity:.6}
+  50%{transform:scale(1.04);opacity:1}
+}
+.sec-stack{display:flex;flex-direction:column;gap:.6rem}
+.sec-item{
+  display:flex;align-items:center;gap:1.2rem;
+  padding:1rem 1.5rem;border-radius:14px;
+  background:linear-gradient(135deg,rgba(12,12,20,.6),rgba(8,8,14,.7));
+  border:1px solid rgba(255,255,255,.04);
+  transition:all .45s cubic-bezier(.4,0,.2,1);
+  position:relative;overflow:hidden;
+}
+.sec-item::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--v1);opacity:0;transition:opacity .3s;border-radius:3px;
+}
+.sec-item:hover{
+  transform:translateX(8px);border-color:rgba(168,85,247,.15);
+  background:linear-gradient(135deg,rgba(168,85,247,.04),rgba(12,12,20,.7));
+  box-shadow:0 8px 30px rgba(0,0,0,.3),0 0 25px rgba(168,85,247,.04);
+}
+.sec-item:hover::before{opacity:1}
+.sec-num{
+  width:38px;height:38px;border-radius:10px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:.8rem;
+  background:linear-gradient(135deg,rgba(168,85,247,.12),rgba(99,102,241,.08));
+  border:1px solid rgba(168,85,247,.12);color:var(--v3);
+  transition:all .3s;
+}
+.sec-item:hover .sec-num{
+  box-shadow:0 0 18px rgba(168,85,247,.25);
+  background:linear-gradient(135deg,rgba(168,85,247,.2),rgba(99,102,241,.15));
+}
+.sec-item h4{font-size:.9rem;font-weight:700}
+.sec-item p{color:var(--text2);font-size:.8rem;margin-top:.1rem}
+
+/* ── Install CTA (dramatic) ── */
+.cta{
+  text-align:center;position:relative;overflow:hidden;
+  padding:8rem 2rem;
+}
+.cta::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 50% at 50% 50%,rgba(168,85,247,.06),transparent);
+}
+.cta-glow{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:600px;height:600px;border-radius:50%;
+  background:radial-gradient(circle,rgba(124,58,237,.08),transparent 60%);
+  animation:ctaPulse 4s ease-in-out infinite;pointer-events:none;
+}
+@keyframes ctaPulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.5}50%{transform:translate(-50%,-50%) scale(1.2);opacity:1}}
+.install-box{
+  position:relative;display:inline-block;margin:2.5rem 0;padding:3px;
+  border-radius:18px;cursor:pointer;
+  background:conic-gradient(from var(--angle,0deg),var(--v1),var(--cyan),var(--blue),var(--pink),var(--v3),var(--v1));
+  animation:rotateBorder 3s linear infinite;
+  transition:all .3s;
+}
+.install-box:hover{transform:scale(1.04);box-shadow:0 0 50px rgba(168,85,247,.2)}
+.install-box-inner{
+  display:flex;align-items:center;gap:1rem;
+  background:rgba(8,8,14,.95);border-radius:15px;
+  padding:1.2rem 2.5rem;
+  font-family:'JetBrains Mono',monospace;font-size:1.1rem;
+}
+.install-box-inner .dim{color:var(--text3)}
+.install-box-inner .hint{
+  color:var(--text3);font-size:.7rem;font-family:'Inter',sans-serif;
+  margin-left:.5rem;opacity:.7;
+}
+.platforms-row{
+  display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;
+  margin-top:2.5rem;position:relative;
+}
+.plat{
+  padding:.7rem 1.4rem;border-radius:12px;
+  background:linear-gradient(135deg,rgba(15,15,25,.7),rgba(8,8,14,.8));
+  border:1px solid rgba(255,255,255,.05);
+  font-size:.85rem;font-weight:600;color:var(--text2);
+  display:flex;align-items:center;gap:.5rem;
+  transition:all .4s cubic-bezier(.4,0,.2,1);
+}
+.plat:hover{
+  border-color:rgba(168,85,247,.25);color:#fff;
+  transform:translateY(-4px);
+  box-shadow:0 8px 25px rgba(0,0,0,.3),0 0 15px rgba(168,85,247,.06);
+}
+.plat .ck{color:var(--green);font-weight:700}
+
+/* ── Footer ── */
+footer{
+  padding:3rem 2rem;text-align:center;
+  border-top:1px solid rgba(255,255,255,.04);
+  color:var(--text3);font-size:.82rem;position:relative;z-index:1;
+}
+.foot-links{display:flex;gap:2rem;justify-content:center;margin-bottom:1rem}
+.foot-links a{color:var(--text2);transition:color .2s}
+.foot-links a:hover{color:var(--v3)}
+
+/* ── Animations ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(50px);transition:all .9s cubic-bezier(.4,0,.2,1)}
+.reveal.vis{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
+.d4{transition-delay:.4s}.d5{transition-delay:.5s}
+
+/* ── Responsive ── */
+@media(max-width:900px){
+  .feat-grid{grid-template-columns:1fr 1fr}
+  .stats-inner{grid-template-columns:repeat(2,1fr)}
+  .compare-wrap{grid-template-columns:1fr;gap:1.5rem}
+  .compare-card.bad,.compare-card.good{border-radius:var(--radius);transform:none}
+  .compare-card.bad:hover,.compare-card.good:hover{transform:scale(1.01)}
+  .shield-wrap{grid-template-columns:1fr;gap:2rem}
+  .shield-visual{margin-bottom:1rem}
+  .modes-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:600px){
+  .feat-grid{grid-template-columns:1fr}
+  .hero h1{font-size:2.5rem}
+  nav{padding:1rem}
+  .nav-right a:not(.lang-btn){display:none}
+  .sec-item{flex-direction:column;text-align:center;gap:.5rem}
+  .modes-grid{grid-template-columns:repeat(2,1fr)}
+  .install-box-inner{font-size:.85rem;padding:1rem 1.5rem}
+}
+
+/* ── Language ── */
+[data-lang="en"] .ko{display:none!important}
+[data-lang="ko"] .en{display:none!important}
+</style>
+</head>
+<body>
+
+<canvas id="hero-canvas"></canvas>
+
+<nav id="nav">
+  <div class="nav-logo">⚡ <span>AuraKit</span></div>
+  <div class="nav-right">
+    <a href="#features"><span class="en">Features</span><span class="ko">기능</span></a>
+    <a href="#modes"><span class="en">Modes</span><span class="ko">모드</span></a>
+    <a href="#security"><span class="en">Security</span><span class="ko">보안</span></a>
+    <a href="#install"><span class="en">Install</span><span class="ko">설치</span></a>
+    <a href="https://github.com/smorky850612/Aurakit" target="_blank">GitHub</a>
+    <button class="lang-btn" onclick="toggleLang()"><span class="en">한국어</span><span class="ko">EN</span></button>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge"><span class="dot-live"></span><span class="en">v6.2 — Cross-platform + Next Actions</span><span class="ko">v6.2 — 크로스 플랫폼 + 자동 제안</span></div>
+  <h1>
+    <span class="line en">One Command.</span><span class="line ko">명령 한 줄.</span>
+    <span class="line glow en">Full Stack.</span><span class="line glow ko">풀스택 완성.</span>
+    <span class="line en">Zero Compromise.</span><span class="line ko">타협 없이.</span>
+  </h1>
+  <p class="hero-sub">
+    <span class="en">AuraKit replaces 20+ manual instructions with a single <code>/aura</code> command. Auto-detect, plan, build, verify, commit — all in one shot.</span>
+    <span class="ko">20개 이상의 수동 지시를 <code>/aura</code> 한 줄로. 자동 감지, 계획, 빌드, 검증, 커밋 — 한 번에.</span>
+  </p>
+  <div class="hero-actions">
+    <a href="#install" class="btn btn-glow"><span class="en">Get Started</span><span class="ko">시작하기</span> →</a>
+    <a href="https://github.com/smorky850612/Aurakit" class="btn btn-glass" target="_blank">GitHub ★</a>
+  </div>
+  <div class="hero-terminal">
+    <div class="term-bar"><div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div><span class="term-title">~/project</span></div>
+    <div class="term-body">
+      <div><span class="p">$</span> <span class="c">claude</span></div>
+      <div><span class="p">></span> <span class="c" id="tw"></span><span class="cursor-blink" id="cur">&nbsp;</span></div>
+      <div id="tout" style="margin-top:.4rem"></div>
+    </div>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="stats-inner">
+    <div class="stat reveal"><h3><span class="ctr" data-t="33">0</span></h3><p class="en">Modes</p><p class="ko">모드</p></div>
+    <div class="stat reveal d1"><h3><span class="ctr" data-t="75">0</span>%</h3><p class="en">Token Savings</p><p class="ko">토큰 절감</p></div>
+    <div class="stat reveal d2"><h3><span class="ctr" data-t="6">0</span></h3><p class="en">Security Layers</p><p class="ko">보안 레이어</p></div>
+    <div class="stat reveal d3"><h3><span class="ctr" data-t="23">0</span></h3><p class="en">Hooks</p><p class="ko">훅</p></div>
+  </div>
+</div>
+
+<section id="compare">
+  <div class="sec-inner">
+    <span class="sec-label"><span class="en">Before & After</span><span class="ko">전 & 후</span></span>
+    <h2 class="sec-title reveal"><span class="en">Stop Repeating.<br>Start Shipping.</span><span class="ko">반복은 그만.<br>배포를 시작하세요.</span></h2>
+    <div class="compare-wrap reveal d1">
+      <div class="compare-card bad">
+        <span class="tag">BEFORE</span>
+        <h4>Without AuraKit</h4>
+        <pre>You: "Build login API"
+Claude: *generates code*
+You: "Add validation"
+Claude: *regenerates*
+You: "SQL injection?"
+Claude: *patches*
+You: "Now tests"
+Claude: *tests*
+You: "Types are wrong..."</pre>
+        <div class="compare-timer">⏱ 30+ min — still going</div>
+      </div>
+      <div class="compare-card good">
+        <span class="tag">AFTER</span>
+        <h4>With AuraKit</h4>
+        <pre>/aura build: login with JWT
+
+✓ Stack scanned → Next.js + TS
+✓ 8 files planned
+✓ SEC-01~15 applied
+✓ Zod validation added
+✓ 92% test coverage
+✓ Types verified
+✓ feat(auth): add JWT login</pre>
+        <div class="compare-timer">⚡ 3 minutes — done</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="sec-inner">
+    <span class="sec-label"><span class="en">Features</span><span class="ko">기능</span></span>
+    <h2 class="sec-title reveal"><span class="en">Everything you need.<br>Nothing you don't.</span><span class="ko">필요한 것만.<br>불필요한 것은 없이.</span></h2>
+    <div class="feat-grid">
+      <div class="glass-card feat reveal" data-tilt><div class="card-spotlight"></div><div class="feat-icon">🔍</div><h3>Discovery-First</h3><p class="en">5 checks before any code. Prevents YAGNI, scope creep, wasted tokens.</p><p class="ko">코드 전 5가지 체크. YAGNI, 범위 확장, 토큰 낭비 방지.</p></div>
+      <div class="glass-card feat reveal d1" data-tilt><div class="card-spotlight"></div><div class="feat-icon">🛡️</div><h3 class="en">6-Layer Security</h3><h3 class="ko">6중 보안</h3><p class="en">OWASP-complete. 23 hooks enforce rules at write-time, not after.</p><p class="ko">OWASP 완전 준수. 23개 훅이 쓰기 시점에 강제.</p></div>
+      <div class="glass-card feat reveal d2" data-tilt><div class="card-spotlight"></div><div class="feat-icon">⚡</div><h3 class="en">75% Token Savings</h3><h3 class="ko">75% 토큰 절감</h3><p class="en">Tiered models, session cache, progressive loading. Pay less, build more.</p><p class="ko">티어 모델, 세션 캐시, 프로그레시브 로딩. 적게 쓰고, 많이 빌드.</p></div>
+      <div class="glass-card feat reveal d1" data-tilt><div class="card-spotlight"></div><div class="feat-icon">🧠</div><h3>Instinct Engine</h3><p class="en">Learns from your project. Patterns extracted, scored, reused across sessions.</p><p class="ko">프로젝트에서 학습. 패턴 추출, 점수화, 세션 간 재사용.</p></div>
+      <div class="glass-card feat reveal d2" data-tilt><div class="card-spotlight"></div><div class="feat-icon">🌍</div><h3 class="en">Cross-Platform</h3><h3 class="ko">크로스 플랫폼</h3><p class="en">Claude Code, Codex, Cursor, Manus, Windsurf — one skill, every tool.</p><p class="ko">Claude Code, Codex, Cursor, Manus, Windsurf — 하나의 스킬, 모든 도구.</p></div>
+      <div class="glass-card feat reveal d3" data-tilt><div class="card-spotlight"></div><div class="feat-icon">🤖</div><h3 class="en">Dynamic Agents</h3><h3 class="ko">동적 에이전트</h3><p class="en">Spawn as needed. Circuit breaker stops infinite loops. Max depth 3.</p><p class="ko">필요 시 증식. 서킷 브레이커로 무한루프 차단. 최대 깊이 3.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="modes" class="modes-section">
+  <div class="sec-inner" style="text-align:center">
+    <span class="sec-label"><span class="en">33 Intelligent Modes</span><span class="ko">33개 지능형 모드</span></span>
+    <h2 class="sec-title reveal"><span class="en">One command. Any intention.</span><span class="ko">명령 하나. 어떤 의도든.</span></h2>
+    <p class="sec-desc reveal d1" style="margin:0 auto 3rem;text-align:center"><span class="en">Natural language in 8 languages. Auto-detected or namespace-prefixed.</span><span class="ko">8개 언어의 자연어. 자동 감지 또는 네임스페이스 지정.</span></p>
+    <div class="modes-grid reveal d2">
+      <div class="mode-cell"><span class="m-name">BUILD</span><span class="m-ns">build:</span></div>
+      <div class="mode-cell"><span class="m-name">FIX</span><span class="m-ns">fix:</span></div>
+      <div class="mode-cell"><span class="m-name">CLEAN</span><span class="m-ns">clean:</span></div>
+      <div class="mode-cell"><span class="m-name">DEPLOY</span><span class="m-ns">deploy:</span></div>
+      <div class="mode-cell"><span class="m-name">REVIEW</span><span class="m-ns">review:</span></div>
+      <div class="mode-cell"><span class="m-name">TDD</span><span class="m-ns">tdd:</span></div>
+      <div class="mode-cell"><span class="m-name">QA</span><span class="m-ns">qa:</span></div>
+      <div class="mode-cell"><span class="m-name">DEBUG</span><span class="m-ns">debug:</span></div>
+      <div class="mode-cell"><span class="m-name">PM</span><span class="m-ns">pm:</span></div>
+      <div class="mode-cell"><span class="m-name">PLAN</span><span class="m-ns">plan:</span></div>
+      <div class="mode-cell"><span class="m-name">DESIGN</span><span class="m-ns">design:</span></div>
+      <div class="mode-cell"><span class="m-name">ITERATE</span><span class="m-ns">iterate:</span></div>
+      <div class="mode-cell"><span class="m-name">GAP</span><span class="m-ns">gap:</span></div>
+      <div class="mode-cell"><span class="m-name">BRAINSTORM</span><span class="m-ns">brainstorm:</span></div>
+      <div class="mode-cell"><span class="m-name">ORCHESTRATE</span><span class="m-ns">orchestrate:</span></div>
+      <div class="mode-cell"><span class="m-name">MOBILE</span><span class="m-ns">mobile:</span></div>
+      <div class="mode-cell"><span class="m-name">DESKTOP</span><span class="m-ns">desktop:</span></div>
+      <div class="mode-cell"><span class="m-name">BAAS</span><span class="m-ns">baas:</span></div>
+      <div class="mode-cell"><span class="m-name">CONTENT</span><span class="m-ns">content:</span></div>
+      <div class="mode-cell"><span class="m-name">BATCH</span><span class="m-ns">batch:</span></div>
+      <div class="mode-cell"><span class="m-name">PIPELINE</span><span class="m-ns">pipeline:</span></div>
+      <div class="mode-cell"><span class="m-name">REPORT</span><span class="m-ns">report:</span></div>
+      <div class="mode-cell"><span class="m-name">INSTINCT</span><span class="m-ns">instinct:</span></div>
+      <div class="mode-cell"><span class="m-name">QUICK</span><span class="m-ns">!</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="security">
+  <div class="sec-inner">
+    <span class="sec-label"><span class="en">Security</span><span class="ko">보안</span></span>
+    <h2 class="sec-title reveal"><span class="en">6 layers. Zero trust.<br>Always on.</span><span class="ko">6중 레이어. 제로 트러스트.<br>항상 작동.</span></h2>
+    <div class="shield-wrap reveal d1">
+      <div class="shield-visual">
+        <div class="shield-ring"></div>
+        <div class="shield-ring"></div>
+        <div class="shield-ring"></div>
+        <div class="shield-ring"></div>
+        <div class="shield-ring"></div>
+        <div class="shield-ring"></div>
+        <div class="shield-core">🛡️</div>
+      </div>
+      <div class="sec-stack">
+        <div class="sec-item"><div class="sec-num">L1</div><div><h4 class="en">Role Isolation</h4><h4 class="ko">역할 격리</h4><p class="en">Scout reads. Reviewer inspects. Only Builder writes.</p><p class="ko">Scout 읽기. Reviewer 검토. Builder만 쓰기.</p></div></div>
+        <div class="sec-item"><div class="sec-num">L2</div><div><h4 class="en">Tool Restrictions</h4><h4 class="ko">도구 제한</h4><p class="en">disallowed-tools per agent role.</p><p class="ko">역할별 도구 제한.</p></div></div>
+        <div class="sec-item"><div class="sec-num">L3</div><div><h4>Bash Guard</h4><p class="en">rm -rf, curl|bash, chmod 777 — blocked.</p><p class="ko">rm -rf, curl|bash, chmod 777 차단.</p></div></div>
+        <div class="sec-item"><div class="sec-num">L4</div><div><h4>Worktree Isolation</h4><p class="en">Agents in isolated git worktrees.</p><p class="ko">격리된 worktree에서 실행.</p></div></div>
+        <div class="sec-item"><div class="sec-num">L5</div><div><h4 class="en">Secret Scanner</h4><h4 class="ko">시크릿 스캐너</h4><p class="en">15+ patterns catch secrets pre-commit.</p><p class="ko">15+ 패턴, 커밋 전 시크릿 감지.</p></div></div>
+        <div class="sec-item"><div class="sec-num">L6</div><div><h4>Convention Check</h4><p class="en">CONV-001~005. HIGH = blocked.</p><p class="ko">CONV-001~005. HIGH = 차단.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="install" class="cta">
+  <div class="sec-inner" style="text-align:center">
+    <span class="sec-label"><span class="en">Get Started</span><span class="ko">시작하기</span></span>
+    <h2 class="sec-title reveal"><span class="en">30 seconds to superpowers.</span><span class="ko">30초면 슈퍼파워 장착.</span></h2>
+    <div class="cta-glow"></div>
+    <div class="install-box reveal d1" onclick="copyCmd()">
+      <div class="install-box-inner">
+        <span class="dim">$</span>&nbsp;npx @smorky85/aurakit
+        <span class="hint" id="cpHint"><span class="en">click to copy</span><span class="ko">클릭 복사</span></span>
+      </div>
+    </div>
+    <p class="reveal d2" style="color:var(--text2);margin-bottom:2.5rem;position:relative"><span class="en">Then type <code>/aura</code> in any project. That's it.</span><span class="ko">그리고 <code>/aura</code> 입력. 끝.</span></p>
+    <div class="platforms-row reveal d3">
+      <div class="plat"><span class="ck">✓</span> Claude Code</div>
+      <div class="plat"><span class="ck">✓</span> Codex CLI</div>
+      <div class="plat"><span class="ck">✓</span> Cursor</div>
+      <div class="plat"><span class="ck">✓</span> Manus</div>
+      <div class="plat"><span class="ck">✓</span> Windsurf</div>
+      <div class="plat"><span class="ck">✓</span> Aider</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-links">
+    <a href="https://github.com/smorky850612/Aurakit">GitHub</a>
+    <a href="https://www.npmjs.com/package/@smorky85/aurakit">npm</a>
+    <a href="https://github.com/smorky850612/Aurakit/issues">Issues</a>
+    <a href="https://github.com/smorky850612/Aurakit/blob/main/LICENSE">MIT</a>
+  </div>
+  <p>AuraKit v6.2 — <a href="https://github.com/smorky850612">smorky85</a></p>
+</footer>
+
+<script>
+// ── Three.js 3D Scene ──
+(function(){
+  const canvas=document.getElementById('hero-canvas');
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(60,window.innerWidth/window.innerHeight,.1,1000);
+  camera.position.z=30;
+  const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});
+  renderer.setSize(window.innerWidth,window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+
+  // Particle field
+  const pCount=1500;
+  const pGeo=new THREE.BufferGeometry();
+  const pPos=new Float32Array(pCount*3);
+  const pCol=new Float32Array(pCount*3);
+  for(let i=0;i<pCount;i++){
+    pPos[i*3]=(Math.random()-.5)*80;
+    pPos[i*3+1]=(Math.random()-.5)*80;
+    pPos[i*3+2]=(Math.random()-.5)*80;
+    const c=new THREE.Color().setHSL(.75+Math.random()*.15,1,.6+Math.random()*.3);
+    pCol[i*3]=c.r;pCol[i*3+1]=c.g;pCol[i*3+2]=c.b;
+  }
+  pGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3));
+  pGeo.setAttribute('color',new THREE.BufferAttribute(pCol,3));
+  const pMat=new THREE.PointsMaterial({size:.08,vertexColors:true,transparent:true,opacity:.6,blending:THREE.AdditiveBlending});
+  scene.add(new THREE.Points(pGeo,pMat));
+
+  // Floating shapes
+  const shapes=[];
+  const geos=[
+    new THREE.IcosahedronGeometry(1.5,0),
+    new THREE.OctahedronGeometry(1.2,0),
+    new THREE.TorusGeometry(.8,.3,8,16),
+    new THREE.TetrahedronGeometry(1,0),
+    new THREE.BoxGeometry(1.2,1.2,1.2),
+    new THREE.TorusKnotGeometry(.6,.2,48,8),
+    new THREE.DodecahedronGeometry(1,0),
+  ];
+  const colors=[0xa855f7,0x6366f1,0x22d3ee,0x34d399,0xf472b6,0x818cf8,0xc084fc];
+  for(let i=0;i<geos.length;i++){
+    const mat=new THREE.MeshBasicMaterial({color:colors[i],wireframe:true,transparent:true,opacity:.12});
+    const mesh=new THREE.Mesh(geos[i],mat);
+    mesh.position.set((Math.random()-.5)*35,(Math.random()-.5)*25,(Math.random()-.5)*20-5);
+    mesh.userData={
+      rotSpeed:{x:(.5+Math.random())*.005,y:(.5+Math.random())*.005,z:(.3+Math.random())*.003},
+      floatSpeed:.3+Math.random()*.5,
+      floatAmp:.5+Math.random()*1.5,
+      baseY:mesh.position.y
+    };
+    scene.add(mesh);shapes.push(mesh);
+  }
+
+  // Connection lines
+  const lineGeo=new THREE.BufferGeometry();
+  const linePos=new Float32Array(geos.length*2*3);
+  lineGeo.setAttribute('position',new THREE.BufferAttribute(linePos,3));
+  const lineMat=new THREE.LineBasicMaterial({color:0xa855f7,transparent:true,opacity:.04});
+  const lines=new THREE.LineSegments(lineGeo,lineMat);
+  scene.add(lines);
+
+  // Mouse tracking
+  let mouseX=0,mouseY=0;
+  document.addEventListener('mousemove',e=>{
+    mouseX=(e.clientX/window.innerWidth-.5)*2;
+    mouseY=(e.clientY/window.innerHeight-.5)*2;
+  });
+
+  // Resize
+  window.addEventListener('resize',()=>{
+    camera.aspect=window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth,window.innerHeight);
+  });
+
+  // Render loop
+  let t=0;
+  function animate(){
+    requestAnimationFrame(animate);
+    t+=.01;
+
+    // Camera follow mouse
+    camera.position.x+=(mouseX*3-camera.position.x)*.02;
+    camera.position.y+=(-mouseY*2-camera.position.y)*.02;
+    camera.lookAt(scene.position);
+
+    // Rotate particles
+    const pp=pGeo.attributes.position.array;
+    for(let i=0;i<pCount;i++){
+      pp[i*3+1]+=Math.sin(t+i*.01)*.003;
+    }
+    pGeo.attributes.position.needsUpdate=true;
+
+    // Animate shapes
+    shapes.forEach((m,i)=>{
+      m.rotation.x+=m.userData.rotSpeed.x;
+      m.rotation.y+=m.userData.rotSpeed.y;
+      m.rotation.z+=m.userData.rotSpeed.z;
+      m.position.y=m.userData.baseY+Math.sin(t*m.userData.floatSpeed)*m.userData.floatAmp;
+    });
+
+    // Update connection lines
+    const lp=lineGeo.attributes.position.array;
+    for(let i=0;i<shapes.length-1;i++){
+      const a=shapes[i].position,b=shapes[i+1].position;
+      lp[i*6]=a.x;lp[i*6+1]=a.y;lp[i*6+2]=a.z;
+      lp[i*6+3]=b.x;lp[i*6+4]=b.y;lp[i*6+5]=b.z;
+    }
+    lineGeo.attributes.position.needsUpdate=true;
+
+    // Fade based on scroll
+    const scrollFade=Math.max(0,1-window.scrollY/800);
+    renderer.domElement.style.opacity=scrollFade;
+
+    renderer.render(scene,camera);
+  }
+  animate();
+})();
+
+// ── 3D Tilt Cards ──
+document.querySelectorAll('[data-tilt]').forEach(card=>{
+  const spotlight=card.querySelector('.card-spotlight');
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width;
+    const y=(e.clientY-r.top)/r.height;
+    const tiltX=(y-.5)*-16;
+    const tiltY=(x-.5)*16;
+    card.style.transform=`perspective(800px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale(1.03)`;
+    if(spotlight){spotlight.style.left=e.clientX-r.left+'px';spotlight.style.top=e.clientY-r.top+'px'}
+  });
+  card.addEventListener('mouseleave',()=>{
+    card.style.transform='perspective(800px) rotateX(0) rotateY(0) scale(1)';
+    card.style.transition='transform .6s cubic-bezier(.4,0,.2,1)';
+    setTimeout(()=>card.style.transition='',600);
+  });
+  card.addEventListener('mouseenter',()=>{card.style.transition='none'});
+});
+
+// ── Lang ──
+function toggleLang(){const h=document.documentElement;h.dataset.lang=h.dataset.lang==='en'?'ko':'en'}
+
+// ── Copy ──
+function copyCmd(){
+  navigator.clipboard.writeText('npx @smorky85/aurakit');
+  const h=document.getElementById('cpHint');h.textContent='Copied!';
+  setTimeout(()=>{h.innerHTML='<span class="en">click to copy</span><span class="ko">클릭 복사</span>'},1500);
+}
+
+// ── Nav scroll ──
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('scrolled',scrollY>60));
+
+// ── Scroll reveal ──
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis')}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// ── Counters ──
+const cobs=new IntersectionObserver(es=>es.forEach(e=>{
+  if(!e.isIntersecting)return;
+  const el=e.target,tgt=+el.dataset.t;let cur=0;const step=tgt/35;
+  const iv=setInterval(()=>{cur+=step;if(cur>=tgt){cur=tgt;clearInterval(iv)}el.textContent=Math.round(cur)},25);
+  cobs.unobserve(el);
+}),{threshold:.5});
+document.querySelectorAll('.ctr').forEach(el=>cobs.observe(el));
+
+// ── Typewriter ──
+const cmds=[
+  {c:'/aura build: login with JWT auth',o:'<span class="o">✓ Scout → Plan → Build → Verify → Commit</span>\n<span class="dim">  feat(auth): add JWT login — 3 min</span>'},
+  {c:'/aura fix: TypeError in auth.ts',o:'<span class="o">✓ Root cause → Minimal fix → Verified</span>\n<span class="dim">  fix(auth): resolve token type mismatch</span>'},
+  {c:'/aura review',o:'<span class="o">✓ 4 agents → Grade: A — 0 vulns</span>\n<span class="dim">  94% match rate, OWASP clean</span>'},
+  {c:'/aura deploy: vercel',o:'<span class="o">✓ Next.js detected → Vercel config</span>\n<span class="dim">  chore(deploy): add vercel.json</span>'},
+];
+let ci=0;
+function typeCmd(){
+  const tw=document.getElementById('tw'),out=document.getElementById('tout'),cur=document.getElementById('cur');
+  tw.textContent='';out.innerHTML='';cur.style.display='inline';
+  const cmd=cmds[ci%cmds.length];let i=0;
+  (function t(){
+    if(i<cmd.c.length){tw.textContent+=cmd.c[i++];setTimeout(t,35+Math.random()*25)}
+    else{cur.style.display='none';setTimeout(()=>{out.innerHTML=cmd.o;setTimeout(()=>{ci++;typeCmd()},2800)},400)}
+  })();
+}
+typeCmd();
+</script>
+</body>
+</html>

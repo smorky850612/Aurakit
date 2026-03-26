@@ -86,10 +86,10 @@ const SNAPSHOTS_DIR = path.join(AURA_DIR, 'snapshots');
 // ── 보안 패턴 (15개) ─────────────────────────────────────────────────
 
 const SECRET_PATTERNS = [
-  /[A-Z_]{3,}_KEY\s*=\s*.{8,}/,
-  /[A-Z_]{3,}_SECRET\s*=\s*.{8,}/,
-  /[A-Z_]{3,}_TOKEN\s*=\s*.{8,}/,
-  /[A-Z_]{3,}_PASSWORD\s*=\s*.{8,}/,
+  /[A-Z_]{3,}_KEY\s*=\s*\S{8,}/,
+  /[A-Z_]{3,}_SECRET\s*=\s*\S{8,}/,
+  /[A-Z_]{3,}_TOKEN\s*=\s*\S{8,}/,
+  /[A-Z_]{3,}_PASSWORD\s*=\s*\S{8,}/,
   /[A-Z_]{3,}_DSN\s*=\s*postgres:\/\//,
   /sk-[a-zA-Z0-9]{20,}/,
   /ghp_[a-zA-Z0-9]{36}/,

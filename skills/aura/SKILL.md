@@ -115,8 +115,17 @@ claude --dangerously-skip-permissions
 **B-3. 디자인 시스템** [UI 파일 생성 시]
 - `.aura/design-system.md` 로딩. 없으면 default 복사. CSS 토큰 필수.
 
-**B-4. 스냅샷 복구** [필수]
-- `.aura/snapshots/current.md` 존재 시 → 이전 작업 복구
+**B-4. 세션 재개 + 스냅샷 복구** [필수]
+- `.aura/snapshots/current.md` 존재 시 → 이전 작업 상태 표시:
+  ```
+  📋 이전 작업 감지:
+     모드: BUILD | 상태: 5/8 파일 완료 | 마지막: src/auth/login.tsx
+     ▶ 이어서 진행할까요? (Y/N)
+  ```
+- 이전 파이프라인 흐름이 있으면 다음 단계 제안:
+  ```
+  💡 지난 세션: BUILD 완료 → 다음 권장: /aura review
+  ```
 
 **B-5. 크로스세션 메모리 + Instinct** [v5.0]
 - `.aura/memory.md` → 아키텍처 결정사항 로딩
@@ -138,7 +147,7 @@ claude --dangerously-skip-permissions
 6. **보안 L4** — security-scan.js pre-commit hook 자동
 7. **Convention Check** — convention-check.sh (CONV-001~005) 자동 [v4.0]
 8. **커밋** — `git commit -m "feat(scope): description"`
-9. **완료 리포트**
+9. **완료 리포트 + 다음 제안** — 자동 Next Actions 표시 (Section V 참조)
 
 ---
 
@@ -416,6 +425,107 @@ npx @smorky85/aurakit --platform=manus   # Manus 어댑터
 **동작 원리**: BUILD/FIX 완료 후 Claude가 패턴을 `.aura/instincts/` 에 기록 → 다음 `/aura` 실행 시 자동 로딩.
 **⚠️ 현재 제한**: PostToolUse 훅 미설정 시 패턴 저장은 Claude 판단에 의존 (완전 자동화 미지원). `PostToolUse` 훅 설정 시 자동화 가능.
 **상세** → `resources/instinct-system.md`
+
+---
+
+## V. 자동 제안 시스템 (Next Actions) [v6 신규]
+
+> 모든 모드 완료 후 반드시 다음 제안을 표시한다. 사용자가 다음 행동을 모를 때 길을 안내.
+
+**규칙**: 모드 완료 리포트 맨 아래에 항상 아래 형식으로 표시:
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📍 완료: [모드명] — [요약]
+💰 절약: ~[N]% 토큰 절감 (이 작업 기준)
+🔜 다음 추천:
+   1. /aura [추천1] — [이유]
+   2. /aura [추천2] — [이유]
+💡 팁: [상황에 맞는 한 줄 조언]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**토큰 절약률 계산 — 실측 기반 (하드코딩 아님)**:
+
+작업 완료 시 아래 공식으로 **기준선(baseline) vs 실제 사용량**을 비교:
+
+```
+[기준선] 수동 코딩 예상 토큰 (AuraKit 없이):
+  파일당 평균        = 2,500 토큰 (읽기 + 이해 + 수정 + 수동 검증)
+  재작업 비율        = ×1.4 (Discovery 없으면 30~40% 삽질/되돌리기)
+  수동 리뷰 비용     = 파일 수 × 800 토큰 (별도 요청으로 전체 다시 읽기)
+  수동 테스트 비용    = 파일 수 × 600 토큰 (테스트 작성 별도 요청)
+  컨텍스트 재로딩     = 세션당 1,500 토큰 (캐시 없이 매번 프로젝트 파악)
+
+  기준선 = (파일 수 × 2,500 × 1.4) + (파일 수 × 800) + (파일 수 × 600) + 1,500
+
+[실제] AuraKit 사용 토큰:
+  이번 세션에서 실제 소비된 토큰 (도구 호출 + 에이전트 합산)
+
+[절약률] = (1 - 실제 / 기준선) × 100%
+```
+
+**추적 항목** (완료 리포트에 표시):
+| 항목 | 측정 방법 |
+|------|----------|
+| 생성/수정 파일 수 | git diff --stat |
+| 세션 캐시 히트 | B-0에서 스킵 여부 기록 |
+| ConfigHash 스킵 | B-1에서 재실행 여부 기록 |
+| Instinct 재사용 | 로딩된 패턴 수 |
+| Scout 모델 | haiku vs sonnet (티어별) |
+| 에이전트 격리 횟수 | subagent-start.js 카운트 |
+
+**표시 형식**:
+```
+💰 토큰 리포트:
+   기준선 (수동 예상): ~18,200 토큰
+   실제 사용:          ~7,800 토큰
+   절약:              57% (10,400 토큰 절감)
+   ├─ Discovery 효과:   -3,200 (삽질 방지)
+   ├─ 티어 모델 효과:   -4,800 (haiku Scout + sonnet V2)
+   ├─ 캐시 히트:        -1,500 (세션 캐시 + ConfigHash)
+   └─ Instinct 재사용:  -900 (패턴 3건 적용)
+```
+
+**모드별 전환 맵 (필수 참조)**:
+
+| 완료 모드 | 다음 추천 (우선순위순) | 조건부 |
+|-----------|----------------------|--------|
+| PM | → PLAN → DESIGN | |
+| PLAN | → DESIGN → BUILD | |
+| DESIGN | → BUILD | |
+| BUILD | → REVIEW → DEPLOY | 테스트 없으면 → TDD 먼저 |
+| FIX | → REVIEW | 반복 에러면 → DEBUG |
+| CLEAN | → REVIEW → BUILD | |
+| REVIEW | → ITERATE (match <90%) 또는 DEPLOY (match ≥90%) | |
+| TDD | → BUILD → REVIEW | |
+| QA | → FIX (실패 시) 또는 DEPLOY (통과 시) | |
+| ITERATE | → DEPLOY (match ≥90%) 또는 REPORT | |
+| DEPLOY | → REPORT → STATUS | |
+| DEBUG | → FIX → REVIEW | |
+| BRAINSTORM | → PM → PLAN | |
+
+**세션 시작 시 자동 감지** (B-4에서 실행):
+- `.aura/snapshots/current.md`의 `last_mode`와 `status` 확인
+- 미완료 작업 → "이전 작업 이어하기" 제안
+- 완료된 작업 → 전환 맵 기반 다음 단계 제안
+- 아무 기록 없음 → "프로젝트 시작: `/aura pm:` 또는 `/aura build:`" 제안
+
+**스냅샷 기록 형식** (current.md에 자동 추가):
+```yaml
+last_mode: BUILD
+last_target: auth module
+status: completed  # completed | in_progress | failed
+completed_at: 2026-03-26T12:00:00
+next_suggested: review
+pipeline_stage: 4/7  # PM→PLAN→DESIGN→BUILD→REVIEW→ITERATE→DEPLOY
+```
+
+**파이프라인 진행 표시** (해당 시):
+```
+📊 파이프라인 진행률: ████████░░░░ 4/7
+   PM ✓ → PLAN ✓ → DESIGN ✓ → BUILD ✓ → REVIEW → ITERATE → DEPLOY
+                                          ^^^^^^ 현재 위치
+```
 
 ---
 
