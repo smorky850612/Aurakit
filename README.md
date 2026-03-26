@@ -16,7 +16,7 @@
 <p>
 <a href="#-before--after">Before & After</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#-quick-start">Quick Start</a>&nbsp;&nbsp;·&nbsp;&nbsp;
-<a href="#-34-intelligent-modes">34 Modes</a>&nbsp;&nbsp;·&nbsp;&nbsp;
+<a href="#-34-intelligent-modes">33 Modes</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#-quality-tiers">Tiers</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#-how-it-works">Pipeline</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#-6-layer-security">Security</a>&nbsp;&nbsp;·&nbsp;&nbsp;
@@ -112,7 +112,7 @@ bash install.sh                    # Full install (recommended)
 npx @smorky85/aurakit              # One-click npm install
 ```
 
-Copies skills, hooks (13 handlers), and agents into your Claude Code environment. Merges hooks into `settings.json` without overwriting your existing configuration.
+Copies skills, hooks (23 handlers), and agents into your Claude Code environment. Merges hooks into `settings.json` without overwriting your existing configuration.
 
 **3 — Use**
 
@@ -136,7 +136,7 @@ claude --dangerously-skip-permissions
 
 | | Manual Prompting | CLAUDE.md File | **AuraKit** |
 |:---|:---:|:---:|:---:|
-| Security enforcement | Hope for the best | Rules, no enforcement | **13 hooks enforce at write-time** |
+| Security enforcement | Hope for the best | Rules, no enforcement | **23 hooks enforce at write-time** |
 | Context survival | Lost on compact | Partial | **Snapshot + auto-restore** |
 | Token efficiency | Wasteful | Manual | **75% reduction (verified)** |
 | Code review | Manual | Manual | **4 agents in parallel** |
@@ -175,7 +175,7 @@ AuraKit detects your intent from natural language. Use a namespace prefix (`buil
 | **Platform** | MOBILE | react native, expo | React Native / Expo specialized pipeline |
 | | DESKTOP | electron, tauri | Electron / Tauri specialized pipeline |
 | | BAAS | supabase, firebase, bkend | BaaS platform integration guide |
-| **v5.1 New** | INSTINCT | instinct:show | View / manage learned project patterns |
+| **v6 New** | INSTINCT | instinct:show | View / manage learned project patterns |
 | | LANG | lang:python, lang:go | Force language-specific code reviewer (10 languages) |
 | | MCP | mcp:setup, mcp:list | Install & configure 14 MCP server types |
 | | CONTENT | 블로그, IR덱, SNS | Blog, market research, IR deck, tech docs, email, social |
@@ -196,8 +196,8 @@ AuraKit detects your intent from natural language. Use a namespace prefix (`buil
 |:-----|:-------|:------|:--------|:---------|:-----------|:--------|
 | **QUICK** | `/aura! request` | — | Sonnet | — | — | ~60% |
 | **ECO** *(default)* | `/aura request` | Haiku | Sonnet | Sonnet | Haiku | ~55% |
-| **PRO** | `/aura pro request` | Haiku | **Opus** | Sonnet | Haiku | ~20% |
-| **MAX** | `/aura max request` | Sonnet | **Opus** | **Opus** | Sonnet | baseline |
+| **PRO** | `/aura pro request` | Haiku | **Opus** | Sonnet | Haiku | ~35% |
+| **MAX** | `/aura max request` | Sonnet | **Opus** | **Opus** | Sonnet | ~25% |
 
 - **QUICK** — Color changes, text edits, single-file tweaks
 - **ECO** — Feature development, most daily work *(recommended)*
@@ -210,7 +210,7 @@ AuraKit detects your intent from natural language. Use a namespace prefix (`buil
 
 ```mermaid
 flowchart TD
-    A(["/aura request"]) --> B["Mode Detection\n35 modes · auto from natural language"]
+    A(["/aura request"]) --> B["Mode Detection\n33 modes · auto from natural language"]
     B --> C["Scout Agent · Haiku\nProject scan → .aura/project-profile.md"]
     C --> D["Micro-Plan\n200-token file-by-file build order"]
     D --> E["Builder Agent\nECO: Sonnet  ·  MAX: Opus"]
@@ -377,6 +377,66 @@ Supported: Playwright · GitHub · Slack · Linear · Notion · Supabase · Post
 </details>
 
 <details>
+<summary><strong>📍 Next Actions (v6.2)</strong> — Auto-suggest after every task</summary>
+
+<br/>
+
+After every mode completion, AuraKit shows what to do next:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📍 Done: BUILD — JWT Login (8 files)
+💰 Token Report:
+   Baseline (manual): ~18,200 | Actual: ~7,800 | Saved: 57%
+📊 Pipeline: ████████░░░░ 4/7
+🔜 Next: /aura review → /aura deploy
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+13-mode transition map guides you through the full pipeline. Session resume detects previous work on startup.
+
+</details>
+
+<details>
+<summary><strong>🌐 Cross-Platform (v6.2)</strong> — Claude Code, Codex, Cursor, Manus, Windsurf</summary>
+
+<br/>
+
+AuraKit now works across all major AI coding tools with platform-specific adapters:
+
+| Platform | Setup | Model Mapping |
+|:---------|:------|:-------------|
+| Claude Code | Native | haiku/sonnet/opus |
+| Codex CLI | SKILL.md auto-recognized | haiku→gpt-4o-mini, sonnet→gpt-4o, opus→o3 |
+| Cursor | `.cursorrules` | Cursor model selector |
+| Manus | System prompt | Manus routing |
+| Windsurf | `.windsurfrules` | Windsurf selector |
+
+See `resources/cross-harness.md` for detailed setup per platform.
+
+</details>
+
+<details>
+<summary><strong>🤖 Dynamic Agent Spawning (v6.2)</strong> — With circuit breaker</summary>
+
+<br/>
+
+Agents can spawn child agents when tasks are too large. Hard limits prevent runaway:
+
+| Limit | Value |
+|:------|:------|
+| Max depth | 3 (Agent→Child→Grandchild) |
+| Max total per session | 12 |
+| Max concurrent | 5 |
+| Timeout per agent | 5 minutes |
+| Circuit breaker | 3 consecutive failures → freeze |
+| Token budget | 30% of remaining context per agent |
+
+See `resources/agent-spawning.md` for spawn request format and tracking.
+
+</details>
+
+<details>
 <summary><strong>🔄 Loop Operator</strong> — Autonomous iteration until done</summary>
 
 <br/>
@@ -458,14 +518,15 @@ Type in your language without switching input methods. 8 languages, 56+ commands
 
 | Tool | SKILL.md | Hooks | Agents | Support Level |
 |:-----|:---------|:------|:-------|:--------------|
-| **Claude Code** *(recommended)* | ✅ | ✅ | ✅ | **Full** |
-| **Cursor** | ✅ | ⚠️ manual | ⚠️ manual | Partial |
-| **OpenAI Codex** | ✅ | ❌ | ❌ | Basic |
-| **OpenCode** | ✅ | ❌ | ❌ | Basic |
+| **Claude Code** *(recommended)* | ✅ | ✅ 23 hooks | ✅ | **Full** |
+| **OpenAI Codex CLI** | ✅ | ✅ sandbox pre/post | ✅ agents.md | **Full** |
+| **Cursor** | ✅ | ⚠️ VS Code Tasks | ✅ Agent Mode | **Supported** |
+| **Manus** | ✅ | ✅ event system | ✅ native multi-agent | **Supported** |
+| **Windsurf** | ✅ | ⚠️ VS Code Tasks | ✅ Cascade | **Supported** |
+| **Aider** | ✅ | ❌ | ❌ | Partial (BUILD/FIX) |
 | **Gemini CLI** | ✅ | ❌ | ❌ | Experimental |
-| **Windsurf / Roo Code** | ✅ | ❌ | ❌ | Basic |
 
-**Full support** = automated 6-layer security + 17 specialized agents + compact defense + triple verification. With other tools, you get core skill instructions without automated enforcement.
+See `resources/cross-harness.md` for detailed per-platform setup.
 
 ---
 
@@ -478,7 +539,7 @@ Type in your language without switching input methods. 8 languages, 56+ commands
 aurakit/
 ├── skills/
 │   ├── aura/                        # Main skill — single /aura entry point
-│   │   ├── SKILL.md                 # Core instructions (AuraKit v5.1)
+│   │   ├── SKILL.md                 # Core instructions (AuraKit v6)
 │   │   └── resources/               # 30+ mode-specific pipeline guides
 │   │       ├── build-pipeline.md
 │   │       ├── fix-pipeline.md
@@ -624,7 +685,7 @@ Then open any project and type `/aura`.
 
 <br/>
 
-**AuraKit v6 — Sonnet Amplified. 34 modes. SEC-01~15. 13 hooks. 75% token reduction.**
+**AuraKit v6.2 — 33 modes. 23 hooks. 6-layer security. Cross-platform. 75% token savings.**
 
 [![Star on GitHub](https://img.shields.io/github/stars/smorky850612/Aurakit?style=social)](https://github.com/smorky850612/Aurakit/stargazers)
 
