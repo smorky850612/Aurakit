@@ -171,6 +171,8 @@ function detectCategory(toolInput) {
   const content = (toolInput?.content || toolInput?.new_string || '').toLowerCase()
   const combined = path_str + ' ' + content
 
+  // 테스트 파일 경로 패턴 우선 — __tests__/, .test.ts, .spec.ts 등이 auth 키워드보다 먼저
+  if (/[/\\](?:__tests__|__mocks__|__fixtures__)[/\\]|\.(test|spec)\.[a-z]+$/.test(path_str)) return 'test'
   if (/auth|login|signup|jwt|session|password|token/.test(combined)) return 'auth'
   if (/api|route|endpoint|controller|handler/.test(combined)) return 'api'
   if (/db|database|prisma|sql|query|migration|schema/.test(combined)) return 'db'
