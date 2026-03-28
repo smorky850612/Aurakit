@@ -47,6 +47,10 @@
 | CONFIG | `/aura config:show` |
 | PIPELINE | `/aura pipeline:` |
 | QUICK | `/aura! 단순수정` |
+| CONTENT | `/aura content:블로그 주제` |
+| EXPLAIN | `/aura explain:src/auth/login.ts` |
+| ROLLBACK | `/aura rollback:` |
+| MIGRATE | `/aura migrate: Next.js 14 → 15` |
 
 ### IME 역변환 (두벌식)
 

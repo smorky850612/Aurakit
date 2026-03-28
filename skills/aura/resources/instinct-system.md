@@ -180,6 +180,38 @@ hooks/instinct-auto-save.js → Write/Edit 완료 시마다 실행
 - 완전 자동화는 `install.sh` 실행 필수
 - 저장되는 패턴은 코드 스니펫 상위 50줄 (프라이버시 고려)
 
+## 글로벌 학습 [v6 신규] — 전체 프로젝트 공유
+
+```
+~/.claude/.aura/global-instincts/
+  index.json          ← 글로벌 패턴 인덱스
+  typescript/         ← 언어별 하위 디렉토리
+    g-typescript-0001.md
+  python/
+  go/
+  ...
+```
+
+**동작 원리**:
+- 로컬 패턴 score ≥ 60 → 자동 글로벌 승격
+- 민감 정보(절대경로, URL, UUID) 자동 제거 후 저장
+- 모든 프로젝트가 같은 글로벌 풀 공유 → 한 프로젝트에서 배운 것이 다른 프로젝트에도 적용
+
+**B-5에서 로딩**:
+```
+현재 프로젝트 언어 감지 → global-instincts/[lang]/ 스캔
+→ score 순 상위 3개 로딩 → 컨텍스트 주입
+```
+
+```bash
+/aura instinct:global:show       # 전체 프로젝트 공유 패턴 조회
+/aura instinct:global:prune      # 저점수 글로벌 패턴 정리
+/aura instinct:global:merge      # 현재 프로젝트 패턴 즉시 글로벌 반영
+/aura instinct:global:export     # 글로벌 패턴 백업/공유용 내보내기
+```
+
+---
+
 ## 팀 공유
 
 ```

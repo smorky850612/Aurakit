@@ -1,6 +1,6 @@
 ---
 name: aura
-description: "All-in-one fullstack dev engine for Claude Code. Build, fix, clean, deploy, review in one /aura command. Discovery-First · Tiered Model · 6-Layer Security · 33 Modes · 8 Languages · 23 Hooks · 75% Token Savings. Use when user asks to build, fix, clean, deploy, review, debug, qa, brainstorm, orchestrate, or create content."
+description: "All-in-one fullstack dev engine for Claude Code. Build, fix, clean, deploy, review in one /aura command. Discovery-First · Tiered Model · 6-Layer Security · 36 Modes · 8 Languages · 23 Hooks · 55% Token Savings (ECO) · 75% (MAX+Cache) · Global Cross-Project Learning. Use when user asks to build, fix, clean, deploy, review, debug, qa, brainstorm, orchestrate, explain, rollback, migrate, or create content."
 argument-hint: "[자연어 설명]"
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob, Agent, WebFetch
 ---
@@ -8,7 +8,7 @@ allowed-tools: Read, Write, Edit, Bash, Grep, Glob, Agent, WebFetch
 # AuraKit v6 — /aura
 
 > 한 줄 명령으로 풀스택 앱을 완성하는 Claude Code 스킬.
-> Discovery-First · Tiered Model · 6중 보안 · 4패턴 오케스트레이션 · Gap Detection · QA Pipeline · Instinct 학습 엔진 · 언어별 리뷰어 · 크로스 하네스 · 토큰 ~55% 절감.
+> Discovery-First · Tiered Model · 6중 보안 · 4패턴 오케스트레이션 · Gap Detection · QA Pipeline · 글로벌 Instinct 학습 엔진 · 언어별 리뷰어 · 크로스 하네스 · 토큰 ECO ~55%·MAX ~75% 절감.
 
 **언어 규칙**: 사용자 메시지 언어 자동 감지 → 같은 언어 응답.
 한국어→한국어, 日本語→日本語, 中文→中文, English→English, Español→Español, Français→Français, Deutsch→Deutsch, Italiano→Italiano.
@@ -70,6 +70,9 @@ claude --dangerously-skip-permissions
 | **LANG** | `lang:` | 언어별 리뷰어 강제 지정 (lang:python, lang:go) |
 | **MCP** | `mcp:` | MCP 서버 설치·설정 (mcp:setup, mcp:list, mcp:check) |
 | **LOOP** | `batch:loop:` | 자율 반복 (until:pass, until:90%, max:N) |
+| **EXPLAIN** | `explain:` | 코드 설명, explain, 어떻게 동작, 이해 |
+| **ROLLBACK** | `rollback:` | 되돌려, undo, 취소, revert, 원상복구 |
+| **MIGRATE** | `migrate:` | 마이그레이션, migrate, 버전 업, upgrade |
 
 다국어 56개+ 명령 → `resources/mode-reference.md`
 
@@ -127,10 +130,14 @@ claude --dangerously-skip-permissions
   💡 지난 세션: BUILD 완료 → 다음 권장: /aura review
   ```
 
-**B-5. 크로스세션 메모리 + Instinct** [v5.0]
+**B-5. 크로스세션 메모리 + Instinct + 글로벌 학습** [v6]
 - `.aura/memory.md` → 아키텍처 결정사항 로딩
 - `.aura/team/` → decisions.md(ADR 형식), conventions.md, glossary.md
 - `.aura/instincts/` → 프로젝트 학습 패턴 로딩 (score > 40, 상위 5개)
+- **[v6 신규]** `~/.claude/.aura/global-instincts/` → 전체 프로젝트 공유 패턴 자동 로딩
+  - 현재 프로젝트 언어/프레임워크 매칭 글로벌 패턴 상위 3개 로딩
+  - 로컬 instinct score ≥ 60 → 글로벌 자동 승격 (민감 정보 자동 제거)
+  - 설치된 PC의 모든 프로젝트가 공유 → 쓸수록 점점 똑똑해짐
 - 상세 → `resources/instinct-system.md`
 
 ---
@@ -249,6 +256,9 @@ GapDetector(ECO/PRO: haiku, MAX: sonnet) → Match Rate ≥90%: 완료 / <90%: I
 | **MCP** | `mcp-configs.md` | 14종 MCP 서버 설정 (mcp:setup, mcp:list, mcp:check, mcp:add) |
 | **LOOP** | `loop-pipeline.md` | 자율 반복 루프 (until:pass·90%·no-error, max:N, 격리 실행) |
 | **BUILD_RESOLVER** | `build-resolvers.md` | 언어별 빌드 에러 해결 (Go/Rust/Java/Kotlin/C++/Swift/Python) |
+| **EXPLAIN** | `explain-pipeline.md` | 코드 이해 · 함수/아키텍처 설명 · 학습 모드 [v6] |
+| **ROLLBACK** | `rollback-pipeline.md` | BUILD 실패 복구 · 안전한 변경사항 되돌리기 [v6] |
+| **MIGRATE** | `migrate-pipeline.md` | DB 마이그레이션 · API 버전업 · 프레임워크 업그레이드 [v6] |
 
 ---
 
@@ -278,7 +288,11 @@ Health Dashboard: Match Rate · 보안 점수 · 테스트 커버리지 · Tech 
 /aura batch:[A,B,C]                          → 병렬 처리 (최대 5개, 각각 Git Worktree)
 /aura batch:sequential:A,B                   → 순차 처리
 /aura batch:loop:[작업] until:pass max:5     → 자율 반복 (resources/loop-pipeline.md)
+/aura batch:status                           → 진행 중인 배치 작업 상태 확인
+/aura batch:recover                          → 실패 Worktree 정리 + 성공분 머지 제안
 /aura finish:                                 → squash merge + Worktree 정리
+/aura rollback:                              → 변경사항 안전하게 되돌리기 (확인 후 git reset)
+/aura uninstall                              → AuraKit 훅 설정 제거 (settings.json 복구)
 ```
 
 ---
@@ -302,7 +316,7 @@ Health Dashboard: Match Rate · 보안 점수 · 테스트 커버리지 · Tech 
 
 | 메커니즘 | 방법 | 절감 |
 |---------|------|------|
-| SKILL.md 슬림화 | v5.0: ~16KB (Instinct·LangReviewer·Content 신규), 상세 내용 resource 위임 | 로딩 절감 |
+| SKILL.md 슬림화 | v6: ~26KB (글로벌Instinct·Explain·Rollback·Migrate 추가), 상세 내용 resource 위임 | 로딩 절감 |
 | Tiered Model | Scout/V3: haiku, V2: sonnet | ~40% |
 | Context Isolation | Agent 서브프로세스 격리 (context:fork 아님, isolation: worktree) | ~15% (추정) |
 | Fail-Only Output | 성공 시 "Pass" 한 줄만 반환 | ~30% |
@@ -326,6 +340,8 @@ Health Dashboard: Match Rate · 보안 점수 · 테스트 커버리지 · Tech 
 | DESIGN Cross-Check 실패 | 해당 Worker 재실행 후 재검증 |
 | Convention HIGH 위반 | 수정 후 커밋 재시도 안내 |
 | Git Worktree 실패 | 경고 후 메인 브랜치에서 계속 |
+| BATCH 일부 실패 | `/aura batch:recover` — 성공 Worktree 머지 + 실패 Worktree 정리 |
+| BUILD 실패 후 되돌리기 | `/aura rollback:` — git status 확인 후 안전한 reset |
 | Instinct 로딩 실패 | 패턴 없이 계속 (경고 표시, 기본 동작 유지) |
 | 지원 언어 리뷰어 없음 | 기본 CONV-001~005만 적용, 언어 추가 안내 |
 | 세션 캐시 만료 | B-0 건너뜀 → 전체 프로토콜 정상 실행 |
@@ -355,6 +371,7 @@ Health Dashboard: Match Rate · 보안 점수 · 테스트 커버리지 · Tech 
 
 **에이전트 메모리**: 각 에이전트 결과 `.aura/agent-memory/[agent].json` 자동 저장 (teammate-idle.js 훅)
 **생명주기 훅**: subagent-start.js(등록+증식 제한) · subagent-stop.js(완료) · `.aura/agent-memory/active.json`
+⚠️ subagent-start.js · subagent-stop.js · teammate-idle.js는 파일 존재하나 install.sh 미등록 (수동 등록 필요)
 
 **훅 이벤트 전체 목록** (install.sh 자동 설정):
 
@@ -372,6 +389,16 @@ Health Dashboard: Match Rate · 보안 점수 · 테스트 커버리지 · Tech 
 | Stop | session-stop.js | 세션 메트릭 · Instinct 힌트 · 미완료 알림 |
 | PreCompact | pre-compact-snapshot.js | 컴팩트 전 스냅샷 저장 |
 | PostCompact | post-compact-restore.js | 컴팩트 후 컨텍스트 복원 |
+
+**install.sh 없이도 동작 vs 필요한 기능**:
+| 기능 | install.sh 필요 여부 |
+|------|---------------------|
+| BUILD · FIX · REVIEW 등 모든 모드 (Claude 자체 기능) | 불필요 |
+| L3 bash-guard · L5 security-scan · V1 build-verify | **필요** |
+| Instinct 자동 저장 · 글로벌 학습 승격 | **필요** |
+| auto-format · governance-capture · session 훅 | **필요** |
+
+**언인스톨**: `/aura uninstall` 또는 `node hooks/uninstall.js` 실행 → settings.json에서 훅 제거
 
 ---
 
@@ -400,7 +427,7 @@ npx @smorky85/aurakit --platform=manus   # Manus 어댑터
 ```
 
 **훅 호환성:**
-- Claude Code: 23개 훅 자동 설정
+- Claude Code: 13개 훅 자동 설정
 - Codex CLI: sandbox pre/post 명령으로 대체
 - Cursor/Windsurf: VS Code Tasks로 대체
 - Manus: 이벤트 시스템 매핑
@@ -422,8 +449,20 @@ npx @smorky85/aurakit --platform=manus   # Manus 어댑터
 /aura instinct:reset             # 모든 패턴 초기화 (⚠️ 되돌릴 수 없음)
 ```
 
-**동작 원리**: BUILD/FIX 완료 후 Claude가 패턴을 `.aura/instincts/` 에 기록 → 다음 `/aura` 실행 시 자동 로딩.
-**⚠️ 현재 제한**: PostToolUse 훅 미설정 시 패턴 저장은 Claude 판단에 의존 (완전 자동화 미지원). `PostToolUse` 훅 설정 시 자동화 가능.
+**동작 원리**: BUILD/FIX 완료 시 PostToolUse 훅(instinct-auto-save.js)이 자동으로 패턴 저장 → 다음 `/aura` 실행 시 자동 로딩. (install.sh 실행 시 완전 자동화)
+
+**글로벌 학습 [v6 신규] — 쓸수록 똑똑해지는 시스템**:
+- 로컬 패턴 score ≥ 60 → `~/.claude/.aura/global-instincts/[언어]/` 자동 승격
+- 모든 프로젝트가 같은 글로벌 풀 공유 → 한 프로젝트에서 배운 것이 다른 프로젝트에도 적용
+- 민감 정보(API키, 경로, 회사명) 자동 제거 후 저장
+
+```bash
+/aura instinct:global:show       # 전체 프로젝트 공유 패턴 조회
+/aura instinct:global:prune      # 저점수 글로벌 패턴 정리
+/aura instinct:global:merge      # 현재 프로젝트 패턴 즉시 글로벌 반영
+/aura instinct:global:export     # 글로벌 패턴 백업/공유용 내보내기
+```
+
 **상세** → `resources/instinct-system.md`
 
 ---
@@ -529,4 +568,4 @@ pipeline_stage: 4/7  # PM→PLAN→DESIGN→BUILD→REVIEW→ITERATE→DEPLOY
 
 ---
 
-*AuraKit v6 — Discovery-First · Tiered Model ~75% · 6중 보안 · 33모드 · 8개 언어 · 23훅 · 7에이전트 정의 · Instinct 학습 엔진 · 언어별 리뷰어(10언어) · 프레임워크 패턴 · 비즈니스 스킬 · 크로스 하네스 · Gap Detection · ConfigHash · Team Context · Convention Check · OWASP+ · Build Resolver(7언어) · E2E Playwright · MCP 14종 · Loop 오퍼레이터 · 항상-활성 보안 규칙 · Stop 훅 · 자동 포매터 · Governance 캡처 · 패키지 매니저 자동 감지*
+*AuraKit v6 — Discovery-First · Tiered Model ECO~55%·MAX~75% · 6중 보안 · 36모드 · 8개 언어 · 23훅 · 7에이전트 정의 · 글로벌 Instinct 학습 엔진 · 언어별 리뷰어(10언어) · 프레임워크 패턴 · 비즈니스 스킬 · 크로스 하네스 · Gap Detection · ConfigHash · Team Context · Convention Check · OWASP+ · Build Resolver(7언어) · E2E Playwright · MCP 14종 · Loop 오퍼레이터 · 항상-활성 보안 규칙 · Stop 훅 · 자동 포매터 · Governance 캡처 · 패키지 매니저 자동 감지 · Explain · Rollback · Migrate*

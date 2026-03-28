@@ -86,24 +86,22 @@ case "${EXTENSION}" in
   py)
     echo "🔍 AuraKit V1: Python 구문 검사 중... (${FILE_BASENAME})" >&2
 
-    if command -v python3 &>/dev/null; then
-      ERROR_OUTPUT=$(python3 -m py_compile "${FILE_PATH}" 2>&1) && {
+    # python3 실제 동작 여부 확인 (Windows Python Launcher 오탐 방지)
+    PYTHON_BIN=""
+    if command -v python3 &>/dev/null && python3 -c "import sys; sys.exit(0)" >/dev/null 2>&1; then
+      PYTHON_BIN="python3"
+    elif command -v python &>/dev/null && python -c "import sys; sys.exit(0)" >/dev/null 2>&1; then
+      PYTHON_BIN="python"
+    fi
+
+    if [ -n "${PYTHON_BIN}" ]; then
+      ERROR_OUTPUT=$("${PYTHON_BIN}" -m py_compile "${FILE_PATH}" 2>&1) && {
         echo "✅ AuraKit V1: Python 구문 검사 통과" >&2
       } || {
         echo "" >&2
         echo "❌ AuraKit V1 Build Error: Python 구문 오류" >&2
         echo "파일: ${FILE_PATH}" >&2
         echo "" >&2
-        echo "${ERROR_OUTPUT}" >&2
-        exit 2
-      }
-    elif command -v python &>/dev/null; then
-      ERROR_OUTPUT=$(python -m py_compile "${FILE_PATH}" 2>&1) && {
-        echo "✅ AuraKit V1: Python 구문 검사 통과" >&2
-      } || {
-        echo "" >&2
-        echo "❌ AuraKit V1 Build Error: Python 구문 오류" >&2
-        echo "파일: ${FILE_PATH}" >&2
         echo "${ERROR_OUTPUT}" >&2
         exit 2
       }
