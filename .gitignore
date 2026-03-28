@@ -80,6 +80,10 @@ logs/
 
 # Local dev files (not for GitHub)
 index.html
+*.jpg
+*.jpeg
+*.png
+*.gif
 
 # bkit runtime (not part of AuraKit)
 .bkit/

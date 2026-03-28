@@ -319,6 +319,15 @@ function detectAndSaveAntiPattern(index, toolInput, toolName) {
 
   // 안티패턴 추가/갱신 시 인덱스 타임스탬프 동기화
   if (modified) index.updated = new Date().toISOString()
+
+  // anti_patterns 크기 제한 — occurrence_count 기준 상위 40개 유지 (safety cap)
+  if (index.anti_patterns.length > 50) {
+    index.anti_patterns.sort((a, b) => (b.occurrence_count || 1) - (a.occurrence_count || 1))
+    const removedAnti = index.anti_patterns.splice(40)
+    removedAnti.forEach(p => {
+      try { fs.unlinkSync(path.join(ANTI_DIR, `${p.id}.md`)) } catch {}
+    })
+  }
 }
 
 // ─────────────────────────────────────────────────
