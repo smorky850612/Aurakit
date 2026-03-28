@@ -249,6 +249,8 @@ function detectAndSaveAntiPattern(index, toolInput, toolName) {
 
   if (oldCode.length < 10) return
 
+  let modified = false
+
   for (const rule of CODE_ANTI_PATTERNS) {
     const inOld = rule.pattern.test(oldCode)
     const inNew = rule.pattern.test(newCode)
@@ -261,6 +263,7 @@ function detectAndSaveAntiPattern(index, toolInput, toolName) {
     if (existing) {
       existing.occurrence_count = (existing.occurrence_count || 1) + 1
       existing.updated = new Date().toISOString()
+      modified = true
     } else {
       const dirs = [INSTINCT_DIR, ANTI_DIR]
       dirs.forEach(d => { if (!fs.existsSync(d)) fs.mkdirSync(d, { recursive: true }) })
@@ -305,11 +308,15 @@ function detectAndSaveAntiPattern(index, toolInput, toolName) {
           created: new Date().toISOString(),
           updated: new Date().toISOString(),
         })
+        modified = true
       } catch {
         // 쓰기 실패 무시
       }
     }
   }
+
+  // 안티패턴 추가/갱신 시 인덱스 타임스탬프 동기화
+  if (modified) index.updated = new Date().toISOString()
 }
 
 // ─────────────────────────────────────────────────
@@ -502,7 +509,12 @@ function promoteToGlobal(pattern, content) {
       }
 
       globalIndex.patterns.sort((a, b) => b.score - a.score)
-      if (globalIndex.patterns.length > 500) globalIndex.patterns.splice(400)
+      if (globalIndex.patterns.length > 500) {
+        const removedG = globalIndex.patterns.splice(400)
+        removedG.forEach(p => {
+          try { fs.unlinkSync(path.join(GLOBAL_BASE, p.language || 'general', `${p.id}.md`)) } catch {}
+        })
+      }
       globalIndex.updated = new Date().toISOString()
       writeAtomic(GLOBAL_INDEX, JSON.stringify(globalIndex, null, 2))
     })
