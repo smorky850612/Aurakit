@@ -408,7 +408,6 @@ Health Dashboard: Match Rate · 보안 점수 · 테스트 커버리지 · Tech 
 
 **에이전트 메모리**: 각 에이전트 결과 `.aura/agent-memory/[agent].json` 자동 저장 (teammate-idle.js 훅)
 **생명주기 훅**: subagent-start.js(등록+증식 제한) · subagent-stop.js(완료) · `.aura/agent-memory/active.json`
-⚠️ subagent-start.js · subagent-stop.js · teammate-idle.js는 파일 존재하나 install.sh 미등록 (수동 등록 필요)
 
 **훅 이벤트 전체 목록** (install.sh 자동 설정):
 

@@ -17,17 +17,6 @@ success() { echo -e "${GREEN}[✓]${NC} $*"; }
 warn()    { echo -e "${YELLOW}[!]${NC} $*"; }
 error()   { echo -e "${RED}[✗]${NC} $*"; exit 1; }
 
-# Optional: --lang=ko,en,jp,zh,es,fr,de,it (default: all)
-LANG_FILTER=""
-for arg in "$@"; do
-  case "$arg" in --lang=*) LANG_FILTER="${arg#--lang=}" ;; esac
-done
-
-should_install_lang() {
-  [ -z "$LANG_FILTER" ] && return 0
-  echo ",$LANG_FILTER," | grep -qi ",${1}," && return 0
-  return 1
-}
 
 echo ""
 echo "  ╔══════════════════════════════════════╗"
@@ -132,47 +121,11 @@ success "~/.claude/ structure ready"
 # ════════════════════════════════════════════════════════════
 # 2. 스킬 파일 복사
 # ════════════════════════════════════════════════════════════
-info "Installing skills (8 languages, 56+ commands)..."
+info "Installing skills (3 core skills, 8 languages via auto-detect)..."
 
 cp -r "$AURAKIT_REPO/skills/aura"         "$SKILLS_DIR/" 2>/dev/null || true
 cp -r "$AURAKIT_REPO/skills/aura-compact" "$SKILLS_DIR/" 2>/dev/null || true
 cp -r "$AURAKIT_REPO/skills/aura-guard"   "$SKILLS_DIR/" 2>/dev/null || true
-
-if should_install_lang "kr"; then
-  for skill in 아우라 아우라빌드 아우라수정 아우라정리 아우라배포 아우라리뷰 아우라컴팩트; do
-    cp -r "$AURAKIT_REPO/skills/$skill" "$SKILLS_DIR/" 2>/dev/null || true
-  done
-fi
-if should_install_lang "jp"; then
-  for skill in オーラ オーラビルド "オーラ修正" "オーラ整理" オーラデプロイ オーラレビュー オーラコンパクト; do
-    cp -r "$AURAKIT_REPO/skills/$skill" "$SKILLS_DIR/" 2>/dev/null || true
-  done
-fi
-if should_install_lang "zh"; then
-  for skill in 奥拉 奥拉构建 奥拉修复 奥拉清理 奥拉部署 奥拉审查 奥拉压缩; do
-    cp -r "$AURAKIT_REPO/skills/$skill" "$SKILLS_DIR/" 2>/dev/null || true
-  done
-fi
-if should_install_lang "es"; then
-  for skill in aura-es aura-construir aura-arreglar aura-limpiar aura-desplegar aura-revisar aura-compactar; do
-    cp -r "$AURAKIT_REPO/skills/$skill" "$SKILLS_DIR/" 2>/dev/null || true
-  done
-fi
-if should_install_lang "fr"; then
-  for skill in aura-fr aura-construire aura-corriger aura-nettoyer aura-deployer aura-reviser aura-compresser; do
-    cp -r "$AURAKIT_REPO/skills/$skill" "$SKILLS_DIR/" 2>/dev/null || true
-  done
-fi
-if should_install_lang "de"; then
-  for skill in aura-de aura-bauen aura-beheben aura-aufraeumen aura-deployen aura-pruefen aura-komprimieren; do
-    cp -r "$AURAKIT_REPO/skills/$skill" "$SKILLS_DIR/" 2>/dev/null || true
-  done
-fi
-if should_install_lang "it"; then
-  for skill in aura-it aura-costruire aura-correggere aura-pulire aura-distribuire aura-rivedere aura-compattare; do
-    cp -r "$AURAKIT_REPO/skills/$skill" "$SKILLS_DIR/" 2>/dev/null || true
-  done
-fi
 
 success "Skills installed"
 
@@ -261,6 +214,15 @@ d['hooks'] = {
     ],
     'PostCompact': [
         {'type': 'command', 'command': f'{hp}/post-compact-restore.sh'}
+    ],
+    'SubagentStart': [
+        {'type': 'command', 'command': f'node {hp}/subagent-start.js'}
+    ],
+    'SubagentStop': [
+        {'type': 'command', 'command': f'node {hp}/subagent-stop.js'}
+    ],
+    'TeammateIdle': [
+        {'type': 'command', 'command': f'node {hp}/teammate-idle.js'}
     ]
 }
 d['statusLine'] = {
@@ -293,6 +255,9 @@ _update_settings_jq() {
     --arg af "node ${HOOKS_PATH}/auto-format.js" \
     --arg gc "node ${HOOKS_PATH}/governance-capture.js" \
     --arg bg "node ${HOOKS_PATH}/bash-guard.js" \
+    --arg sas "node ${HOOKS_PATH}/subagent-start.js" \
+    --arg sast "node ${HOOKS_PATH}/subagent-stop.js" \
+    --arg ti "node ${HOOKS_PATH}/teammate-idle.js" \
     '.hooks = {
       "SessionStart": [{"type":"command","command":$ss}],
       "UserPromptSubmit": [{"type":"command","command":$kc}],
@@ -301,7 +266,10 @@ _update_settings_jq() {
       "PostToolUseFailure": [{"type":"command","command":$ptf}],
       "Stop": [{"type":"command","command":$stp}],
       "PreCompact": [{"type":"command","command":$pre}],
-      "PostCompact": [{"type":"command","command":$post}]
+      "PostCompact": [{"type":"command","command":$post}],
+      "SubagentStart": [{"type":"command","command":$sas}],
+      "SubagentStop": [{"type":"command","command":$sast}],
+      "TeammateIdle": [{"type":"command","command":$ti}]
     } | .statusLine = {"type":"command","command":"bash ~/.claude/statusline-command.sh"}')
   echo "$UPDATED" > "$SETTINGS_FILE"
 }
@@ -338,8 +306,8 @@ echo "  ║        AuraKit v2.0 — Installation complete!     ║"
 echo "  ╚══════════════════════════════════════════════════╝"
 echo ""
 echo "  Installed:"
-echo "    ✓ 56+ skill commands (8 languages)"
-echo "    ✓ 13 security & automation hooks"
+echo "    ✓ 3 core skills (8 languages via auto-detect)"
+echo "    ✓ 16 security & automation hooks"
 echo "    ✓ AuraKit Nexus status bar (responsive · subscription/API)"
 echo "    ✓ Always-active security rules"
 echo ""
