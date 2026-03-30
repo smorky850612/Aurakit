@@ -1,0 +1,38 @@
+name: Wiki Sync
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'wiki/**'
+
+jobs:
+  sync-wiki:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main repo
+        uses: actions/checkout@v4
+
+      - name: Clone wiki
+        run: |
+          git clone https://github.com/smorky850612/Aurakit.wiki.git wiki-remote
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Copy wiki files
+        run: |
+          cp wiki/*.md wiki-remote/ 2>/dev/null || true
+          cp wiki/*.svg wiki-remote/ 2>/dev/null || true
+
+      - name: Commit and push
+        run: |
+          cd wiki-remote
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Wiki is already up to date."
+          else
+            git commit -m "docs(wiki): sync from main — ${{ github.sha }}"
+            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/smorky850612/Aurakit.wiki.git HEAD:master
+          fi
