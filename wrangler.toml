@@ -1,0 +1,6 @@
+# Cloudflare Pages — AuraKit static site
+# Deploy: npx wrangler pages deploy . --project-name=aurakit
+
+name = "aurakit"
+compatibility_date = "2026-01-01"
+pages_build_output_dir = "."
