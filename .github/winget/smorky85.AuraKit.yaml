@@ -1,0 +1,28 @@
+PackageIdentifier: smorky85.AuraKit
+PackageVersion: 6.3.2
+PackageName: AuraKit
+Publisher: smorky85
+PublisherUrl: https://github.com/smorky850612/Aurakit
+PublisherSupportUrl: https://github.com/smorky850612/Aurakit/issues
+License: MIT
+LicenseUrl: https://github.com/smorky850612/Aurakit/blob/main/LICENSE
+ShortDescription: Full-stack Claude Code skill — 36 modes, 6-layer security, ~55% token savings
+Description: |-
+  AuraKit is a Claude Code skill that replaces 20+ manual instructions with a single /aura command.
+  It auto-detects what you need, scans your project, generates code with security checks, and commits.
+  Features: 36 modes, 6-layer security, 30 hooks, 8 languages, ~55% token savings.
+Tags:
+  - claude
+  - ai
+  - coding
+  - developer-tools
+  - cli
+Installers:
+  - Architecture: x64
+    InstallerType: script
+    InstallerUrl: https://raw.githubusercontent.com/smorky850612/Aurakit/main/install.sh
+    InstallerSha256: 0000000000000000000000000000000000000000000000000000000000000000
+    InstallerSwitches:
+      Silent: "--auto"
+ManifestType: singleton
+ManifestVersion: 1.6.0

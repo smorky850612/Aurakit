@@ -106,10 +106,10 @@ brew install smorky85/tap/aurakit
 npx @smorky85/aurakit
 
 # One-liner (macOS / Linux)
-curl -fsSL https://get.aurakit.dev | bash
+curl -fsSL https://raw.githubusercontent.com/smorky850612/Aurakit/main/install.sh | bash
 
-# Windows (winget)
-winget install smorky85.AuraKit
+# Windows
+npx @smorky85/aurakit
 
 # From source
 bash install.sh
