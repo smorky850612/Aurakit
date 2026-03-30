@@ -17,6 +17,7 @@
 > Benchmark system, Homebrew tap, zero-friction install, QA automation 5/5, Wiki complete.
 
 **New features**
+- **PAYMENT mode** — `/aura payment:` — full subscription billing pipeline: Stripe · LemonSqueezy · Polar · TossPayments · StepPay · default PRO tier · VULN-001~012 security hardened
 - `benchmarks/` — 5 standardized tasks (T1~T5): REST API, JWT refresh, SQL opt, refactor, DevOps
 - `Formula/aurakit.rb` — Homebrew tap (`brew install smorky85/tap/aurakit`)
 - curl one-liner: `curl -fsSL https://raw.githubusercontent.com/smorky850612/Aurakit/main/install.sh | bash`
@@ -27,7 +28,7 @@
 - `install.sh` v2.0: `--auto` flag for CI/npx non-interactive mode
 - `bin/install.js`: passes `--auto` to install.sh during npm postinstall
 - README: 4 install methods, dual npm download badges (monthly + total)
-- Wiki: all version references updated to v6.4.0, 36 modes, ~55% token savings, 30 hooks
+- Wiki: all version references updated to v6.4.0, 37 modes, ~55% token savings, 30 hooks
 
 ---
 

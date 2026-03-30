@@ -1,6 +1,6 @@
 <div align="center">
 
-[![Modes](https://img.shields.io/badge/modes-36-818cf8?style=flat-square&labelColor=161b22)]()
+[![Modes](https://img.shields.io/badge/modes-37-818cf8?style=flat-square&labelColor=161b22)]()
 [![Languages](https://img.shields.io/badge/languages-8-fcd34d?style=flat-square&labelColor=161b22)]()
 
 </div>
@@ -133,10 +133,11 @@ The mode keyword is **optional**. AuraKit infers it from your description.
 ## v6 New Modes
 
 <details>
-<summary><b>✨ v6 New — INSTINCT · LANG · MCP · CONTENT</b></summary>
+<summary><b>✨ v6 New — PAYMENT · INSTINCT · LANG · MCP · CONTENT</b></summary>
 
 | Mode | What it does |
 |------|--------------|
+| `payment` | Full subscription billing — Stripe / LemonSqueezy / Polar / TossPayments / StepPay · default PRO tier |
 | `instinct` | View, train, or reset the pattern learning engine |
 | `lang` | Switch the active language-specific code reviewer |
 | `mcp` | Configure and connect MCP servers |

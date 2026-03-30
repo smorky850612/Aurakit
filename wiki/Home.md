@@ -121,7 +121,7 @@ That's it. AuraKit handles the rest.
 | Page | What you'll find |
 |------|-----------------|
 | [[Getting Started]] | Install, verify, first command |
-| [[Commands and Modes]] | All 36 modes with examples |
+| [[Commands and Modes]] | All 37 modes with examples |
 | [[Security]] | 6-layer system, SEC-01–SEC-15 |
 | [[Agents]] | 7 agents, roles, permissions |
 | [[Multilingual]] | 8-language command reference |

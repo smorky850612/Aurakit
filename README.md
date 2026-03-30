@@ -14,12 +14,12 @@
 
 <br/>
 
-<h3>36 Modes &nbsp;·&nbsp; 30 Hooks &nbsp;·&nbsp; 6-Layer Security &nbsp;·&nbsp; 8 Languages &nbsp;·&nbsp; ~55% Token Savings</h3>
+<h3>37 Modes &nbsp;·&nbsp; 30 Hooks &nbsp;·&nbsp; 6-Layer Security &nbsp;·&nbsp; 8 Languages &nbsp;·&nbsp; ~55% Token Savings</h3>
 
 <p>
 <a href="#-before--after">Before & After</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#-quick-start">Quick Start</a>&nbsp;&nbsp;·&nbsp;&nbsp;
-<a href="#-36-modes">36 Modes</a>&nbsp;&nbsp;·&nbsp;&nbsp;
+<a href="#-37-modes">37 Modes</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#-quality-tiers">Tiers</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#%EF%B8%8F-how-it-works">Pipeline</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#-6-layer-security">Security</a>&nbsp;&nbsp;·&nbsp;&nbsp;
@@ -157,7 +157,7 @@ claude --dangerously-skip-permissions
 | **4** | 💰 **THRIFTY** | Max token savings even on Opus | Tiered Model · Fail-Only output · Progressive Load · Session cache |
 | **5** | ♾️ **IMMORTAL** | Survives context loss | 65% compact guard · Snapshots · PostCompact restore · Session resume |
 | **6** | 🧠 **EVOLVING** | Gets smarter with every use | Instinct learning · instinct:evolve · Pattern sharing |
-| **7** | 🌐 **UNIVERSAL** | Any platform, any language | 8 languages · 36 modes · 5 platforms · Non-dev QUICK mode |
+| **7** | 🌐 **UNIVERSAL** | Any platform, any language | 8 languages · 37 modes · 5 platforms · Non-dev QUICK mode |
 | **8** | 🏆 **TOP-TIER** | Best skill, no comparison | Sum of the above 7 |
 
 </div>
@@ -181,7 +181,7 @@ claude --dangerously-skip-permissions
 
 ---
 
-## 🎯 36 Modes
+## 🎯 37 Modes
 
 AuraKit detects your intent from natural language. Use a namespace prefix (`build:`, `fix:`) when the mode is ambiguous.
 
@@ -239,6 +239,7 @@ AuraKit detects your intent from natural language. Use a namespace prefix (`buil
 | **MOBILE** | `mobile:`, react native | React Native / Expo specialized pipeline |
 | **DESKTOP** | `desktop:`, electron | Electron / Tauri specialized pipeline |
 | **BAAS** | `baas:`, supabase | Supabase / Firebase / bkend integration guide |
+| **PAYMENT** | `payment:`, stripe, polar, toss | Stripe · LemonSqueezy · Polar · TossPayments · StepPay — full subscription billing pipeline **(default PRO tier)** |
 
 **Intelligence & Configuration**
 
@@ -288,7 +289,7 @@ AuraKit detects your intent from natural language. Use a namespace prefix (`buil
 
 ```mermaid
 flowchart TD
-    A(["/aura request"]) --> B["Mode Detection\n36 modes · auto from natural language"]
+    A(["/aura request"]) --> B["Mode Detection\n37 modes · auto from natural language"]
     B --> C["Scout Agent · Haiku\nProject scan → .aura/project-profile.md\nConfigHash: skip if unchanged"]
     C --> D["Micro-Plan\n200-token file-by-file build order\nInstinct patterns loaded"]
     D --> E["Builder Agent\nECO: Sonnet  ·  PRO/MAX: Opus\nSEC-01~15 + Language Reviewer"]
@@ -361,6 +362,38 @@ All 15 rules are enforced both inline (code generation) and at runtime (security
 ---
 
 ## ✨ New in v6.4
+
+<details>
+<summary><strong>💳 PAYMENT Mode — Stripe · LemonSqueezy · Polar · TossPayments · StepPay</strong></summary>
+
+<br/>
+
+v6.4 adds a dedicated payment pipeline for subscription billing — the most security-critical feature in any SaaS:
+
+```bash
+/aura payment: Stripe 구독 결제 붙여줘       # 한국어
+/aura payment: add Stripe subscription billing  # English
+/aura payment: TossPayments 정기결제 연동      # 한국 서비스
+```
+
+| Provider | Market | Tax Handling | Subscription | Recommended for |
+|:---------|:-------|:-------------|:-------------|:----------------|
+| **Stripe** | Global | Manual (Stripe Tax) | ✅ Full | Global SaaS |
+| **LemonSqueezy** | Global | ✅ Auto (MoR) | ✅ Full | Digital products |
+| **Polar** | Global | ✅ Auto (MoR) | ✅ | Open source |
+| **TossPayments** | 🇰🇷 Korea | ❌ | ✅ Regular billing | 국내 서비스 |
+| **StepPay** | 🇰🇷 Korea | ❌ | ✅ | 한국 BNPL |
+
+**What it builds automatically:**
+- DB schema: `subscription_plans` + `subscriptions` + `webhook_events`
+- Checkout → subscription create → billing portal flow
+- Webhook handler with **signature verification** + idempotency (`INSERT ON CONFLICT`)
+- Subscription middleware for route access control
+- `.env.example` with all required keys
+
+> ⚠️ **Default tier: PRO** (Opus) — payment code is business-critical. Security audit (VULN-001~012) runs automatically.
+
+</details>
 
 <details>
 <summary><strong>🚀 install.sh v2.0 — Zero-friction setup</strong></summary>
@@ -707,7 +740,7 @@ Each iteration runs in isolation. Loop stops when the condition is met or max is
 aurakit/                             # v6.4.0
 ├── skills/
 │   ├── aura/                        # Main skill — single /aura entry point
-│   │   ├── SKILL.md                 # Core instructions (~31KB, 36 modes)
+│   │   ├── SKILL.md                 # Core instructions (~31KB, 37 modes)
 │   │   └── resources/               # 30+ mode-specific pipeline guides
 │   │       ├── build-pipeline.md
 │   │       ├── fix-pipeline.md
@@ -861,7 +894,7 @@ Then open any project and type `/aura`.
 
 <br/>
 
-**AuraKit v6.4.0 — 36 modes · 30 hooks · 6-layer security · 5 platforms · ~55% token savings**
+**AuraKit v6.4.0 — 37 modes · 30 hooks · 6-layer security · 5 platforms · ~55% token savings**
 
 <br/>
 
