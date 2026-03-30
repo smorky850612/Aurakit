@@ -102,6 +102,7 @@ claude --dangerously-skip-permissions
 | **EXPLAIN** | `explain:` | 코드 설명, explain, 어떻게 동작, 이해 |
 | **ROLLBACK** | `rollback:` | 되돌려, undo, 취소, revert, 원상복구 |
 | **MIGRATE** | `migrate:` | 마이그레이션, migrate, 버전 업, upgrade |
+| **PAYMENT** | `payment:` | 결제, stripe, lemon, polar, toss, steppay, 구독, subscription |
 
 다국어 56개+ 명령 → `resources/mode-reference.md`
 
@@ -120,7 +121,7 @@ claude --dangerously-skip-permissions
 
 - QUICK: 색상 변경, 텍스트 수정, 단순 설정
 - ECO: 일반 기능 구현, 대부분의 개발 작업
-- PRO: 결제, 인증, 복잡한 비즈니스 로직
+- PRO: **결제/구독(PAYMENT 모드 기본)**, 인증, 복잡한 비즈니스 로직
 - MAX: 보안 감사, 아키텍처 설계, 프로덕션 크리티컬 기능
 
 ---
@@ -286,6 +287,7 @@ GapDetector(ECO/PRO: haiku, MAX: sonnet) → Match Rate ≥90%: 완료 / <90%: I
 | **LOOP** | `loop-pipeline.md` | 자율 반복 루프 (until:pass·90%·no-error, max:N, 격리 실행) |
 | **BUILD_RESOLVER** | `build-resolvers.md` | 언어별 빌드 에러 해결 (Go/Rust/Java/Kotlin/C++/Swift/Python) |
 | **STATUS:HEALTH** | `status-dashboard.md` | Health Dashboard — Match Rate · 보안 점수 · 커버리지 · Tech Debt |
+| **PAYMENT** | `payment-pipeline.md` | Stripe · LemonSqueezy · Polar · TossPayments · StepPay 구독 결제 완성 (기본 PRO 티어) |
 
 ---
 

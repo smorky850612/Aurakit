@@ -25,6 +25,11 @@ if [ -z "${CONTENT}" ]; then
   exit 0
 fi
 
+# ── .env 템플릿 파일 제외 (커밋용 예시 파일, 실제 시크릿 아님) ───────────
+if echo "${FILE_PATH}" | grep -qiE "\.env\.(example|sample|template|defaults|test|ci|development)$"; then
+  exit 0
+fi
+
 # ── .env 파일 쓰기 보안 검사 ──────────────────────────────────────────
 if echo "${FILE_PATH}" | grep -qE "^\.env$|/\.env$|\.env\.local$|\.env\.production$"; then
   # .env 파일에 실제 시크릿 값이 포함되어 있는지 확인
