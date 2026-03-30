@@ -1,6 +1,6 @@
 ---
 name: aura
-description: "All-in-one fullstack dev engine. /aura: 36 modes (build/fix/clean/deploy/review/debug/qa/orchestrate), 6-layer security with 23 hooks, tiered models, 8 languages, instinct learning. 75% token savings."
+description: "All-in-one fullstack dev engine. /aura: 37 modes (build/fix/clean/deploy/review/payment/debug/qa/orchestrate+), 6-layer security with 30 hooks, tiered models, 8 languages, instinct learning. ~55% token savings."
 argument-hint: "[자연어 설명]"
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob, Agent, WebFetch
 ---
@@ -16,11 +16,11 @@ AuraKit은 이 8가지 원칙을 모든 모드, 모든 턴, 모든 출력에서 
 |---|------|-----------|-----|
 | 1 | FAST | 어떤 스킬보다 빠르게. 멍때리지 않는다. | 세션캐시, ConfigHash, QUICK모드, Progressive Load |
 | 2 | FLASHY | 가장 화려한 CLI. 하단바까지 정보를 넣는다. | StatusLine, Next Actions, 토큰 리포트, 파이프라인 표시 |
-| 3 | SECURE | 보안은 실제 최고등급. | 6층 보안, 23훅, SEC-01~15, bash-guard, security-scan |
+| 3 | SECURE | 보안은 실제 최고등급. | 6층 보안, 30훅, SEC-01~15, bash-guard, security-scan |
 | 4 | THRIFTY | Opus를 써도 토큰 절약 최대. | Tiered Model, Fail-Only, Progressive Load, 세션캐시 |
 | 5 | IMMORTAL | 컨텍스트가 날아가도 죽지 않는다. | 65% 컴팩트 방어, 스냅샷, PostCompact 복원, 세션 재개 |
 | 6 | EVOLVING | 쓸수록 똑똑해진다. 멈추지 않는다. | Instinct 학습, 글로벌 패턴 공유, instinct:evolve |
-| 7 | UNIVERSAL | 어디서든, 누구든, 어떤 언어든. | 8언어, 36모드, 크로스하네스 5플랫폼, 비개발자 QUICK모드 |
+| 7 | UNIVERSAL | 어디서든, 누구든, 어떤 언어든. | 8언어, 37모드, 크로스하네스 5플랫폼, 비개발자 QUICK모드 |
 | 8 | TOP-TIER | 스킬 중 탑티어. 비교 대상 없음. | 위 7개의 총합 |
 
 > Full-stack Claude Code skill. One command builds, fixes, reviews, deploys — with security enforcement, token optimization, and project memory.
@@ -602,4 +602,4 @@ pipeline_stage: 4/7  # PM→PLAN→DESIGN→BUILD→REVIEW→ITERATE→DEPLOY
 
 ---
 
-*AuraKit v6 — Discovery-First · Tiered Model ~75% · 6중 보안 · 36모드 · 8개 언어 · 23훅 · 7에이전트 정의 · Instinct 학습 엔진 · 언어별 리뷰어(10언어) · 프레임워크 패턴 · 비즈니스 스킬 · 크로스 하네스 · Gap Detection · ConfigHash · Team Context · Convention Check · OWASP+ · Build Resolver(7언어) · E2E Playwright · MCP 14종 · Loop 오퍼레이터 · 항상-활성 보안 규칙 · Stop 훅 · 자동 포매터 · Governance 캡처 · 패키지 매니저 자동 감지*
+*AuraKit v6 — Discovery-First · Tiered Model ~55% · 6중 보안 · 37모드 · 8개 언어 · 30훅 · 7에이전트 정의 · Instinct 학습 엔진 · 언어별 리뷰어(10언어) · 프레임워크 패턴 · 비즈니스 스킬 · 크로스 하네스 · Gap Detection · ConfigHash · Team Context · Convention Check · OWASP+ · Build Resolver(7언어) · E2E Playwright · MCP 14종 · Loop 오퍼레이터 · 항상-활성 보안 규칙 · Stop 훅 · 자동 포매터 · Governance 캡처 · 패키지 매니저 자동 감지*

@@ -104,7 +104,7 @@
     <rect x="798" y="14" width="84" height="22" rx="11" fill="#161b22" stroke="#30363d" stroke-width="1"/>
     <text x="840" y="29.5" text-anchor="middle"
           font-family="'SF Mono', Consolas, monospace"
-          font-size="11" fill="#8b949e">v6.4.0</text>
+          font-size="11" fill="#8b949e">v6.4.1</text>
   </g>
 
   <!-- npm badge -->

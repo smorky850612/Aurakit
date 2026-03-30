@@ -95,6 +95,6 @@ log('    /aura review:');
 log('    /aura! change button color');
 log('    /aura pro payment system');
 log('');
-log('  36 modes · 6-layer security · 30 hooks · ~55% token savings');
+log('  37 modes · 6-layer security · 30 hooks · ~55% token savings');
 log('══════════════════════════════════════');
 console.log('');

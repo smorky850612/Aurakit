@@ -1,9 +1,9 @@
 class Aurakit < Formula
-  desc "Full-stack Claude Code skill: 36 modes, 6-layer security, ~55% token savings"
+  desc "Full-stack Claude Code skill: 37 modes, 6-layer security, ~55% token savings"
   homepage "https://github.com/smorky850612/Aurakit"
-  url "https://registry.npmjs.org/@smorky85/aurakit/-/aurakit-6.3.2.tgz"
+  url "https://registry.npmjs.org/@smorky85/aurakit/-/aurakit-6.4.1.tgz"
   sha256 :no_check
-  version "6.3.2"
+  version "6.4.1"
   license "MIT"
 
   depends_on "node"

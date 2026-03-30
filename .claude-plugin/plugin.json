@@ -1,7 +1,7 @@
 {
   "name": "aurakit",
-  "version": "6.0.3",
-  "description": "All-in-one Claude Code skill: build, fix, review, deploy with one /aura command. 33 modes, 6-layer security (OWASP+), 23 hooks, 8 languages, 75% token savings.",
+  "version": "6.4.1",
+  "description": "All-in-one Claude Code skill: build, fix, review, deploy with one /aura command. 37 modes, 6-layer security (OWASP+), 30 hooks, 8 languages, ~55% token savings.",
   "author": {
     "name": "smorky85"
   },

@@ -4,7 +4,7 @@
 
 <br/>
 
-[![Version](https://img.shields.io/npm/v/%40smorky85/aurakit?style=flat-square&color=a855f7&label=v6.4.0)](https://www.npmjs.com/package/@smorky85/aurakit)
+[![Version](https://img.shields.io/npm/v/%40smorky85/aurakit?style=flat-square&color=a855f7&label=v6.4.1)](https://www.npmjs.com/package/@smorky85/aurakit)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-Native_Skill-7c3aed?style=flat-square&logo=anthropic&logoColor=white)](https://claude.ai/code)
 [![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=flat-square)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/smorky850612/Aurakit?style=flat-square&color=f59e0b&logo=github)](https://github.com/smorky850612/Aurakit/stargazers)
@@ -168,7 +168,7 @@ claude --dangerously-skip-permissions
 
 > "I can just prompt Claude myself" — Yes, but you'll repeat the same 20 instructions every session.
 
-| | Manual Prompting | CLAUDE.md File | **AuraKit v6.4.0** |
+| | Manual Prompting | CLAUDE.md File | **AuraKit v6.4.1** |
 |:---|:---:|:---:|:---:|
 | Security enforcement | Hope for the best | Rules, no enforcement | **30 hooks enforce at write-time** |
 | Context survival | Lost on compact | Partial | **Snapshot + PostCompact auto-restore** |
@@ -737,7 +737,7 @@ Each iteration runs in isolation. Loop stops when the condition is met or max is
 <br/>
 
 ```
-aurakit/                             # v6.4.0
+aurakit/                             # v6.4.1
 ├── skills/
 │   ├── aura/                        # Main skill — single /aura entry point
 │   │   ├── SKILL.md                 # Core instructions (~31KB, 37 modes)
@@ -894,7 +894,7 @@ Then open any project and type `/aura`.
 
 <br/>
 
-**AuraKit v6.4.0 — 37 modes · 30 hooks · 6-layer security · 5 platforms · ~55% token savings**
+**AuraKit v6.4.1 — 37 modes · 30 hooks · 6-layer security · 5 platforms · ~55% token savings**
 
 <br/>
 

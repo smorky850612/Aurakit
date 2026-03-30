@@ -1,6 +1,6 @@
 <div align="center">
 
-[![Current](https://img.shields.io/badge/current-v6.4.0-818cf8?style=flat-square&labelColor=161b22)]()
+[![Current](https://img.shields.io/badge/current-v6.4.1-818cf8?style=flat-square&labelColor=161b22)]()
 [![npm](https://img.shields.io/npm/v/@smorky85/aurakit?style=flat-square&color=38bdf8&labelColor=161b22)](https://www.npmjs.com/package/@smorky85/aurakit)
 
 </div>
@@ -11,7 +11,22 @@
 
 ---
 
-## v6.4.0 — Current
+## v6.4.1 — Current
+
+> [!NOTE]
+> PAYMENT mode fully documented, 36 → 37 modes across all surfaces. SKILL.md sync.
+
+**Fixes**
+- SKILL.md: description, DNA table, footer — 36모드·23훅 → 37모드·30훅, ~75% → ~55%
+- README: PAYMENT mode in mode table + New in v6.4 section, 36 → 37 everywhere
+- wiki/Commands-and-Modes.md: PAYMENT in v6 New Modes, badge 36→37
+- Formula/aurakit.rb: desc + url + version → 6.4.1
+- `.claude-plugin/plugin.json`: 33 modes / 23 hooks / 75% → 37 modes / 30 hooks / ~55%
+- bin/install.js: 36 modes → 37 modes in completion message
+
+---
+
+## v6.4.0
 
 > [!NOTE]
 > Benchmark system, Homebrew tap, zero-friction install, QA automation 5/5, Wiki complete.
