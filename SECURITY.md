@@ -30,5 +30,5 @@ AuraKit enforces 6-layer security:
 Layers L3-L5 require `bash install.sh` to activate.
 
 ## Known Mitigations
-- CVE-2026-33068: Workspace trust bypass — requires Claude Code >= 2.1.53
-- Prompt injection: Detected by injection-guard.js
+- Workspace trust bypass: Mitigated by agent role boundaries (L1/L2). Requires Claude Code >= 2.1.0.
+- Prompt injection: Detected by `hooks/injection-guard.js` (PreToolUse hook).

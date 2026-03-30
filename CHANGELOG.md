@@ -37,7 +37,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/)
 - 30+ multilingual skill folders (description budget freed from ~87% to ~4%)
 - Language-specific install loops and should_install_lang function
 
-## [6.2.0] - Previous
+## [6.2.0] - 2026-03
 
 ### Added
 - Cross-platform support (Codex, Cursor, Manus, Windsurf)
@@ -45,11 +45,11 @@ Format: [Keep a Changelog](https://keepachangelog.com/)
 - Loop operator, QA:E2E, BUILD_RESOLVER
 - EXPLAIN, ROLLBACK, MIGRATE modes
 
-## [6.0.0] - Previous
+## [6.0.0] - 2025-12
 
 ### Added
 - Instinct learning engine with global cross-project learning
 - Language-specific code reviewers (10 languages)
 - 14 MCP server configurations
 - Sonnet Amplifier, SEC-01~15 OWASP rules
-- 75% token reduction (verified)
+- ~55% token savings (ECO tier, estimated)
