@@ -117,13 +117,19 @@ Copies skills, hooks (23 handlers), and agents into your Claude Code environment
 **3 — Use**
 
 ```bash
+# Option A — Recommended for daily use (hooks handle security)
 claude --dangerously-skip-permissions
 
-/aura 로그인 기능 만들어줘         # Korean · auto-detect BUILD
-/aura build: login with JWT        # English · namespace prefix
+/aura build: login with JWT        # BUILD mode (English)
+/aura 로그인 기능 만들어줘         # BUILD mode (Korean · auto-detect)
 /aura fix: TypeError in auth.ts    # FIX mode
 /aura! 버튼 색상 변경               # QUICK mode · ~60% fewer tokens
 ```
+
+> [!WARNING]
+> **What `--dangerously-skip-permissions` means:** Claude won't ask for confirmation on each tool use. This is intentional — AuraKit's hooks (`bash-guard.js`, `security-scan.js`) replace per-action dialogs with automated enforcement. Without `install.sh`, security relies only on agent role isolation (L1/L2).
+>
+> **Option B — Safer for first-time use:** Run `claude` without the flag. Claude will ask for permission on each Write/Edit/Bash call. Slower, but no hooks required.
 
 > [!NOTE]
 > AuraKit is **framework-agnostic** — Next.js, FastAPI, Spring, Go, Rust, or anything else. Scout auto-detects your stack.
@@ -138,25 +144,35 @@ claude --dangerously-skip-permissions
 |:---|:---:|:---:|:---:|
 | Security enforcement | Hope for the best | Rules, no enforcement | **23 hooks enforce at write-time** |
 | Context survival | Lost on compact | Partial | **Snapshot + auto-restore** |
-| Token efficiency | Wasteful | Manual | **75% reduction (verified)** |
+| Token efficiency | Wasteful | Manual | **~75% reduction (estimated; context load measured)** |
 | Code review | Manual | Manual | **4 agents in parallel** |
 | Multi-language support | English only | English only | **8 languages, 56+ commands** |
-| Learning over time | Starts fresh | Starts fresh | **Instinct engine remembers** |
+| Learning over time | Starts fresh | Starts fresh | **Instinct engine remembers** *(requires install.sh for full auto)* |
 | Install time | — | 30 min writing rules | **30 seconds** |
 
 ---
 
-## 🎯 34 Intelligent Modes
+## 🎯 Modes
 
 AuraKit detects your intent from natural language. Use a namespace prefix (`build:`, `fix:`) when the mode is ambiguous.
 
+### Start here — 5 core modes cover 90% of daily use
+
+| Mode | Invoke | What It Does |
+|:-----|:-------|:-------------|
+| **BUILD** | `/aura build: ...` or just describe it | Discovery → micro-plan → generate → triple verify → commit |
+| **FIX** | `/aura fix: ...` or paste the error | Root-cause analysis → minimal change → verify |
+| **REVIEW** | `/aura review:` | 4 parallel agents → VULN-NNN report, A–F grade |
+| **CLEAN** | `/aura clean:` | Dead code removal, 250-line splits, deduplication |
+| **DEPLOY** | `/aura deploy:` | Framework detect → env setup → deploy config → security recheck |
+
+<details>
+<summary><strong>28 extended modes</strong> — Quality, Planning, Platform, Utility</summary>
+
+<br/>
+
 | Category | Mode | Trigger | What It Does |
 |:---------|:-----|:--------|:-------------|
-| **Core** | BUILD | 만들어, create, implement | Discovery → micro-plan → generate → triple verify → commit |
-| | FIX | 에러, bug, TypeError, crash | Root-cause analysis → minimal change → verify |
-| | CLEAN | 정리, refactor, 重构 | Dead code removal, 250-line splits, deduplication |
-| | DEPLOY | 배포, vercel, docker | Framework detect → env setup → deploy config → security recheck |
-| | REVIEW | 리뷰, audit, check | 4 parallel agents → VULN-NNN report, A–F grade |
 | **Quality** | GAP | gap, match rate | Design ↔ implementation gap (Match Rate %) |
 | | ITERATE | 반복, auto-fix | Auto-improve until Match Rate ≥ 90% (max 5 cycles) |
 | | TDD | tdd, test-first | 🔴 RED → 🟢 GREEN → 🔵 REFACTOR · coverage ≥ 70–90% |
@@ -187,6 +203,8 @@ AuraKit detects your intent from natural language. Use a namespace prefix (`buil
 | | QUICK (`!`) | `/aura! request` | Protocol-minimal, single file, ~60% token savings |
 | **Auto** | QA:E2E | qa:e2e:setup, qa:e2e:ci | Playwright E2E — auth / CRUD / responsive / CI pipeline |
 | | BUILD_RESOLVER | *(auto on V1 fail)* | Language-specific build error resolver (7 languages) |
+
+</details>
 
 ---
 
@@ -230,16 +248,19 @@ flowchart TD
 
 ## 🔐 6-Layer Security
 
-Every generated file passes through 6 automated security gates.
+Every generated file passes through up to 6 security gates.
 
-| Layer | What It Checks | Trigger |
-|:------|:---------------|:--------|
-| **L1 — Agent Roles** | Per-agent read/write boundaries in system prompts | Always |
-| **L2 — Disallowed Tools** | Write/Edit/Bash blocklist for read-only agents | Always |
-| **L3 — Bash Guard** | Dangerous commands: `rm -rf`, `DROP TABLE`, `eval` | PreToolUse (Bash) |
-| **L4 — Security Scan** | API keys, hardcoded secrets, SQL injection, XSS patterns | PreToolUse (Write/Edit) |
-| **L5 — Migration Guard** | Destructive DB migrations require explicit confirmation | PreToolUse (Write) |
-| **L6 — Dependency Audit** | `npm audit --audit-level=high` on BUILD and FIX | Auto in pipeline |
+| Layer | What It Checks | Trigger | Requires install.sh? |
+|:------|:---------------|:--------|:---------------------|
+| **L1 — Agent Roles** | Per-agent read/write boundaries in system prompts | Always | No |
+| **L2 — Disallowed Tools** | Write/Edit/Bash blocklist for read-only agents | Always | No |
+| **L3 — Bash Guard** | Dangerous commands: `rm -rf`, `DROP TABLE`, `eval` | PreToolUse (Bash) | **Yes** |
+| **L4 — Security Scan** | API keys, hardcoded secrets, SQL injection, XSS patterns | PreToolUse (Write/Edit) | **Yes** |
+| **L5 — Migration Guard** | Destructive DB migrations require explicit confirmation | PreToolUse (Write) | **Yes** |
+| **L6 — Dependency Audit** | `npm audit --audit-level=high` on BUILD and FIX | Auto in pipeline | No |
+
+> [!WARNING]
+> **L3, L4, L5 are only active after running `install.sh` or `npx @smorky85/aurakit`.** Without installation, only L1 (agent role boundaries) and L2 (tool blocklist) protect you. If you skip installation, use Claude without `--dangerously-skip-permissions` so manual confirmation acts as your safety net.
 
 > [!IMPORTANT]
 > Security rules in `~/.claude/rules/aurakit-security.md` are **always active** — applied to every Claude Code session automatically, even without running `/aura`.
@@ -276,11 +297,11 @@ This eliminates Sonnet's tendency to rush to code, producing measurably better o
 </details>
 
 <details>
-<summary><strong>75% Token Reduction</strong> — Verified, not estimated</summary>
+<summary><strong>~75% Token Reduction</strong> — Context load measured; task savings estimated</summary>
 
 <br/>
 
-v6 loads only what's needed: 1 language reviewer (not all 10), 1 framework pattern (not all 5), keywords instead of code examples. Measured: v5.1 BUILD loaded 82KB → v6 loads 20KB.
+v6 loads only what's needed: 1 language reviewer (not all 10), 1 framework pattern (not all 5), keywords instead of code examples. **Context load measured:** v5.1 BUILD loaded 82KB → v6 loads 20KB (75.6% reduction). **Per-task savings** (ECO ~55%, QUICK ~60%) are model-cost estimates based on tier routing — not independently benchmarked like Aider's Polyglot numbers.
 
 | What Changed | v5.1 | v6 |
 |:-------------|:-----|:---|
@@ -510,6 +531,10 @@ Type in your language without switching input methods. 8 languages, 56+ commands
 
 </div>
 
+> **v6.3**: Multilingual commands no longer require separate skill folders.
+> All 56+ commands are handled by the core `/aura` skill via auto-detection
+> and `hooks/korean-command.js`. This frees ~83% of Claude Code's skill description budget.
+
 **IME support**: Korean and Japanese IME reverse-transliteration is handled automatically by `hooks/korean-command.js`.
 
 ---
@@ -550,8 +575,7 @@ aurakit/
 │   │       ├── mcp-configs.md
 │   │       └── ...                  # +22 more guides
 │   ├── aura-compact/                # Snapshot + /compact shortcut
-│   ├── aura-guard/                  # Token budget monitor
-│   └── [56 multilingual shortcuts]  # 8 languages × 7 modes
+│   └── aura-guard/                  # Token budget monitor
 ├── agents/
 │   ├── scout.md                     # Read-only project scanner (Haiku)
 │   ├── worker.md                    # Reviewer + TestRunner (Sonnet)

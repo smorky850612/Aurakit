@@ -1,7 +1,8 @@
 # AuraKit - gitignore
 
-# AuraKit 런타임 데이터 (프로젝트별)
+# AuraKit runtime
 .aura/
+tests/results/
 
 # Environment
 .env

@@ -87,6 +87,8 @@ else
     Linux)
       if command -v apt-get &>/dev/null; then
         sudo apt-get install -y jq >/dev/null 2>&1 && JQ_INSTALLED=true && success "jq installed via apt"
+      elif command -v dnf &>/dev/null; then
+        sudo dnf install -y jq >/dev/null 2>&1 && JQ_INSTALLED=true && success "jq installed via dnf"
       elif command -v yum &>/dev/null; then
         sudo yum install -y jq >/dev/null 2>&1 && JQ_INSTALLED=true && success "jq installed via yum"
       elif command -v pacman &>/dev/null; then
