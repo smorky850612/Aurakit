@@ -25,7 +25,7 @@
 2. **DB 설계** — `subscription_plans`, `subscriptions`, `webhook_events` 테이블
 3. **제공자 설정** — API 키, 웹훅 엔드포인트 등록, `.env.example` 생성
 4. **결제 플로우 구현** — 체크아웃 세션 → 구독 생성 → 포털
-5. **웹훅 핸들러** — 서명 검증 → 멱등성 체크 → DB 동기화
+5. **웹훅 핸들러** — 서명 검증 → 원자적 멱등성 체크 → 트랜잭션 내 DB 동기화
 6. **접근 제어** — 미들웨어로 구독 상태 확인
 7. **3중 검증** — V1 빌드 + V2 Reviewer + V3 E2E 결제 플로우 테스트
 
@@ -155,49 +155,69 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
   }
 
-  // 멱등성 보장
-  const existing = await db.query(
-    'SELECT id FROM webhook_events WHERE provider=$1 AND event_id=$2',
-    ['stripe', event.id]
-  );
-  if (existing.rows.length > 0) return NextResponse.json({ ok: true });
+  const client = await db.connect();
+  try {
+    await client.query('BEGIN');
 
-  await db.query(
-    'INSERT INTO webhook_events (provider, event_id, event_type, payload) VALUES ($1,$2,$3,$4)',
-    ['stripe', event.id, event.type, JSON.stringify(event.data)]
-  );
+    // 멱등성 + 원자성: INSERT ON CONFLICT DO NOTHING으로 TOCTOU 레이스 컨디션 방지
+    // SELECT → INSERT 패턴 대신 단일 원자 연산으로 중복 처리 완전 차단
+    const inserted = await client.query(
+      'INSERT INTO webhook_events (provider, event_id, event_type, payload) VALUES ($1,$2,$3,$4) ON CONFLICT (provider, event_id) DO NOTHING',
+      ['stripe', event.id, event.type, JSON.stringify(event.data)]
+    );
+    if (inserted.rowCount === 0) {
+      await client.query('ROLLBACK');
+      return NextResponse.json({ ok: true }); // 이미 처리된 이벤트
+    }
 
-  switch (event.type) {
-    case 'customer.subscription.created':
-    case 'customer.subscription.updated': {
-      const sub = event.data.object as Stripe.Subscription;
-      await upsertSubscription({
-        provider: 'stripe',
-        providerSubscriptionId: sub.id,
-        userId: sub.metadata.userId,
-        status: sub.status,
-        currentPeriodStart: new Date(sub.current_period_start * 1000),
-        currentPeriodEnd: new Date(sub.current_period_end * 1000),
-        trialEnd: sub.trial_end ? new Date(sub.trial_end * 1000) : null,
-      });
-      break;
+    switch (event.type) {
+      case 'customer.subscription.created':
+      case 'customer.subscription.updated': {
+        const sub = event.data.object as Stripe.Subscription;
+        await upsertSubscription({
+          provider: 'stripe',
+          providerSubscriptionId: sub.id,
+          providerPriceId: sub.items.data[0].price.id,
+          userId: sub.metadata.userId,
+          status: sub.status,
+          currentPeriodStart: new Date(sub.current_period_start * 1000),
+          currentPeriodEnd: new Date(sub.current_period_end * 1000),
+          trialEnd: sub.trial_end ? new Date(sub.trial_end * 1000) : null,
+        }, client);
+        break;
+      }
+      case 'customer.subscription.deleted': {
+        const sub = event.data.object as Stripe.Subscription;
+        await client.query(
+          "UPDATE subscriptions SET status='canceled', canceled_at=now(), updated_at=now() WHERE provider_subscription_id=$1",
+          [sub.id]
+        );
+        break;
+      }
+      case 'invoice.payment_failed': {
+        const invoice = event.data.object as Stripe.Invoice;
+        await client.query(
+          "UPDATE subscriptions SET status='past_due', updated_at=now() WHERE provider_subscription_id=$1",
+          [invoice.subscription as string]
+        );
+        const ownerEmail = await getSubscriptionOwnerEmail(invoice.subscription as string);
+        await sendPaymentFailedEmail(ownerEmail);
+        break;
+      }
     }
-    case 'customer.subscription.deleted': {
-      const sub = event.data.object as Stripe.Subscription;
-      await cancelSubscription('stripe', sub.id);
-      break;
-    }
-    case 'invoice.payment_failed': {
-      const invoice = event.data.object as Stripe.Invoice;
-      await handlePaymentFailed(invoice.subscription as string);
-      break;
-    }
+
+    await client.query(
+      'UPDATE webhook_events SET processed_at=now() WHERE provider=$1 AND event_id=$2',
+      ['stripe', event.id]
+    );
+    await client.query('COMMIT');
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
   }
 
-  await db.query(
-    'UPDATE webhook_events SET processed_at=now() WHERE provider=$1 AND event_id=$2',
-    ['stripe', event.id]
-  );
   return NextResponse.json({ ok: true });
 }
 ```
@@ -206,11 +226,15 @@ export async function POST(req: Request) {
 ```typescript
 // POST /api/subscriptions/portal
 export async function POST(req: Request) {
+  // non-null assertion(!) 대신 명시적 401 가드 (VULN-009 수정)
   const session = await getServerSession();
-  const customerId = await getUserStripeCustomerId(session!.user.id);
+  if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const customerId = await getUserStripeCustomerId(session.user.id);
+  if (!customerId) return NextResponse.json({ error: 'No subscription found' }, { status: 404 });
 
   const portal = await stripe.billingPortal.sessions.create({
-    customer: customerId!,
+    customer: customerId,
     return_url: `${process.env.NEXT_PUBLIC_URL}/dashboard`,
   });
 
@@ -271,7 +295,8 @@ export async function POST(req: Request) {
     .update(body)
     .digest('hex');
 
-  if (!crypto.timingSafeEqual(Buffer.from(hmac), Buffer.from(sig))) {
+  // 길이 불일치 시 timingSafeEqual은 throw — 사전 체크 필수
+  if (hmac.length !== sig.length || !crypto.timingSafeEqual(Buffer.from(hmac), Buffer.from(sig))) {
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
   }
 
@@ -280,41 +305,55 @@ export async function POST(req: Request) {
   const sub = payload.data.attributes;
   const eventId = String(payload.meta.event_id || payload.data.id + '_' + eventName);
 
-  // 멱등성 보장
-  const existing = await db.query(
-    'SELECT id FROM webhook_events WHERE provider=$1 AND event_id=$2',
-    ['lemonsqueezy', eventId]
-  );
-  if (existing.rows.length > 0) return NextResponse.json({ ok: true });
+  const client = await db.connect();
+  try {
+    await client.query('BEGIN');
 
-  await db.query(
-    'INSERT INTO webhook_events (provider, event_id, event_type, payload) VALUES ($1,$2,$3,$4)',
-    ['lemonsqueezy', eventId, eventName, JSON.stringify(payload)]
-  );
+    // 멱등성 + 원자성: TOCTOU 레이스 컨디션 방지
+    const inserted = await client.query(
+      'INSERT INTO webhook_events (provider, event_id, event_type, payload) VALUES ($1,$2,$3,$4) ON CONFLICT (provider, event_id) DO NOTHING',
+      ['lemonsqueezy', eventId, eventName, JSON.stringify(payload)]
+    );
+    if (inserted.rowCount === 0) {
+      await client.query('ROLLBACK');
+      return NextResponse.json({ ok: true });
+    }
 
-  switch (eventName) {
-    case 'subscription_created':
-    case 'subscription_updated':
-      await upsertSubscription({
-        provider: 'lemonsqueezy',
-        providerSubscriptionId: String(payload.data.id),
-        userId: payload.meta.custom_data?.user_id,
-        status: sub.status,  // 'active'|'paused'|'cancelled'|'expired'|'past_due'
-        currentPeriodStart: new Date(sub.updated_at),
-        currentPeriodEnd: new Date(sub.renews_at || sub.ends_at),
-        trialEnd: sub.trial_ends_at ? new Date(sub.trial_ends_at) : null,
-      });
-      break;
-    case 'subscription_cancelled':
-    case 'subscription_expired':
-      await cancelSubscription('lemonsqueezy', String(payload.data.id));
-      break;
+    switch (eventName) {
+      case 'subscription_created':
+      case 'subscription_updated':
+        await upsertSubscription({
+          provider: 'lemonsqueezy',
+          providerSubscriptionId: String(payload.data.id),
+          providerPriceId: String(sub.variant_id),  // LS variant_id → subscription_plans 매핑
+          userId: payload.meta.custom_data?.user_id,
+          status: sub.status,  // 'active'|'paused'|'cancelled'|'expired'|'past_due'
+          currentPeriodStart: new Date(sub.updated_at),
+          currentPeriodEnd: new Date(sub.renews_at || sub.ends_at),
+          trialEnd: sub.trial_ends_at ? new Date(sub.trial_ends_at) : null,
+        }, client);
+        break;
+      case 'subscription_cancelled':
+      case 'subscription_expired':
+        await client.query(
+          "UPDATE subscriptions SET status='canceled', canceled_at=now(), updated_at=now() WHERE provider_subscription_id=$1",
+          [String(payload.data.id)]
+        );
+        break;
+    }
+
+    await client.query(
+      'UPDATE webhook_events SET processed_at=now() WHERE provider=$1 AND event_id=$2',
+      ['lemonsqueezy', eventId]
+    );
+    await client.query('COMMIT');
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
   }
 
-  await db.query(
-    'UPDATE webhook_events SET processed_at=now() WHERE provider=$1 AND event_id=$2',
-    ['lemonsqueezy', eventId]
-  );
   return NextResponse.json({ ok: true });
 }
 ```
@@ -358,35 +397,66 @@ import { validateEvent, WebhookVerificationError } from '@polar-sh/sdk/webhooks'
 
 export async function POST(req: Request) {
   const body = await req.text();
+  let event: ReturnType<typeof validateEvent>;
   try {
-    const event = validateEvent(body, req.headers, process.env.POLAR_WEBHOOK_SECRET!);
-    const eventId = event.id;
-
-    const existing = await db.query(
-      'SELECT id FROM webhook_events WHERE provider=$1 AND event_id=$2',
-      ['polar', eventId]
-    );
-    if (existing.rows.length > 0) return NextResponse.json({ ok: true });
-
-    if (event.type === 'subscription.created' || event.type === 'subscription.updated') {
-      const sub = event.data;
-      await upsertSubscription({
-        provider: 'polar',
-        providerSubscriptionId: sub.id,
-        userId: String(sub.metadata?.userId),
-        status: sub.status,
-        currentPeriodStart: new Date(sub.currentPeriodStart),
-        currentPeriodEnd: new Date(sub.currentPeriodEnd),
-        trialEnd: null,
-      });
-    }
-    return NextResponse.json({ ok: true });
+    event = validateEvent(body, req.headers, process.env.POLAR_WEBHOOK_SECRET!);
   } catch (err) {
     if (err instanceof WebhookVerificationError) {
       return NextResponse.json({ error: 'Invalid' }, { status: 403 });
     }
     throw err;
   }
+
+  const eventId = event.id;
+  const client = await db.connect();
+  try {
+    await client.query('BEGIN');
+
+    // 멱등성 + 원자성: TOCTOU 방지 + 누락된 webhook_events INSERT 추가 (VULN-006 수정)
+    const inserted = await client.query(
+      'INSERT INTO webhook_events (provider, event_id, event_type, payload) VALUES ($1,$2,$3,$4) ON CONFLICT (provider, event_id) DO NOTHING',
+      ['polar', eventId, event.type, JSON.stringify(event.data)]
+    );
+    if (inserted.rowCount === 0) {
+      await client.query('ROLLBACK');
+      return NextResponse.json({ ok: true });
+    }
+
+    if (event.type === 'subscription.created' || event.type === 'subscription.updated') {
+      const sub = event.data;
+
+      // metadata.userId 검증 — undefined면 "undefined" 문자열로 저장되는 버그 방지 (VULN-007 수정)
+      const userId = sub.metadata?.userId;
+      if (!userId || typeof userId !== 'string') {
+        await client.query('ROLLBACK');
+        return NextResponse.json({ error: 'Missing or invalid userId in metadata' }, { status: 400 });
+      }
+
+      await upsertSubscription({
+        provider: 'polar',
+        providerSubscriptionId: sub.id,
+        providerPriceId: sub.productPriceId,  // Polar product price ID
+        userId,
+        status: sub.status,
+        currentPeriodStart: new Date(sub.currentPeriodStart),
+        currentPeriodEnd: new Date(sub.currentPeriodEnd),
+        trialEnd: null,
+      }, client);
+    }
+
+    await client.query(
+      'UPDATE webhook_events SET processed_at=now() WHERE provider=$1 AND event_id=$2',
+      ['polar', eventId]
+    );
+    await client.query('COMMIT');
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
+
+  return NextResponse.json({ ok: true });
 }
 ```
 
@@ -417,8 +487,8 @@ import { loadTossPayments } from '@tosspayments/tosspayments-sdk';
 const toss = await loadTossPayments(process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY!);
 await toss.requestBillingAuth({
   method: '카드',
-  customerKey: user.id,
-  successUrl: `${window.location.origin}/api/toss/billing-auth?userId=${user.id}`,
+  customerKey: user.id,  // 서버 세션 userId와 동일 — URL에 userId 파라미터 노출 금지
+  successUrl: `${window.location.origin}/api/toss/billing-auth`,
   failUrl: `${window.location.origin}/payment-fail`,
 });
 ```
@@ -427,9 +497,15 @@ await toss.requestBillingAuth({
 ```typescript
 // GET /api/toss/billing-auth?authKey=...&customerKey=...
 export async function GET(req: Request) {
+  // customerKey는 서버 세션에서만 가져옴 — URL 파라미터 변조 방지 (VULN-004 수정)
+  const session = await getServerSession();
+  if (!session?.user?.id) {
+    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_URL}/payment-fail`);
+  }
+
   const { searchParams } = new URL(req.url);
   const authKey = searchParams.get('authKey')!;
-  const customerKey = searchParams.get('customerKey')!;
+  const customerKey = session.user.id;  // URL param customerKey 무시, 세션 기준
 
   const response = await fetch('https://api.tosspayments.com/v1/billing/authorizations/issue', {
     method: 'POST',
@@ -441,12 +517,12 @@ export async function GET(req: Request) {
   });
 
   if (!response.ok) {
-    const err = await response.json();
-    throw new Error(err.message);
+    // 내부 Toss 오류 메시지 클라이언트 노출 금지 (VULN-011 수정)
+    return NextResponse.redirect(`${process.env.NEXT_PUBLIC_URL}/payment-fail`);
   }
 
   const { billingKey } = await response.json();
-  await saveBillingKey(customerKey, billingKey);  // DB 암호화 저장 권장
+  await saveBillingKey(customerKey, billingKey);  // AES-256 또는 KMS 암호화 필수
 
   return NextResponse.redirect(`${process.env.NEXT_PUBLIC_URL}/dashboard`);
 }
@@ -454,8 +530,20 @@ export async function GET(req: Request) {
 
 **Step 3: 정기 결제 실행 (서버 배치 또는 요청 시)**
 ```typescript
-export async function chargeSubscription(userId: string, amountKRW: number) {
+import crypto from 'crypto';
+
+// amountKRW 파라미터 제거 — 서버에서 DB 조회 (클라이언트 전달 금액 절대 신뢰 금지)
+export async function chargeSubscription(userId: string, planId: string) {
   const billingKey = await getBillingKey(userId);
+
+  // VULN-005 수정: 서버에서 실제 플랜 금액 조회
+  const planResult = await db.query<{ price_cents: number; name: string }>(
+    'SELECT price_cents, name FROM subscription_plans WHERE id = $1 AND is_active = true',
+    [planId]
+  );
+  if (!planResult.rows.length) throw new Error('PLAN_NOT_FOUND');
+  const amountKRW = planResult.rows[0].price_cents;  // KRW: 원 단위 (cents 없음)
+  const orderName = planResult.rows[0].name;
 
   const response = await fetch(`https://api.tosspayments.com/v1/billing/${billingKey}`, {
     method: 'POST',
@@ -466,15 +554,14 @@ export async function chargeSubscription(userId: string, amountKRW: number) {
     body: JSON.stringify({
       customerKey: userId,
       amount: amountKRW,
-      orderId: `order_${Date.now()}_${userId.slice(0, 8)}`,
-      orderName: '월간 구독',
+      orderId: `order_${crypto.randomUUID()}`,  // VULN-010 수정: Date.now() 충돌 → randomUUID
+      orderName,
       customerEmail: await getUserEmail(userId),
     }),
   });
 
-  const result = await response.json();
-  if (!response.ok) throw new Error(result.message);
-  return result;  // { paymentKey, orderId, status: 'DONE' }
+  if (!response.ok) throw new Error('PAYMENT_FAILED');  // VULN-011 수정: 내부 메시지 노출 금지
+  return await response.json();  // { paymentKey, orderId, status: 'DONE' }
 }
 ```
 
@@ -512,29 +599,66 @@ const { orderUid, url } = await response.json();
 
 ### 웹훅 핸들러 (`/api/webhooks/steppay`)
 ```typescript
+import crypto from 'crypto';
+
 export async function POST(req: Request) {
-  const payload = await req.json();
-  // StepPay는 HMAC-SHA256 서명 헤더 사용
+  // VULN-003 수정: req.text()로 원본 바이트 보존 후 HMAC 계산, 이후 JSON 파싱
+  // req.json() 선파싱 → JSON.stringify() 패턴은 원본 바이트와 불일치 위험
+  const body = await req.text();
   const sig = req.headers.get('x-steppay-signature')!;
   const expected = crypto
     .createHmac('sha256', process.env.STEPPAY_SECRET_KEY!)
-    .update(JSON.stringify(payload))
+    .update(body)
     .digest('hex');
 
-  if (sig !== expected) {
+  // 길이 불일치 시 timingSafeEqual throw 방지 + 타이밍 공격 방지
+  if (expected.length !== sig.length || !crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(sig))) {
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
   }
 
-  if (payload.type === 'subscription.active') {
-    await upsertSubscription({
-      provider: 'steppay',
-      providerSubscriptionId: payload.subscriptionId,
-      userId: payload.customerId,
-      status: 'active',
-      currentPeriodStart: new Date(payload.startDate),
-      currentPeriodEnd: new Date(payload.nextBillingDate),
-      trialEnd: null,
-    });
+  const payload = JSON.parse(body);
+  // StepPay eventId — provider 문서에 따라 조정 (고유성 보장 필요)
+  const eventId = String(
+    payload.eventId || `${payload.subscriptionId}_${payload.type}_${payload.timestamp || ''}`
+  );
+
+  const client = await db.connect();
+  try {
+    await client.query('BEGIN');
+
+    // VULN-012 수정: 멱등성 + 원자성 추가 (기존에 없었음)
+    const inserted = await client.query(
+      'INSERT INTO webhook_events (provider, event_id, event_type, payload) VALUES ($1,$2,$3,$4) ON CONFLICT (provider, event_id) DO NOTHING',
+      ['steppay', eventId, payload.type, JSON.stringify(payload)]
+    );
+    if (inserted.rowCount === 0) {
+      await client.query('ROLLBACK');
+      return NextResponse.json({ ok: true });
+    }
+
+    if (payload.type === 'subscription.active') {
+      await upsertSubscription({
+        provider: 'steppay',
+        providerSubscriptionId: payload.subscriptionId,
+        providerPriceId: String(payload.priceId),
+        userId: payload.customerId,
+        status: 'active',
+        currentPeriodStart: new Date(payload.startDate),
+        currentPeriodEnd: new Date(payload.nextBillingDate),
+        trialEnd: null,
+      }, client);
+    }
+
+    await client.query(
+      'UPDATE webhook_events SET processed_at=now() WHERE provider=$1 AND event_id=$2',
+      ['steppay', eventId]
+    );
+    await client.query('COMMIT');
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
   }
 
   return NextResponse.json({ ok: true });
@@ -577,23 +701,14 @@ export async function changePlan(stripeSubscriptionId: string, newPriceId: strin
 }
 ```
 
-### 던닝 (결제 실패 → 상태 업데이트 + 이메일)
-```typescript
-export async function handlePaymentFailed(providerSubscriptionId: string) {
-  await db.query(
-    "UPDATE subscriptions SET status='past_due', updated_at=now() WHERE provider_subscription_id=$1",
-    [providerSubscriptionId]
-  );
-  const ownerEmail = await getSubscriptionOwnerEmail(providerSubscriptionId);
-  await sendPaymentFailedEmail(ownerEmail);  // 이메일 서비스 연동
-}
-```
-
 ### upsertSubscription 공통 헬퍼
 ```typescript
+import { PoolClient } from 'pg';
+
 interface SubscriptionData {
   provider: string;
   providerSubscriptionId: string;
+  providerPriceId: string;          // subscription_plans.provider_plan_id 매핑용 (VULN-008 수정)
   userId: string;
   status: string;
   currentPeriodStart: Date;
@@ -601,18 +716,31 @@ interface SubscriptionData {
   trialEnd: Date | null;
 }
 
-export async function upsertSubscription(data: SubscriptionData) {
-  await db.query(
+// VULN-008 수정: plan_id NOT NULL 제약 위반 방지
+// providerPriceId → subscription_plans 조회 → plan_id 확보 후 INSERT
+export async function upsertSubscription(data: SubscriptionData, client?: PoolClient) {
+  const db_ = client ?? db;
+
+  const planResult = await db_.query<{ id: string }>(
+    'SELECT id FROM subscription_plans WHERE provider_plan_id = $1 AND is_active = true',
+    [data.providerPriceId]
+  );
+  if (!planResult.rows.length) {
+    throw new Error(`Plan not found for provider_plan_id: ${data.providerPriceId}`);
+  }
+  const planId = planResult.rows[0].id;
+
+  await db_.query(
     `INSERT INTO subscriptions
-       (provider, provider_subscription_id, user_id, status,
+       (provider, provider_subscription_id, user_id, plan_id, status,
         current_period_start, current_period_end, trial_ends_at, updated_at)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,now())
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,now())
      ON CONFLICT (provider_subscription_id)
      DO UPDATE SET
-       status=$4, current_period_start=$5, current_period_end=$6,
-       trial_ends_at=$7, updated_at=now()`,
+       plan_id=$4, status=$5, current_period_start=$6, current_period_end=$7,
+       trial_ends_at=$8, updated_at=now()`,
     [
-      data.provider, data.providerSubscriptionId, data.userId, data.status,
+      data.provider, data.providerSubscriptionId, data.userId, planId, data.status,
       data.currentPeriodStart, data.currentPeriodEnd, data.trialEnd,
     ]
   );
@@ -623,12 +751,29 @@ export async function upsertSubscription(data: SubscriptionData) {
 
 ## 보안 체크리스트
 
-- [ ] 웹훅 서명 검증 (`stripe.webhooks.constructEvent` / HMAC)
-- [ ] 웹훅 멱등성 보장 (`webhook_events` 테이블에 `event_id` UNIQUE)
-- [ ] 클라이언트가 금액·플랜 직접 전달 금지 (서버에서 DB로 검증)
-- [ ] 결제 완료는 웹훅으로만 확인 (`success_url` 리다이렉트만으로 충분하지 않음)
-- [ ] TossPayments 빌링키 암호화 저장 (`AES-256` 또는 KMS)
-- [ ] API 키 서버 전용 (`NEXT_PUBLIC_` 접두사는 Public Key만)
+### 웹훅 보안 (Critical)
+- [ ] 서명 검증 필수 (`stripe.webhooks.constructEvent` / HMAC-SHA256) — 미검증 시 가짜 이벤트 주입 가능
+- [ ] 서명 비교 → `crypto.timingSafeEqual()` 사용 (타이밍 공격 방지) + 길이 일치 사전 확인
+- [ ] **Raw body 보존**: `req.text()` 먼저 읽고 이후 `JSON.parse()` — `req.json()` 선파싱 후 재직렬화하면 서명 불일치
+- [ ] **TOCTOU 방지**: `SELECT → INSERT` 대신 `INSERT ON CONFLICT DO NOTHING` + `rowCount === 0` 조기 리턴
+- [ ] **원자성**: 웹훅 이벤트 INSERT와 구독 upsert를 단일 DB 트랜잭션으로 묶기 — 중간 크래시 시 불일치 방지
+
+### 결제 데이터 보안 (Critical)
+- [ ] **금액 서버 검증**: 클라이언트 전달 금액 절대 신뢰 금지 → `subscription_plans.price_cents` DB 조회
+- [ ] **결제 완료는 웹훅으로만 확인** (`success_url` 리다이렉트는 UI 힌트일 뿐 — 위조 가능)
+- [ ] TossPayments `customerKey`: URL 파라미터 대신 `getServerSession().user.id` 사용 — 파라미터 변조로 타인 계정에 빌링키 연결 가능
+- [ ] TossPayments 빌링키: AES-256 또는 KMS 암호화 저장 (평문 DB 저장 금지)
+- [ ] TossPayments `orderId`: `crypto.randomUUID()` 사용 — `Date.now()` 동시 요청 충돌 가능
+
+### 인증 / API 보안 (High)
+- [ ] 모든 보호 라우트: `session?.user?.id` null 체크 + 401 반환 — non-null assertion(`!`) 사용 금지
+- [ ] Polar `metadata.userId`: 존재 여부 + `typeof === 'string'` 검증 — undefined 저장 방지
+- [ ] 에러 응답: 결제 API 내부 오류 메시지 클라이언트 노출 금지 (`throw new Error('PAYMENT_FAILED')`)
+- [ ] API 키: 서버 전용 (`NEXT_PUBLIC_` 접두사는 Public Key만 허용)
+
+### DB / 스키마 보안 (High)
+- [ ] `upsertSubscription`에 `providerPriceId` 전달 → `subscription_plans` 조회 → `plan_id` 확보 (NOT NULL 제약 보장)
+- [ ] `webhook_events` 테이블 `UNIQUE(provider, event_id)` 인덱스 존재 확인
 - [ ] `.env.example`을 커밋해 팀 설정 문서화 (실제 `.env`는 gitignore)
 
 ---
