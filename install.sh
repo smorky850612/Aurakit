@@ -27,7 +27,7 @@ done
 echo ""
 echo "  ╔══════════════════════════════════════╗"
 echo "  ║     AuraKit Installer v2.0           ║"
-echo "  ║  8-Lang · 6-Layer Security · 75% opt ║"
+echo "  ║  8-Lang · 6-Layer Security · ~55% opt║"
 echo "  ╚══════════════════════════════════════╝"
 echo ""
 
