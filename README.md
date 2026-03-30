@@ -14,7 +14,7 @@
 
 <br/>
 
-<h3>36 Modes &nbsp;·&nbsp; 23 Hooks &nbsp;·&nbsp; 6-Layer Security &nbsp;·&nbsp; 8 Languages &nbsp;·&nbsp; ~55% Token Savings</h3>
+<h3>36 Modes &nbsp;·&nbsp; 30 Hooks &nbsp;·&nbsp; 6-Layer Security &nbsp;·&nbsp; 8 Languages &nbsp;·&nbsp; ~55% Token Savings</h3>
 
 <p>
 <a href="#-before--after">Before & After</a>&nbsp;&nbsp;·&nbsp;&nbsp;
@@ -23,7 +23,7 @@
 <a href="#-quality-tiers">Tiers</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#%EF%B8%8F-how-it-works">Pipeline</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#-6-layer-security">Security</a>&nbsp;&nbsp;·&nbsp;&nbsp;
-<a href="#-new-in-v63">New in v6.3</a>&nbsp;&nbsp;·&nbsp;&nbsp;
+<a href="#-new-in-v64">New in v6.4</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#-why-aurakit">Why AuraKit</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#-faq">FAQ</a>
 </p>
@@ -153,7 +153,7 @@ claude --dangerously-skip-permissions
 |:-:|:----------|:----------|:----------|
 | **1** | ⚡ **FAST** | Faster than any skill | Session cache · ConfigHash · QUICK mode · Progressive Load |
 | **2** | ✨ **FLASHY** | Most informative CLI output | StatusLine · Next Actions · Token Report · Pipeline display |
-| **3** | 🔐 **SECURE** | Genuinely top-tier security | 6-layer gates · 23 hooks · SEC-01~15 · bash-guard · security-scan |
+| **3** | 🔐 **SECURE** | Genuinely top-tier security | 6-layer gates · 30 hooks · SEC-01~15 · bash-guard · security-scan |
 | **4** | 💰 **THRIFTY** | Max token savings even on Opus | Tiered Model · Fail-Only output · Progressive Load · Session cache |
 | **5** | ♾️ **IMMORTAL** | Survives context loss | 65% compact guard · Snapshots · PostCompact restore · Session resume |
 | **6** | 🧠 **EVOLVING** | Gets smarter with every use | Instinct learning · instinct:evolve · Pattern sharing |
@@ -168,9 +168,9 @@ claude --dangerously-skip-permissions
 
 > "I can just prompt Claude myself" — Yes, but you'll repeat the same 20 instructions every session.
 
-| | Manual Prompting | CLAUDE.md File | **AuraKit v6.3.1** |
+| | Manual Prompting | CLAUDE.md File | **AuraKit v6.4.0** |
 |:---|:---:|:---:|:---:|
-| Security enforcement | Hope for the best | Rules, no enforcement | **23 hooks enforce at write-time** |
+| Security enforcement | Hope for the best | Rules, no enforcement | **30 hooks enforce at write-time** |
 | Context survival | Lost on compact | Partial | **Snapshot + PostCompact auto-restore** |
 | Token efficiency | Wasteful | Manual | **~55% ECO · ~75% MAX (estimated)** |
 | Code review | Manual | Manual | **4 agents in parallel** |
@@ -360,7 +360,7 @@ All 15 rules are enforced both inline (code generation) and at runtime (security
 
 ---
 
-## ✨ New in v6.3
+## ✨ New in v6.4
 
 <details>
 <summary><strong>🚀 install.sh v2.0 — Zero-friction setup</strong></summary>
@@ -406,11 +406,11 @@ install.sh v2.0 installs the AuraKit Nexus status bar automatically:
 </details>
 
 <details>
-<summary><strong>🪝 23 Hook Files, 16 Events — Complete lifecycle automation</strong></summary>
+<summary><strong>🪝 30 Hook Files, 16 Events — Complete lifecycle automation</strong></summary>
 
 <br/>
 
-v6.3 adds 4 new hook handlers for agent lifecycle management:
+v6.4 includes 30 hook handlers covering the full agent lifecycle:
 
 | Hook Event | Handler File | Function |
 |:-----------|:-------------|:---------|
@@ -704,7 +704,7 @@ Each iteration runs in isolation. Loop stops when the condition is met or max is
 <br/>
 
 ```
-aurakit/                             # v6.3.1
+aurakit/                             # v6.4.0
 ├── skills/
 │   ├── aura/                        # Main skill — single /aura entry point
 │   │   ├── SKILL.md                 # Core instructions (~31KB, 36 modes)
@@ -729,7 +729,7 @@ aurakit/                             # v6.3.1
 │   ├── pm-discovery.md              # OST opportunity mapping (Haiku)
 │   ├── pm-strategy.md               # JTBD + Lean Canvas (Haiku)
 │   └── pm-prd.md                    # PRD generation (Sonnet)
-├── hooks/                           # 23 hook files
+├── hooks/                           # 30 hook files
 │   ├── lib/
 │   │   ├── common.js                # Shared: addContext, allow, block
 │   │   ├── snapshot.js              # Snapshot read/write helpers
@@ -839,7 +839,7 @@ Manual prompting requires re-explaining your project, conventions, and requireme
 
 Context load reduction (v5.1 82KB → v6 20KB) is **measured**. Per-task savings (~55% ECO, ~75% MAX) are **estimates** based on tier routing and prompt engineering — no independent benchmark like Aider's Polyglot 64% exists for AuraKit.
 
-**Do I need all 23 hooks? Can I use only some?**
+**Do I need all 30 hooks? Can I use only some?**
 
 Yes. Install registers all hooks, but each is independent. Remove any entry from `settings.json` to disable it. The security hooks (L3/L5) are most critical; the rest are quality-of-life.
 
@@ -861,7 +861,7 @@ Then open any project and type `/aura`.
 
 <br/>
 
-**AuraKit v6.3.1 — 36 modes · 23 hooks · 6-layer security · 5 platforms · ~55% token savings**
+**AuraKit v6.4.0 — 36 modes · 30 hooks · 6-layer security · 5 platforms · ~55% token savings**
 
 <br/>
 
