@@ -1,0 +1,196 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 160" width="900" height="160">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0d1117"/>
+      <stop offset="100%" stop-color="#161b22"/>
+    </linearGradient>
+    <filter id="glow1" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <!-- Layer colors -->
+    <linearGradient id="c1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#818cf8"/><stop offset="100%" stop-color="#6366f1"/>
+    </linearGradient>
+    <linearGradient id="c2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+    <linearGradient id="c3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f87171"/><stop offset="100%" stop-color="#ef4444"/>
+    </linearGradient>
+    <linearGradient id="c4" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fb923c"/><stop offset="100%" stop-color="#f97316"/>
+    </linearGradient>
+    <linearGradient id="c5" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#34d399"/><stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <linearGradient id="c6" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/><stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="900" height="160" fill="url(#bg)" rx="12"/>
+  <rect width="900" height="160" fill="none" rx="12" stroke="#30363d" stroke-width="1"/>
+
+  <!-- Title -->
+  <text x="450" y="28" text-anchor="middle"
+        font-family="'Segoe UI', system-ui, sans-serif"
+        font-size="13" letter-spacing="4" font-weight="600" fill="#6e7681">
+    6-LAYER SECURITY SYSTEM
+  </text>
+
+  <!-- Connection lines between boxes -->
+  <g stroke="#30363d" stroke-width="1" stroke-dasharray="4,3">
+    <line x1="195" y1="85" x2="225" y2="85"/>
+    <line x1="320" y1="85" x2="350" y2="85"/>
+    <line x1="445" y1="85" x2="475" y2="85"/>
+    <line x1="570" y1="85" x2="600" y2="85"/>
+    <line x1="695" y1="85" x2="725" y2="85"/>
+  </g>
+
+  <!-- L1 box -->
+  <g>
+    <rect x="70" y="55" width="125" height="60" rx="8" fill="#0d1117" stroke="#6366f1" stroke-width="1.5" stroke-opacity="0.3" opacity="0">
+      <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="0.2s" fill="freeze"/>
+      <animate attributeName="stroke-opacity" values="0.3;1;0.3" dur="2s" begin="0.2s" repeatCount="indefinite"/>
+    </rect>
+    <text x="132" y="77" text-anchor="middle" font-family="'SF Mono', Consolas, monospace"
+          font-size="18" font-weight="900" fill="url(#c1)" filter="url(#glow1)" opacity="0">
+      L1
+      <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="0.2s" fill="freeze"/>
+    </text>
+    <text x="132" y="95" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif"
+          font-size="10" fill="#8b949e" opacity="0">
+      Role Boundaries
+      <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="0.3s" fill="freeze"/>
+    </text>
+    <text x="132" y="108" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif"
+          font-size="9" fill="#484f58" opacity="0">
+      always active
+      <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="0.3s" fill="freeze"/>
+    </text>
+  </g>
+
+  <!-- L2 box -->
+  <g>
+    <rect x="225" y="55" width="125" height="60" rx="8" fill="#0d1117" stroke="#8b5cf6" stroke-width="1.5" stroke-opacity="0.3" opacity="0">
+      <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="0.5s" fill="freeze"/>
+      <animate attributeName="stroke-opacity" values="0.3;1;0.3" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+    </rect>
+    <text x="287" y="77" text-anchor="middle" font-family="'SF Mono', Consolas, monospace"
+          font-size="18" font-weight="900" fill="url(#c2)" filter="url(#glow1)" opacity="0">
+      L2
+      <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="0.5s" fill="freeze"/>
+    </text>
+    <text x="287" y="95" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif"
+          font-size="10" fill="#8b949e" opacity="0">
+      Tool Disallowlists
+      <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="0.6s" fill="freeze"/>
+    </text>
+    <text x="287" y="108" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif"
+          font-size="9" fill="#484f58" opacity="0">
+      always active
+      <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="0.6s" fill="freeze"/>
+    </text>
+  </g>
+
+  <!-- L3 box -->
+  <g>
+    <rect x="350" y="55" width="125" height="60" rx="8" fill="#0d1117" stroke="#ef4444" stroke-width="1.5" stroke-opacity="0.3" opacity="0">
+      <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="0.8s" fill="freeze"/>
+      <animate attributeName="stroke-opacity" values="0.3;1;0.3" dur="2s" begin="0.8s" repeatCount="indefinite"/>
+    </rect>
+    <text x="412" y="77" text-anchor="middle" font-family="'SF Mono', Consolas, monospace"
+          font-size="18" font-weight="900" fill="url(#c3)" filter="url(#glow1)" opacity="0">
+      L3
+      <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="0.8s" fill="freeze"/>
+    </text>
+    <text x="412" y="95" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif"
+          font-size="10" fill="#8b949e" opacity="0">
+      bash-guard.js
+      <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="0.9s" fill="freeze"/>
+    </text>
+    <text x="412" y="108" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif"
+          font-size="9" fill="#484f58" opacity="0">
+      PreToolUse(Bash)
+      <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="0.9s" fill="freeze"/>
+    </text>
+  </g>
+
+  <!-- L4 box -->
+  <g>
+    <rect x="475" y="55" width="125" height="60" rx="8" fill="#0d1117" stroke="#f97316" stroke-width="1.5" stroke-opacity="0.3" opacity="0">
+      <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="1.1s" fill="freeze"/>
+      <animate attributeName="stroke-opacity" values="0.3;1;0.3" dur="2s" begin="1.1s" repeatCount="indefinite"/>
+    </rect>
+    <text x="537" y="77" text-anchor="middle" font-family="'SF Mono', Consolas, monospace"
+          font-size="18" font-weight="900" fill="url(#c4)" filter="url(#glow1)" opacity="0">
+      L4
+      <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="1.1s" fill="freeze"/>
+    </text>
+    <text x="537" y="95" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif"
+          font-size="10" fill="#8b949e" opacity="0">
+      security-scan.js
+      <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="1.2s" fill="freeze"/>
+    </text>
+    <text x="537" y="108" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif"
+          font-size="9" fill="#484f58" opacity="0">
+      PreToolUse(Write)
+      <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="1.2s" fill="freeze"/>
+    </text>
+  </g>
+
+  <!-- L5 box -->
+  <g>
+    <rect x="600" y="55" width="125" height="60" rx="8" fill="#0d1117" stroke="#10b981" stroke-width="1.5" stroke-opacity="0.3" opacity="0">
+      <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="1.4s" fill="freeze"/>
+      <animate attributeName="stroke-opacity" values="0.3;1;0.3" dur="2s" begin="1.4s" repeatCount="indefinite"/>
+    </rect>
+    <text x="662" y="77" text-anchor="middle" font-family="'SF Mono', Consolas, monospace"
+          font-size="18" font-weight="900" fill="url(#c5)" filter="url(#glow1)" opacity="0">
+      L5
+      <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="1.4s" fill="freeze"/>
+    </text>
+    <text x="662" y="95" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif"
+          font-size="10" fill="#8b949e" opacity="0">
+      migration-guard
+      <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="1.5s" fill="freeze"/>
+    </text>
+    <text x="662" y="108" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif"
+          font-size="9" fill="#484f58" opacity="0">
+      PreToolUse(Write)
+      <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="1.5s" fill="freeze"/>
+    </text>
+  </g>
+
+  <!-- L6 box -->
+  <g>
+    <rect x="725" y="55" width="125" height="60" rx="8" fill="#0d1117" stroke="#0ea5e9" stroke-width="1.5" stroke-opacity="0.3" opacity="0">
+      <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="1.7s" fill="freeze"/>
+      <animate attributeName="stroke-opacity" values="0.3;1;0.3" dur="2s" begin="1.7s" repeatCount="indefinite"/>
+    </rect>
+    <text x="787" y="77" text-anchor="middle" font-family="'SF Mono', Consolas, monospace"
+          font-size="18" font-weight="900" fill="url(#c6)" filter="url(#glow1)" opacity="0">
+      L6
+      <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="1.7s" fill="freeze"/>
+    </text>
+    <text x="787" y="95" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif"
+          font-size="10" fill="#8b949e" opacity="0">
+      npm audit
+      <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="1.8s" fill="freeze"/>
+    </text>
+    <text x="787" y="108" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif"
+          font-size="9" fill="#484f58" opacity="0">
+      BUILD / FIX
+      <animate attributeName="opacity" from="0" to="1" dur="0.3s" begin="1.8s" fill="freeze"/>
+    </text>
+  </g>
+
+  <!-- Bottom status text -->
+  <text x="450" y="148" text-anchor="middle"
+        font-family="'Segoe UI', system-ui, sans-serif"
+        font-size="11" letter-spacing="2" fill="#484f58" opacity="0">
+    OWASP COMPLETE  ·  ZERO CONFIGURATION  ·  ALWAYS ENFORCED
+    <animate attributeName="opacity" from="0" to="1" dur="0.6s" begin="2s" fill="freeze"/>
+  </text>
+</svg>

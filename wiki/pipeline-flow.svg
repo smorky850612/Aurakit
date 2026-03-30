@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 140" width="900" height="140">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0d1117"/>
+      <stop offset="100%" stop-color="#161b22"/>
+    </linearGradient>
+    <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+    <filter id="g" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <!-- Animated data dot -->
+    <circle id="dot" r="4" fill="#818cf8" filter="url(#g)"/>
+  </defs>
+
+  <rect width="900" height="140" fill="url(#bg)" rx="12"/>
+  <rect width="900" height="140" fill="none" rx="12" stroke="#30363d" stroke-width="1"/>
+
+  <!-- Title -->
+  <text x="450" y="22" text-anchor="middle"
+        font-family="'Segoe UI', system-ui, sans-serif"
+        font-size="11" letter-spacing="4" fill="#6e7681">
+    BUILD PIPELINE
+  </text>
+
+  <!-- Pipeline steps: boxes -->
+  <!-- Step 1: Scout -->
+  <rect x="30" y="38" width="110" height="50" rx="8" fill="#161b22" stroke="#6366f1" stroke-width="1.5" stroke-opacity="0.6"/>
+  <text x="85" y="58" text-anchor="middle" font-family="'SF Mono', Consolas, monospace"
+        font-size="11" fill="#818cf8">Scout</text>
+  <text x="85" y="74" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif"
+        font-size="9" fill="#484f58">Haiku · read-only</text>
+
+  <!-- Arrow 1 -->
+  <path d="M140 63 L165 63" stroke="#30363d" stroke-width="1.5" stroke-dasharray="3,2"/>
+  <polygon points="165,59 173,63 165,67" fill="#30363d"/>
+
+  <!-- Step 2: Plan -->
+  <rect x="173" y="38" width="110" height="50" rx="8" fill="#161b22" stroke="#a78bfa" stroke-width="1.5" stroke-opacity="0.6"/>
+  <text x="228" y="58" text-anchor="middle" font-family="'SF Mono', Consolas, monospace"
+        font-size="11" fill="#a78bfa">Plan</text>
+  <text x="228" y="74" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif"
+        font-size="9" fill="#484f58">micro-plan</text>
+
+  <!-- Arrow 2 -->
+  <path d="M283 63 L308 63" stroke="#30363d" stroke-width="1.5" stroke-dasharray="3,2"/>
+  <polygon points="308,59 316,63 308,67" fill="#30363d"/>
+
+  <!-- Step 3: Generate -->
+  <rect x="316" y="38" width="110" height="50" rx="8" fill="#161b22" stroke="#38bdf8" stroke-width="1.5" stroke-opacity="0.6"/>
+  <text x="371" y="58" text-anchor="middle" font-family="'SF Mono', Consolas, monospace"
+        font-size="11" fill="#38bdf8">Generate</text>
+  <text x="371" y="74" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif"
+        font-size="9" fill="#484f58">Worker · Sonnet</text>
+
+  <!-- Arrow 3 -->
+  <path d="M426 63 L451 63" stroke="#30363d" stroke-width="1.5" stroke-dasharray="3,2"/>
+  <polygon points="451,59 459,63 451,67" fill="#30363d"/>
+
+  <!-- Step 4: Verify -->
+  <rect x="459" y="38" width="110" height="50" rx="8" fill="#161b22" stroke="#f97316" stroke-width="1.5" stroke-opacity="0.6"/>
+  <text x="514" y="58" text-anchor="middle" font-family="'SF Mono', Consolas, monospace"
+        font-size="11" fill="#fb923c">Verify ×3</text>
+  <text x="514" y="74" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif"
+        font-size="9" fill="#484f58">type·sec·test</text>
+
+  <!-- Arrow 4 -->
+  <path d="M569 63 L594 63" stroke="#30363d" stroke-width="1.5" stroke-dasharray="3,2"/>
+  <polygon points="594,59 602,63 594,67" fill="#30363d"/>
+
+  <!-- Step 5: Security -->
+  <rect x="602" y="38" width="110" height="50" rx="8" fill="#161b22" stroke="#10b981" stroke-width="1.5" stroke-opacity="0.6"/>
+  <text x="657" y="58" text-anchor="middle" font-family="'SF Mono', Consolas, monospace"
+        font-size="11" fill="#34d399">Security</text>
+  <text x="657" y="74" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif"
+        font-size="9" fill="#484f58">L1–L6 scan</text>
+
+  <!-- Arrow 5 -->
+  <path d="M712 63 L737 63" stroke="#30363d" stroke-width="1.5" stroke-dasharray="3,2"/>
+  <polygon points="737,59 745,63 737,67" fill="#30363d"/>
+
+  <!-- Step 6: Commit -->
+  <rect x="745" y="38" width="110" height="50" rx="8" fill="#161b22" stroke="#6ee7b7" stroke-width="1.5" stroke-opacity="0.6"/>
+  <text x="800" y="58" text-anchor="middle" font-family="'SF Mono', Consolas, monospace"
+        font-size="11" fill="#6ee7b7">Commit</text>
+  <text x="800" y="74" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif"
+        font-size="9" fill="#484f58">git commit</text>
+
+  <!-- Animated data flow dot -->
+  <circle r="4" fill="#818cf8" filter="url(#g)">
+    <animateMotion dur="4s" repeatCount="indefinite" calcMode="linear">
+      <mpath href="#pipeline-path"/>
+    </animateMotion>
+    <animate attributeName="fill" values="#818cf8;#a78bfa;#38bdf8;#fb923c;#34d399;#6ee7b7;#818cf8" dur="4s" repeatCount="indefinite"/>
+  </circle>
+
+  <path id="pipeline-path" d="M30,63 L900,63" fill="none" visibility="hidden"/>
+
+  <!-- Bottom label -->
+  <text x="450" y="122" text-anchor="middle"
+        font-family="'Segoe UI', system-ui, sans-serif"
+        font-size="10" letter-spacing="2" fill="#30363d">
+    EVERY /aura BUILD COMMAND RUNS THIS PIPELINE AUTOMATICALLY
+  </text>
+</svg>

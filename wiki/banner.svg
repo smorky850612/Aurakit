@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 220" width="900" height="220">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0.6" y2="1">
+      <stop offset="0%" stop-color="#0d1117"/>
+      <stop offset="100%" stop-color="#161b22"/>
+    </linearGradient>
+    <linearGradient id="tg" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#818cf8">
+        <animate attributeName="stop-color" values="#818cf8;#c084fc;#38bdf8;#818cf8" dur="5s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="50%" stop-color="#a78bfa">
+        <animate attributeName="stop-color" values="#a78bfa;#38bdf8;#818cf8;#a78bfa" dur="5s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%" stop-color="#38bdf8">
+        <animate attributeName="stop-color" values="#38bdf8;#818cf8;#c084fc;#38bdf8" dur="5s" repeatCount="indefinite"/>
+      </stop>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feColorMatrix in="blur" type="matrix"
+        values="0.5 0 0 0 0.5
+                0 0 0 0 0.4
+                0 0 0.8 0 1
+                0 0 0 2 0" result="cb"/>
+      <feMerge><feMergeNode in="cb"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="sg" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="220" fill="url(#bg)" rx="12"/>
+  <rect width="900" height="220" fill="none" rx="12" stroke="#30363d" stroke-width="1"/>
+
+  <!-- Left accent bar -->
+  <rect x="0" y="0" width="3" height="220" rx="1.5" fill="url(#accent)" opacity="0.9"/>
+
+  <!-- Right accent bar -->
+  <rect x="897" y="0" width="3" height="220" rx="1.5" fill="url(#accent)" opacity="0.9"/>
+
+  <!-- BG orb left -->
+  <ellipse cx="120" cy="110" rx="100" ry="90" fill="#6366f1" opacity="0.04">
+    <animate attributeName="rx" values="100;130;100" dur="7s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.04;0.07;0.04" dur="7s" repeatCount="indefinite"/>
+  </ellipse>
+
+  <!-- BG orb right -->
+  <ellipse cx="780" cy="110" rx="110" ry="90" fill="#0ea5e9" opacity="0.04">
+    <animate attributeName="rx" values="110;80;110" dur="7s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.04;0.07;0.04" dur="7s" repeatCount="indefinite"/>
+  </ellipse>
+
+  <!-- Twinkling stars -->
+  <circle cx="40" cy="35" r="1.5" fill="#6366f1">
+    <animate attributeName="opacity" values="0.2;0.9;0.2" dur="3.1s" begin="0s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="80" cy="20" r="1" fill="#38bdf8">
+    <animate attributeName="opacity" values="0.1;0.7;0.1" dur="2.7s" begin="0.4s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="140" cy="42" r="1.2" fill="#a78bfa">
+    <animate attributeName="opacity" values="0.3;0.8;0.3" dur="3.5s" begin="0.9s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="50" cy="180" r="1.2" fill="#38bdf8">
+    <animate attributeName="opacity" values="0.2;0.8;0.2" dur="4s" begin="1.2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="100" cy="195" r="1" fill="#6366f1">
+    <animate attributeName="opacity" values="0.1;0.6;0.1" dur="2.9s" begin="0.6s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="760" cy="25" r="1.2" fill="#a78bfa">
+    <animate attributeName="opacity" values="0.2;0.8;0.2" dur="3.3s" begin="0.3s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="820" cy="42" r="1" fill="#38bdf8">
+    <animate attributeName="opacity" values="0.1;0.7;0.1" dur="2.8s" begin="0.8s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="860" cy="20" r="1.5" fill="#6366f1">
+    <animate attributeName="opacity" values="0.3;0.9;0.3" dur="3.6s" begin="0.2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="850" cy="185" r="1" fill="#a78bfa">
+    <animate attributeName="opacity" values="0.2;0.7;0.2" dur="3.2s" begin="1s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="800" cy="198" r="1.2" fill="#38bdf8">
+    <animate attributeName="opacity" values="0.1;0.6;0.1" dur="4.1s" begin="0.5s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Decorative grid dots TL -->
+  <circle cx="28" cy="80" r="1" fill="#30363d" opacity="0.5"/>
+  <circle cx="28" cy="100" r="1" fill="#30363d" opacity="0.4"/>
+  <circle cx="28" cy="120" r="1" fill="#30363d" opacity="0.5"/>
+  <circle cx="28" cy="140" r="1" fill="#30363d" opacity="0.4"/>
+  <circle cx="872" cy="80" r="1" fill="#30363d" opacity="0.5"/>
+  <circle cx="872" cy="100" r="1" fill="#30363d" opacity="0.4"/>
+  <circle cx="872" cy="120" r="1" fill="#30363d" opacity="0.5"/>
+  <circle cx="872" cy="140" r="1" fill="#30363d" opacity="0.4"/>
+
+  <!-- Version badge -->
+  <g opacity="0">
+    <animate attributeName="opacity" from="0" to="1" dur="0.4s" begin="1.2s" fill="freeze"/>
+    <rect x="798" y="14" width="84" height="22" rx="11" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+    <text x="840" y="29.5" text-anchor="middle"
+          font-family="'SF Mono', Consolas, monospace"
+          font-size="11" fill="#8b949e">v6.2.1</text>
+  </g>
+
+  <!-- npm badge -->
+  <g opacity="0">
+    <animate attributeName="opacity" from="0" to="1" dur="0.4s" begin="1.4s" fill="freeze"/>
+    <rect x="18" y="14" width="54" height="22" rx="11" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+    <text x="45" y="29.5" text-anchor="middle"
+          font-family="'SF Mono', Consolas, monospace"
+          font-size="11" fill="#8b949e">npm</text>
+  </g>
+
+  <!-- Main title -->
+  <text x="450" y="112" text-anchor="middle"
+        font-family="'Segoe UI', system-ui, -apple-system, sans-serif"
+        font-size="82" font-weight="900" letter-spacing="10"
+        fill="url(#tg)" filter="url(#glow)" opacity="0">
+    AURAKIT
+    <animate attributeName="opacity" from="0" to="1" dur="0.7s" begin="0.1s" fill="freeze"/>
+    <animate attributeName="letter-spacing" from="28" to="10" dur="0.9s" begin="0.1s" fill="freeze"/>
+  </text>
+
+  <!-- Subtitle -->
+  <text x="450" y="148" text-anchor="middle"
+        font-family="'Segoe UI', system-ui, sans-serif"
+        font-size="13" letter-spacing="3" fill="#6e7681" opacity="0">
+    ONE COMMAND  ·  FULL-STACK APP  ·  PRODUCTION-READY
+    <animate attributeName="opacity" from="0" to="1" dur="0.7s" begin="0.65s" fill="freeze"/>
+  </text>
+
+  <!-- Stat chips -->
+  <g font-family="'Segoe UI', system-ui, sans-serif" font-size="12" opacity="0">
+    <animate attributeName="opacity" from="0" to="1" dur="0.7s" begin="1s" fill="freeze"/>
+
+    <!-- chip 1: 34 modes -->
+    <rect x="205" y="168" width="96" height="26" rx="13" fill="#161b22" stroke="#6366f1" stroke-width="1" stroke-opacity="0.7"/>
+    <text x="253" y="185.5" text-anchor="middle" fill="#a5b4fc">⚡ 34 modes</text>
+
+    <!-- chip 2: 6-layer security -->
+    <rect x="315" y="168" width="120" height="26" rx="13" fill="#161b22" stroke="#10b981" stroke-width="1" stroke-opacity="0.7"/>
+    <text x="375" y="185.5" text-anchor="middle" fill="#6ee7b7">🔒 6-layer sec</text>
+
+    <!-- chip 3: 75% tokens -->
+    <rect x="450" y="168" width="116" height="26" rx="13" fill="#161b22" stroke="#0ea5e9" stroke-width="1" stroke-opacity="0.7"/>
+    <text x="508" y="185.5" text-anchor="middle" fill="#7dd3fc">📦 75% tokens</text>
+
+    <!-- chip 4: 8 languages -->
+    <rect x="580" y="168" width="96" height="26" rx="13" fill="#161b22" stroke="#f59e0b" stroke-width="1" stroke-opacity="0.7"/>
+    <text x="628" y="185.5" text-anchor="middle" fill="#fcd34d">🌐 8 langs</text>
+  </g>
+
+  <!-- Subtle horizontal rule -->
+  <line x1="40" y1="160" x2="860" y2="160" stroke="#21262d" stroke-width="1" opacity="0.6"/>
+</svg>
