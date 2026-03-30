@@ -74,11 +74,11 @@ try {
   }
 } catch (e) { /* optional */ }
 
-// 6. install.sh (settings.json hook registration)
+// 6. install.sh (settings.json hook registration — --auto: skip claude check + quiet)
 try {
   const sh = path.join(SRC, 'install.sh');
   if (fs.existsSync(sh)) {
-    execSync(`bash "${sh}"`, { stdio: 'inherit', cwd: SRC });
+    execSync(`bash "${sh}" --auto`, { stdio: 'inherit', cwd: SRC });
   }
 } catch (e) {
   warn('settings.json hook registration failed. Manual: bash install.sh');
@@ -95,6 +95,6 @@ log('    /aura review:');
 log('    /aura! change button color');
 log('    /aura pro payment system');
 log('');
-log('  34 modes · SEC-01~15 · 13 hooks · 75% token reduction');
+log('  36 modes · 6-layer security · 30 hooks · ~55% token savings');
 log('══════════════════════════════════════');
 console.log('');

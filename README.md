@@ -4,11 +4,12 @@
 
 <br/>
 
-[![Version](https://img.shields.io/npm/v/%40smorky85/aurakit?style=flat-square&color=a855f7&label=v6.3.1)](https://www.npmjs.com/package/@smorky85/aurakit)
+[![Version](https://img.shields.io/npm/v/%40smorky85/aurakit?style=flat-square&color=a855f7&label=v6.3.2)](https://www.npmjs.com/package/@smorky85/aurakit)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-Native_Skill-7c3aed?style=flat-square&logo=anthropic&logoColor=white)](https://claude.ai/code)
 [![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=flat-square)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/smorky850612/Aurakit?style=flat-square&color=f59e0b&logo=github)](https://github.com/smorky850612/Aurakit/stargazers)
-[![npm](https://img.shields.io/npm/dm/%40smorky85/aurakit?style=flat-square&color=cb3837&label=installs&logo=npm)](https://www.npmjs.com/package/@smorky85/aurakit)
+[![npm monthly](https://img.shields.io/npm/dm/%40smorky85/aurakit?style=flat-square&color=cb3837&label=installs%2Fmo&logo=npm)](https://www.npmjs.com/package/@smorky85/aurakit)
+[![npm total](https://img.shields.io/npm/dt/%40smorky85/aurakit?style=flat-square&color=cb3837&label=total%20installs&logo=npm)](https://www.npmjs.com/package/@smorky85/aurakit)
 [![Node](https://img.shields.io/badge/node-%3E%3D18-339933?style=flat-square&logo=node.js&logoColor=white)](package.json)
 
 <br/>
@@ -98,13 +99,24 @@ You: "The types are wrong..."
 **1 — Install** (choose one)
 
 ```bash
-bash install.sh                    # Full install — v2.0 (recommended)
-# or
-npx @smorky85/aurakit              # One-click npm install
+# macOS (Homebrew)
+brew install smorky85/tap/aurakit
+
+# All platforms (npm)
+npx @smorky85/aurakit
+
+# One-liner (macOS / Linux)
+curl -fsSL https://get.aurakit.dev | bash
+
+# Windows (winget)
+winget install smorky85.AuraKit
+
+# From source
+bash install.sh
 ```
 
 > [!NOTE]
-> **install.sh v2.0** auto-detects and installs: `jq` (winget/scoop/choco/brew/apt/dnf/yum/apk/pacman), checks Node.js, Python, and git. Configures settings.json via Python-first (jq fallback). Installs the AuraKit Nexus status bar.
+> All install methods auto-activate L3~L5 security hooks. **install.sh v2.0** auto-detects and installs: `jq` (winget/scoop/choco/brew/apt/dnf/yum/apk/pacman), checks Node.js, Python, and git. Configures settings.json via Python-first (jq fallback). Installs the AuraKit Nexus status bar.
 
 **2 — Use**
 

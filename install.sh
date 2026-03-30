@@ -17,6 +17,12 @@ success() { echo -e "${GREEN}[✓]${NC} $*"; }
 warn()    { echo -e "${YELLOW}[!]${NC} $*"; }
 error()   { echo -e "${RED}[✗]${NC} $*"; exit 1; }
 
+# ── --auto 플래그 파싱 (비대화형 모드: CI / npx 자동 설치용) ─
+AUTO_MODE=false
+for _arg in "$@"; do
+  case "$_arg" in --auto|-y) AUTO_MODE=true ;; esac
+done
+
 
 echo ""
 echo "  ╔══════════════════════════════════════╗"
@@ -28,8 +34,14 @@ echo ""
 # ════════════════════════════════════════════════════════════
 # 0. Claude Code 확인
 # ════════════════════════════════════════════════════════════
-command -v claude &>/dev/null || error "Claude Code not found. Install from https://claude.ai/code"
-info "Claude Code: $(claude --version 2>/dev/null | head -1 || echo 'detected')"
+if $AUTO_MODE; then
+  command -v claude &>/dev/null \
+    && info "Claude Code: $(claude --version 2>/dev/null | head -1 || echo 'detected')" \
+    || warn "Claude Code not found — hooks registered, activate after installing Claude Code"
+else
+  command -v claude &>/dev/null || error "Claude Code not found. Install from https://claude.ai/code"
+  info "Claude Code: $(claude --version 2>/dev/null | head -1 || echo 'detected')"
+fi
 
 # ════════════════════════════════════════════════════════════
 # 0.5. 의존성 확인 및 자동 설치
@@ -324,5 +336,7 @@ echo "    /aura review:                  # REVIEW"
 echo "    /aura deploy: vercel           # DEPLOY"
 echo "    /aura! change button color     # QUICK"
 echo ""
-echo "  ▶ Restart Claude Code to activate."
-echo ""
+if ! $AUTO_MODE; then
+  echo "  ▶ Restart Claude Code to activate."
+  echo ""
+fi

@@ -41,6 +41,8 @@
     "agents/",
     "rules/",
     "templates/",
+    "benchmarks/",
+    "Formula/",
     "install.sh",
     "bin/",
     "README.md",
