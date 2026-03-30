@@ -1,6 +1,6 @@
 <div align="center">
 
-[![Modes](https://img.shields.io/badge/modes-34-818cf8?style=flat-square&labelColor=161b22)]()
+[![Modes](https://img.shields.io/badge/modes-36-818cf8?style=flat-square&labelColor=161b22)]()
 [![Languages](https://img.shields.io/badge/languages-8-fcd34d?style=flat-square&labelColor=161b22)]()
 
 </div>

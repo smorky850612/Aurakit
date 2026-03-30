@@ -110,7 +110,7 @@ Open Claude Code in any project and run:
 
 Expected output:
 ```
-[AURA] v6.2.1 — Status Check
+[AURA] v6.4.0 — Status Check
 ✓ Skills:         49 loaded
 ✓ Hooks:          23 active
 ✓ Agents:         7 ready
@@ -145,7 +145,7 @@ AuraKit will automatically:
 <summary><b>Recommended next steps after install</b></summary>
 
 1. **Browse modes** → [[Commands and Modes]]
-   Learn the 34 available modes and when to use each
+   Learn the 36 available modes and when to use each
 
 2. **Understand security** → [[Security]]
    See exactly what's being enforced on every command

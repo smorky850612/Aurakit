@@ -56,15 +56,15 @@ Claude: adds some checks but forgets the tests
 
 | | |
 |:---:|:---:|
-| **34** intelligent modes | **6-layer** security (OWASP complete) |
-| **75%** token reduction | **23** runtime hooks |
+| **36** intelligent modes | **6-layer** security (OWASP complete) |
+| **~55%** token savings | **30** runtime hooks |
 | **7** specialized agents | **8** languages natively |
 
 </div>
 
 **Token reduction breakdown:**
 
-<progress value="75" max="100"></progress> `75%` fewer tokens vs manual prompting (v5.1 → v6.2, verified)
+<progress value="55" max="100"></progress> `~55%` fewer tokens vs manual prompting (estimated, v6 ECO tier)
 
 <progress value="55" max="100"></progress> `55%` saved with ECO tier (default)
 
@@ -104,7 +104,7 @@ That's it. AuraKit handles the rest.
 
 | Tool | SKILL.md | Hooks | Agents | Level |
 |------|:--------:|:-----:|:------:|-------|
-| **Claude Code** | ✅ | ✅ 23 hooks | ✅ | Full |
+| **Claude Code** | ✅ | ✅ 30 hooks | ✅ | Full |
 | OpenAI Codex | ✅ | ✅ | ✅ | Full |
 | Cursor | ✅ | ⚠️ VS Code Tasks | ✅ | Supported |
 | Manus | ✅ | ✅ | ✅ native | Supported |
@@ -121,7 +121,7 @@ That's it. AuraKit handles the rest.
 | Page | What you'll find |
 |------|-----------------|
 | [[Getting Started]] | Install, verify, first command |
-| [[Commands and Modes]] | All 34 modes with examples |
+| [[Commands and Modes]] | All 36 modes with examples |
 | [[Security]] | 6-layer system, SEC-01–SEC-15 |
 | [[Agents]] | 7 agents, roles, permissions |
 | [[Multilingual]] | 8-language command reference |

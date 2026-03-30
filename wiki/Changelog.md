@@ -1,6 +1,6 @@
 <div align="center">
 
-[![Current](https://img.shields.io/badge/current-v6.2.1-818cf8?style=flat-square&labelColor=161b22)]()
+[![Current](https://img.shields.io/badge/current-v6.4.0-818cf8?style=flat-square&labelColor=161b22)]()
 [![npm](https://img.shields.io/npm/v/@smorky85/aurakit?style=flat-square&color=38bdf8&labelColor=161b22)](https://www.npmjs.com/package/@smorky85/aurakit)
 
 </div>
@@ -11,7 +11,39 @@
 
 ---
 
-## v6.2.1 — Current
+## v6.4.0 — Current
+
+> [!NOTE]
+> Benchmark system, Homebrew tap, zero-friction install, QA automation 5/5, Wiki complete.
+
+**New features**
+- `benchmarks/` — 5 standardized tasks (T1~T5): REST API, JWT refresh, SQL opt, refactor, DevOps
+- `Formula/aurakit.rb` — Homebrew tap (`brew install smorky85/tap/aurakit`)
+- curl one-liner: `curl -fsSL https://raw.githubusercontent.com/smorky850612/Aurakit/main/install.sh | bash`
+- `.github/workflows/wiki-init.yml` — GitHub Wiki auto-initialization
+- `tests/run-tests.sh` v2.0 — fully automated AuraScore 40/40 (no manual /aura required)
+
+**Improvements**
+- `install.sh` v2.0: `--auto` flag for CI/npx non-interactive mode
+- `bin/install.js`: passes `--auto` to install.sh during npm postinstall
+- README: 4 install methods, dual npm download badges (monthly + total)
+- Wiki: all version references updated to v6.4.0, 36 modes, ~55% token savings, 30 hooks
+
+---
+
+## v6.3.2
+
+> [!NOTE]
+> Security audit fixes, payment mode, npm publish.
+
+**Bug fixes**
+- VULN-001~012: security audit — 12 vulnerabilities resolved (inject, auth, secrets)
+- Payment: Polar integration throw-on-error consistency
+- Installer: 3-hook registration fix, SKILL.md warning removed
+
+---
+
+## v6.2.1
 
 > [!NOTE]
 > Patch release: Windows compatibility fixes for `/aura-compact`.

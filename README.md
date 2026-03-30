@@ -4,7 +4,7 @@
 
 <br/>
 
-[![Version](https://img.shields.io/npm/v/%40smorky85/aurakit?style=flat-square&color=a855f7&label=v6.3.2)](https://www.npmjs.com/package/@smorky85/aurakit)
+[![Version](https://img.shields.io/npm/v/%40smorky85/aurakit?style=flat-square&color=a855f7&label=v6.4.0)](https://www.npmjs.com/package/@smorky85/aurakit)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-Native_Skill-7c3aed?style=flat-square&logo=anthropic&logoColor=white)](https://claude.ai/code)
 [![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=flat-square)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/smorky850612/Aurakit?style=flat-square&color=f59e0b&logo=github)](https://github.com/smorky850612/Aurakit/stargazers)

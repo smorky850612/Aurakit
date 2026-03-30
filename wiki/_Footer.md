@@ -7,6 +7,6 @@
 [![License](https://img.shields.io/badge/license-MIT-6ee7b7?style=flat-square)](https://github.com/smorky850612/Aurakit/blob/main/LICENSE)
 [![Claude Code](https://img.shields.io/badge/Built%20for-Claude%20Code-a78bfa?style=flat-square)](https://claude.ai/code)
 
-**AuraKit v6.2.1** — One command. Full-stack app. Production-ready.
+**AuraKit v6.4.0** — One command. Full-stack app. Production-ready.
 
 </div>
