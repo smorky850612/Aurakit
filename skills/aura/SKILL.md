@@ -37,6 +37,8 @@ AuraKit은 이 8가지 원칙을 모든 모드, 모든 턴, 모든 출력에서 
 ## Quick Start / 빠른 시작
 
 > 📦 **Install / 설치**: `bash install.sh` — activates L3 (bash-guard.js) · L5 (security-scan.sh) · L4 (Worktree agent isolation). Without this, only L1/L2 (agent roles + tool blocklist) are active.
+>
+> 🔄 **Update / 업데이트** (기존 사용자): `npx @smorky85/aurakit@latest` — 최신 버전으로 스킬·훅·보안 규칙 일괄 갱신. `.aura/` 프로젝트 데이터는 유지됨.
 
 ```bash
 # Recommended after install.sh (hooks replace per-action dialogs)

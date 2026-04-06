@@ -141,6 +141,22 @@ claude --dangerously-skip-permissions
 > [!IMPORTANT]
 > Security rules in `~/.claude/rules/aurakit-security.md` are **always active** — applied to every Claude Code session automatically, even without running `/aura`.
 
+**3 — Update** (existing users)
+
+```bash
+# Recommended — always fetches the latest version from npm
+npx @smorky85/aurakit@latest
+
+# From source (if you cloned the repo)
+git pull origin main && bash install.sh
+
+# One-liner (macOS / Linux)
+curl -fsSL https://raw.githubusercontent.com/smorky850612/Aurakit/main/install.sh | bash
+```
+
+> [!TIP]
+> Running the update command re-runs `install.sh` automatically — hooks, skills, and security rules are all refreshed in place. Your `.aura/` project data (memory, instincts, snapshots) is **never overwritten**.
+
 ---
 
 ## 🧬 DNA — 8 Core Principles
