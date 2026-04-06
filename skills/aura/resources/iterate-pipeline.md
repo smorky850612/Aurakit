@@ -17,12 +17,12 @@
 
 ## 실행 흐름
 
-### Phase 0 — 초기 Gap 측정
+### Phase 0 — 초기 Gap 측정 [ECO/PRO: Haiku 위임 필수]
 
 ```
-GapDetector (model: haiku(ECO/PRO) / sonnet(MAX))
+Agent(model="haiku") 실행:  ← ECO/PRO 필수, Sonnet 직접 실행 금지
   입력: .aura/plan.md 또는 사용자 지정 spec
-  출력: Match Rate N%, 미구현 항목 목록
+  출력: Match Rate N%, 미구현 항목 목록 (Fail-Only)
 
 Match Rate ≥ 90% → 이미 충분. ITERATE 불필요. 리포트만 출력.
 Match Rate < 90%  → Phase 1 진입
@@ -40,7 +40,7 @@ Step B: Iterator 에이전트 (모델은 티어에 따라):
           MAX: opus
         → 미구현 항목 구현 (최소 변경, 기존 코드 보존)
 Step C: V1 빌드 검증 (build-verify.js) — 실패 시 즉시 중단 + FIX 제안
-Step D: GapDetector 재실행 (haiku(ECO/PRO) / sonnet(MAX))
+Step D: GapDetector 재실행 Agent(model="haiku") — ECO/PRO 필수
         → 새 Match Rate 측정
 
 Match Rate ≥ 90% → 성공. Phase 완료.

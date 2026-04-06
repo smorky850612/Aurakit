@@ -23,7 +23,7 @@ Research 선행 → Discovery + Strategy 병렬 → PRD 순차 → BUILD 선택 
 
 ---
 
-## Step 1 — PM-Research (haiku, 격리 서브에이전트) [신규]
+## Step 1 — PM-Research [ECO/PRO: Agent(model="haiku") 필수]
 
 **시장 조사 + 경쟁 분석 + 페르소나 정의**
 
@@ -49,7 +49,7 @@ Research 선행 → Discovery + Strategy 병렬 → PRD 순차 → BUILD 선택 
 
 ---
 
-## Step 2a — PM-Discovery (haiku, 격리 서브에이전트)
+## Step 2a — PM-Discovery [ECO/PRO: Agent(model="haiku") 필수]
 
 **Teresa Torres Opportunity Solution Tree (OST) 방법론 적용**
 
@@ -72,7 +72,7 @@ Research 선행 → Discovery + Strategy 병렬 → PRD 순차 → BUILD 선택 
 
 ---
 
-## Step 2b — PM-Strategy (haiku, 격리 서브에이전트)
+## Step 2b — PM-Strategy [ECO/PRO: Agent(model="haiku") 필수]
 
 **JTBD (Jobs-to-be-Done) + Lean Canvas 간략 버전**
 

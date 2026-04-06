@@ -4,7 +4,23 @@
 
 ---
 
-## Step 1: 마이크로 플랜 (200 토큰 이내)
+## Step 0.5: Discovery 초기 스캔 [ECO/PRO: Haiku 위임 필수]
+
+```
+Agent(model="haiku") 실행:  ← ECO/PRO 티어 필수, Sonnet 직접 실행 금지
+  목적: 기존 구현 탐색 (YAGNI 기준선)
+  탐색:
+    - 유사한 기존 파일/컴포넌트 존재 여부
+    - 관련 의존성, import 패턴
+    - 프로젝트 구조 내 최적 배치 위치
+  출력: "존재: [파일목록] / 없음: 새로 생성 필요" (Fail-Only)
+```
+
+---
+
+## Step 1: 마이크로 플랜 (200 토큰 이내) [ECO/PRO: Haiku 위임 필수]
+
+> 마이크로 플랜 초안은 Agent(model="haiku")로 생성. 메인 세션에서 직접 작성 금지.
 
 ### 출력 포맷
 
@@ -343,7 +359,9 @@ URL 상태 (공유 가능한 UI 상태):
 
 ---
 
-## Step 3: 진행 상태 기록
+## Step 3: 진행 상태 기록 [ECO/PRO: Haiku 위임 필수]
+
+> 스냅샷 쓰기는 Agent(model="haiku")로 실행. 메인 Sonnet 세션 직접 실행 금지.
 
 파일 하나 완료마다 `.aura/snapshots/current.md` 업데이트:
 
@@ -397,12 +415,12 @@ python -m py_compile [file_path]
   출력: "Pass" 또는 "VULN-001: [설명] 파일:라인"
 ```
 
-### V3 — 테스트 실행 (격리 서브에이전트)
+### V3 — 테스트 실행 (ECO/PRO: **model="haiku"** 필수)
 ```
-격리 서브에이전트 실행:
+Agent(model="haiku") 실행:  ← Sonnet 직접 실행 금지 (THRIFTY 위반)
   입력: 테스트 파일 목록
   실행: npm test / pytest
-  출력: "N/N Pass" 또는 "N Failed: [테스트명]"
+  출력: "N/N Pass" 또는 "N Failed: [테스트명]" (Fail-Only)
 ```
 
 V2 + V3 병렬 실행 (독립적이므로):

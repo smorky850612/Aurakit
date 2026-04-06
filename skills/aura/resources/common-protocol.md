@@ -78,10 +78,10 @@ Level: Starter / Dynamic / Enterprise
 MainDirs: src/, app/, api/, components/
 ```
 
-### Scout 실행 (프로필 없을 때)
+### Scout 실행 (프로필 없을 때) [ECO/PRO: Haiku 위임 필수]
 
 ```
-Scout 에이전트 (model: haiku):
+Agent(model="haiku") 실행:  ← ECO/PRO 필수, Sonnet 직접 탐색 금지
   탐색 항목:
     - 언어/프레임워크 (package.json, go.mod, pyproject.toml)
     - 주요 디렉토리 구조
@@ -90,7 +90,7 @@ Scout 에이전트 (model: haiku):
       Starter:    정적 사이트, 백엔드 없음
       Dynamic:    풀스택, 로그인/DB 포함
       Enterprise: 마이크로서비스, k8s/, Dockerfile 다수
-  출력:
+  출력 (Fail-Only):
     .aura/project-profile.md (ConfigHash 포함)
     .aura/design-system.md (CSS 변수 목록)
 ```

@@ -48,10 +48,10 @@ C의 경우:
 
 ---
 
-## Step 2: Scout 에이전트로 파일 탐색
+## Step 2: Scout 에이전트로 파일 탐색 [ECO/PRO: Haiku 위임 필수]
 
 ```
-Scout 에이전트 실행 (model: haiku/sonnet(MAX)):
+Agent(model="haiku") 실행:  ← ECO/PRO 티어 필수, Sonnet 직접 탐색 금지
   목적: 에러 관련 파일 탐색
   탐색 대상:
     - 에러 스택에서 언급된 파일
@@ -61,6 +61,7 @@ Scout 에이전트 실행 (model: haiku/sonnet(MAX)):
     - 관련 파일 목록
     - 의심 코드 블록
     - 유사 패턴 파일 (참조용)
+  형식: Fail-Only (탐색 결과만 반환, 불필요한 설명 생략)
 ```
 
 ---

@@ -34,10 +34,10 @@ git diff --name-only main...feature/my-branch
 ## Step 2: Worker 에이전트 4개 병렬 실행 [Tiered Model, 필수]
 
 ```
-Worker-A: 코드 리뷰  (model: sonnet/opus(MAX))
-Worker-B: 보안 L3 스캔 (model: sonnet/opus(MAX))
-Worker-C: 테스트 실행  (model: haiku/sonnet(MAX))
-Worker-D: Gap 분석    (model: haiku/sonnet(MAX))
+Worker-A: 코드 리뷰     Agent(model="sonnet") — ECO/PRO 기준
+Worker-B: 보안 L3 스캔  Agent(model="sonnet") — ECO/PRO 기준
+Worker-C: 테스트 실행   Agent(model="haiku")  ← ECO/PRO 필수 (Sonnet 실행 금지)
+Worker-D: Gap 분석      Agent(model="haiku")  ← ECO/PRO 필수 (Sonnet 실행 금지)
 
 → 4개 동시 실행 [필수], 결과 취합
 → 성공 시 "Pass" 한 줄 반환 (Fail-Only Output)
@@ -233,7 +233,7 @@ find src -name "*.ts" -o -name "*.tsx" -o -name "*.py" | \
 리뷰 완료 후 자동 Gap Check 실행:
 
 ```
-Gap Worker (model: haiku/sonnet(MAX)):
+Gap Worker: Agent(model="haiku")  ← ECO/PRO 필수 (Sonnet 직접 실행 금지)
   → .aura/design-system.md vs 현재 구현 비교
   → Match Rate 계산
 

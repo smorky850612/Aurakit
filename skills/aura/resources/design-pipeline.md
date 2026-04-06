@@ -26,9 +26,9 @@
 ### Step 2 — 3 Worker 병렬 설계 [필수]
 
 ```
-Worker-DB   (model: sonnet/opus(MAX))             → DB 스키마 설계
-Worker-API  (model: sonnet/opus(MAX))             → API 명세 설계
-Worker-UI   (model: haiku/sonnet(PRO)/opus(MAX))  → 컴포넌트 트리 설계
+Worker-DB   Agent(model="sonnet") — ECO/PRO 기준   → DB 스키마 설계
+Worker-API  Agent(model="sonnet") — ECO/PRO 기준   → API 명세 설계
+Worker-UI   Agent(model="haiku")  ← ECO 필수       → 컴포넌트 트리 설계
 
 → 3개 동시 실행 → 결과 취합 → 설계 문서 합성
 ```

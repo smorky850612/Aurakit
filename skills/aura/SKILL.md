@@ -1,6 +1,6 @@
 ---
 name: aura
-description: "All-in-one fullstack dev engine. /aura: 37 modes (build/fix/clean/deploy/review/payment/debug/qa/orchestrate+), 6-layer security with 30 hooks, tiered models, 8 languages, instinct learning. ~55% token savings."
+description: "All-in-one fullstack dev engine. /aura: 38 modes (build/fix/clean/deploy/review/payment/debug/qa/orchestrate/escalate+), 6-layer security with 32 hooks, tiered models (ZERO/ECO/PRO/MAX), 8 languages, instinct learning. ~55% token savings."
 argument-hint: "[자연어 설명]"
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob, Agent, WebFetch
 ---
@@ -14,10 +14,10 @@ AuraKit은 이 8가지 원칙을 모든 모드, 모든 턴, 모든 출력에서 
 
 | # | Code | Principle | How |
 |---|------|-----------|-----|
-| 1 | FAST | 어떤 스킬보다 빠르게. 멍때리지 않는다. | 세션캐시, ConfigHash, QUICK모드, Progressive Load |
+| 1 | FAST | 어떤 스킬보다 빠르게. 멍때리지 않는다. | 세션캐시, ConfigHash, QUICK모드, Progressive Load, **Cache-First Architecture** |
 | 2 | FLASHY | 가장 화려한 CLI. 하단바까지 정보를 넣는다. | StatusLine, Next Actions, 토큰 리포트, 파이프라인 표시 |
 | 3 | SECURE | 보안은 실제 최고등급. | 6층 보안, 30훅, SEC-01~15, bash-guard, security-scan |
-| 4 | THRIFTY | Opus를 써도 토큰 절약 최대. | Tiered Model, Fail-Only, Progressive Load, 세션캐시 |
+| 4 | THRIFTY | Opus를 써도 토큰 절약 최대. | Tiered Model, Fail-Only, Progressive Load, 세션캐시, **CACHE-RULE-01~07 auto-enforcement** |
 | 5 | IMMORTAL | 컨텍스트가 날아가도 죽지 않는다. | 65% 컴팩트 방어, 스냅샷, PostCompact 복원, 세션 재개 |
 | 6 | EVOLVING | 쓸수록 똑똑해진다. 멈추지 않는다. | Instinct 학습, 글로벌 패턴 공유, instinct:evolve |
 | 7 | UNIVERSAL | 어디서든, 누구든, 어떤 언어든. | 8언어, 37모드, 크로스하네스 5플랫폼, 비개발자 QUICK모드 |
@@ -103,6 +103,7 @@ claude --dangerously-skip-permissions
 | **ROLLBACK** | `rollback:` | 되돌려, undo, 취소, revert, 원상복구 |
 | **MIGRATE** | `migrate:` | 마이그레이션, migrate, 버전 업, upgrade |
 | **PAYMENT** | `payment:` | 결제, stripe, lemon, polar, toss, steppay, 구독, subscription |
+| **ESCALATE** | `escalate:` | 현재 작업을 Opus로 승격, 수동 전용, 완료 후 자동 복귀 |
 
 다국어 56개+ 명령 → `resources/mode-reference.md`
 
@@ -114,15 +115,54 @@ claude --dangerously-skip-permissions
 
 | 티어 | 호출 | Scout | Builder | Reviewer | TestRunner | 절감 |
 |------|------|-------|---------|----------|------------|------|
+| ZERO | `/aura zero 요청` | haiku | haiku+Amplifier | haiku | haiku | ~80% |
 | QUICK | `/aura! 요청` | — | sonnet | — | — | ~60% |
 | ECO | `/aura 요청` | haiku | sonnet | sonnet | haiku | ~55% |
-| PRO | `/aura pro 요청` | haiku | **opus** | sonnet | haiku | ~20% |
+| PRO | `/aura pro 요청` | haiku | **sonnet+Amplifier v2** | sonnet | haiku | ~55% |
 | MAX | `/aura max 요청` | sonnet | **opus** | **opus** | sonnet | ~0% |
 
+- ZERO: 초저가/무료 모델 라우팅 (AnyClaude / CLAUDE_CODE_SUBAGENT_MODEL 환경변수)
 - QUICK: 색상 변경, 텍스트 수정, 단순 설정
 - ECO: 일반 기능 구현, 대부분의 개발 작업
-- PRO: **결제/구독(PAYMENT 모드 기본)**, 인증, 복잡한 비즈니스 로직
+- PRO: **결제/구독(PAYMENT 모드 기본)**, 인증, 복잡한 비즈니스 로직 (Opus 제거 → Sonnet+Amplifier v2)
 - MAX: 보안 감사, 아키텍처 설계, 프로덕션 크리티컬 기능
+- Opus 수동 승격: `/aura escalate [작업]` → PRO 세션에서 특정 작업만 Opus 서브에이전트로 위임
+
+### 🔵 Haiku 강제 라우팅 [THRIFTY 필수 — ECO/PRO 티어]
+
+> **ECO/PRO 티어에서 아래 태스크는 메인 Sonnet 세션에서 직접 실행 금지.**
+> 반드시 `Agent(model: "haiku")`로 위임해야 한다. 직접 실행 = THRIFTY 위반 = 불필요한 Sonnet 한도 소진.
+
+| 태스크 | 주요 모드 | 이유 |
+|--------|---------|------|
+| Scout (탐색·프로파일링·파일 탐색) | 전체 | 읽기 전용, 패턴 매칭 |
+| Discovery 초기 스캔 (기존 코드 탐색) | BUILD | 읽기 전용 탐색 |
+| Micro-plan 초안 (파일 목록, 200토큰) | BUILD | 단순 목록 생성 |
+| V3 TestRunner (테스트 실행+결과 보고) | BUILD/FIX/TDD | 명령 실행+결과 집계 |
+| Worker-C (테스트 실행) | REVIEW | 명령 실행+결과 집계 |
+| Worker-D (Gap 분석·Match Rate) | REVIEW | 단순 비교 |
+| GapDetector (반복 Match Rate 측정) | ITERATE | 단순 비교 |
+| PM-Research / Discovery / Strategy | PM | 정형 템플릿 채우기 |
+| Worker-UI (컴포넌트 트리 목록) | DESIGN (ECO) | 구조 목록 생성 |
+| Cross-Check Worker (설계 일관성 비교) | DESIGN | 단순 비교 |
+| 스냅샷 파일 쓰기 (.aura/snapshots/) | BUILD/FIX | 단순 파일 쓰기 |
+| Instinct 패턴 추출 및 저장 | BUILD/FIX 후 | 패턴 기록 |
+| 완료 리포트 초안 (템플릿 채우기) | 전체 | 정형 템플릿 채우기 |
+| bloat-check 결과 분석 | BUILD/REVIEW | 줄 수 집계 |
+| Convention 패턴 체크 출력 | BUILD | 패턴 매칭 |
+
+**Agent 호출 형식 (Claude Code — ECO/PRO 필수):**
+```
+Agent(
+  subagent_type: "general-purpose",
+  model: "haiku",          ← 반드시 명시 (생략 시 Sonnet 기본값)
+  description: "[3-5단어 설명]",
+  prompt: "[구체적 지시 + Fail-Only 출력 요청]"
+)
+```
+
+> 💡 `CLAUDE_CODE_SUBAGENT_MODEL=claude-haiku-4-5-20251001` 환경변수 설정 시
+> model 파라미터 생략해도 자동으로 Haiku 사용. 미설정 시 명시 필수.
 
 ---
 
@@ -137,7 +177,7 @@ claude --dangerously-skip-permissions
 
 **B-1. 프로젝트 프로필** [필수]
 - `.aura/project-profile.md` 확인
-- 없으면: Scout(haiku, 격리 에이전트) → `.aura/project-profile.md` + `.aura/design-system.md` 생성
+- 없으면: `Agent(model:"haiku")` Scout 실행 → `.aura/project-profile.md` + `.aura/design-system.md` 생성
 - v5.0: ConfigHash 캐시 — `md5sum package.json go.mod pyproject.toml Dockerfile 2>/dev/null | md5sum` → 변경 시만 재실행
 - ⚠️ Windows cmd.exe: `md5sum` 미지원 → Git Bash 사용 또는 캐시 건너뜀
 
@@ -180,7 +220,7 @@ claude --dangerously-skip-permissions
 2. **마이크로 플랜** (200 토큰) — 파일 목록 + 의존성 순서
 3. **파일별 구현** — API(try-catch+응답 포맷) · SQL(parameterized) · 접근성(alt/label) · 안전한 인증 방식 · 250줄 제한 · CSS 토큰 · Atomic Design · App Router 패턴 · 상태 관리 가이드 · v5.0: 언어별 리뷰어 자동 적용(`resources/language-reviewers.md`) · 프레임워크 패턴 자동 적용(`resources/framework-patterns.md`) · Instinct 패턴 참고
 4. **스냅샷 기록** — 파일 완료마다 `.aura/snapshots/current.md` 업데이트
-5. **3중 검증** — V1(빌드) + V2(Reviewer+Security, sonnet) + V3(TestRunner, haiku), V2+V3 병렬; V1 실패 시 → 언어별 Build Resolver 자동 실행 (`resources/build-resolvers.md`)
+5. **3중 검증** — V1(빌드) + V2(Reviewer+Security, `Agent(model:"sonnet")`) + V3(TestRunner, `Agent(model:"haiku")`), V2+V3 병렬; V1 실패 시 → 언어별 Build Resolver 자동 실행 (`resources/build-resolvers.md`)
 6. **보안 L5** — security-scan.sh pre-commit hook 자동
 7. **Convention Check** — convention-check.sh (CONV-001~005) 자동 [v4.0]
 8. **커밋** — `git commit -m "feat(scope): description"`
@@ -338,6 +378,7 @@ Health Dashboard: Match Rate · 보안 점수 · 테스트 커버리지 · Tech 
 | 컴포넌트 250줄 초과 즉시 분할 | bloat-check.sh 경고 |
 | CONV-001~005 HIGH 위반 | convention-check.sh 차단 |
 | 핵심 보안 규칙 항상 활성 | `~/.claude/rules/aurakit-security.md` (모든 세션, /aura 불필요) |
+| ECO/PRO 티어 Haiku 태스크를 Sonnet 직접 실행 | THRIFTY 위반 → 즉시 Haiku Agent 위임으로 수정 |
 
 ---
 
@@ -356,6 +397,7 @@ Health Dashboard: Match Rate · 보안 점수 · 테스트 커버리지 · Tech 
 | Scout ConfigHash | 의존성 변경 시만 재실행 | ~10% |
 | Graceful Compact | 65% 임계값, 파일 단위 체크포인트 | 낭비 최소화 |
 | Quick Mode | `/aura!` — 프로토콜 생략 | ~60% |
+| Cache Guard | CACHE-RULE-01~07 자동 준수, 캐시 미스 방지 (cache-guard.js) | ~20% |
 
 **토큰 표시**: `💰 [티어] | 컨텍스트: [Y]% | 오늘: ↑[N] ↓[N] = [total]([N]회) | 주간: [N] | 다음: [제안]`
 
@@ -602,4 +644,4 @@ pipeline_stage: 4/7  # PM→PLAN→DESIGN→BUILD→REVIEW→ITERATE→DEPLOY
 
 ---
 
-*AuraKit v6 — Discovery-First · Tiered Model ~55% · 6중 보안 · 37모드 · 8개 언어 · 30훅 · 7에이전트 정의 · Instinct 학습 엔진 · 언어별 리뷰어(10언어) · 프레임워크 패턴 · 비즈니스 스킬 · 크로스 하네스 · Gap Detection · ConfigHash · Team Context · Convention Check · OWASP+ · Build Resolver(7언어) · E2E Playwright · MCP 14종 · Loop 오퍼레이터 · 항상-활성 보안 규칙 · Stop 훅 · 자동 포매터 · Governance 캡처 · 패키지 매니저 자동 감지*
+*AuraKit v7 — Discovery-First · Tiered Model ~55% · 6중 보안 · 38모드 · 8개 언어 · 32훅 · 7에이전트 정의 · Instinct 학습 엔진 · 언어별 리뷰어(10언어) · 프레임워크 패턴 · 비즈니스 스킬 · 크로스 하네스 · Gap Detection · ConfigHash · Team Context · Convention Check · OWASP+ · Build Resolver(7언어) · E2E Playwright · MCP 14종 · Loop 오퍼레이터 · 항상-활성 보안 규칙 · Stop 훅 · 자동 포매터 · Governance 캡처 · 패키지 매니저 자동 감지*
