@@ -1,6 +1,6 @@
 {
   "name": "@smorky85/aurakit",
-  "version": "6.5.1",
+  "version": "6.5.2",
   "description": "All-in-one Claude Code skill: build, fix, review, deploy with one /aura command. 46 modes, 23 agents, 6-layer security, ~55% token savings.",
   "bin": {
     "aurakit": "bin/install.js"

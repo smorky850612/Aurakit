@@ -17,7 +17,7 @@ const ok = (m) => console.log(`  \x1b[32m✓\x1b[0m ${m}`);
 const warn = (m) => console.log(`  \x1b[33m!\x1b[0m ${m}`);
 
 console.log('');
-log('Installing AuraKit v6...');
+log('Installing AuraKit v6.5...');
 console.log('');
 
 // 1. skills/aura/ → ~/.claude/skills/aura/
@@ -37,7 +37,7 @@ try {
   if (fs.existsSync(src)) {
     fs.mkdirSync(path.join(HOOKS_DIR, 'lib'), { recursive: true });
     fs.cpSync(src, HOOKS_DIR, { recursive: true });
-    ok('13 hooks + lib installed');
+    ok('16 hooks + lib installed');
   }
 } catch (e) { warn('Hook copy failed: ' + e.message); }
 
@@ -78,7 +78,12 @@ try {
 try {
   const sh = path.join(SRC, 'install.sh');
   if (fs.existsSync(sh)) {
-    execSync(`bash "${sh}" --auto`, { stdio: 'inherit', cwd: SRC });
+    // Windows에서 bash는 POSIX 경로가 필요: C:\... → /c/...
+    let shBashPath = sh;
+    if (process.platform === 'win32') {
+      shBashPath = sh.replace(/\\/g, '/').replace(/^([A-Za-z]):/, (_, d) => `/${d.toLowerCase()}`);
+    }
+    execSync(`bash "${shBashPath}" --auto`, { stdio: 'inherit' });
   }
 } catch (e) {
   warn('settings.json hook registration failed. Manual: bash install.sh');
@@ -86,7 +91,7 @@ try {
 
 console.log('');
 log('══════════════════════════════════════');
-log('  AuraKit v6 installed!');
+log('  AuraKit v6.5 installed!');
 log('');
 log('  Usage:');
 log('    /aura build: login with JWT');
@@ -95,6 +100,6 @@ log('    /aura review:');
 log('    /aura! change button color');
 log('    /aura pro payment system');
 log('');
-log('  37 modes · 6-layer security · 30 hooks · ~55% token savings');
+log('  46 modes · 23 agents · 6-layer security · 10 hooks · ~55% token savings');
 log('══════════════════════════════════════');
 console.log('');
