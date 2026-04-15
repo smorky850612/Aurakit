@@ -23,13 +23,7 @@ AuraKit은 이 8가지 원칙을 모든 모드, 모든 턴, 모든 출력에서 
 | 7 | UNIVERSAL | 어디서든, 누구든, 어떤 언어든. | 8언어, 46모드, 16 전문 에이전트, 크로스하네스 5플랫폼, 비개발자 QUICK모드 |
 | 8 | TOP-TIER | 스킬 중 탑티어. 비교 대상 없음. | 위 7개의 총합 |
 
-> Full-stack Claude Code skill. One command builds, fixes, reviews, deploys — with security enforcement, token optimization, and project memory.
-> 한 줄 명령으로 풀스택 앱을 완성하는 Claude Code 스킬.
->
-> Discovery-First · Tiered Model · 6-Layer Security · Instinct Engine · Cross-Harness · ~55% token savings (estimated)
-> Discovery-First · Tiered Model · 6중 보안 · Instinct 학습 엔진 · 크로스 하네스 · 토큰 ~55% 절감 (추정)
-
-**Language rule / 언어 규칙**: Auto-detect user message language → respond in same language.
+**언어 규칙**: 사용자 메시지 언어 자동 감지 → 동일 언어로 응답.
 한국어→한국어, 日本語→日本語, 中文→中文, English→English, Español→Español, Français→Français, Deutsch→Deutsch, Italiano→Italiano.
 
 ---
@@ -127,12 +121,7 @@ claude --dangerously-skip-permissions
 | PRO | `/aura pro 요청` | haiku | **sonnet+Amplifier v2** | sonnet | haiku | ~55% |
 | MAX | `/aura max 요청` | sonnet | **opus** | **opus** | sonnet | ~0% |
 
-- ZERO: 초저가/무료 모델 라우팅 (AnyClaude / CLAUDE_CODE_SUBAGENT_MODEL 환경변수)
-- QUICK: 색상 변경, 텍스트 수정, 단순 설정
-- ECO: 일반 기능 구현, 대부분의 개발 작업
-- PRO: **결제/구독(PAYMENT 모드 기본)**, 인증, 복잡한 비즈니스 로직 (Opus 제거 → Sonnet+Amplifier v2)
-- MAX: 보안 감사, 아키텍처 설계, 프로덕션 크리티컬 기능
-- Opus 수동 승격: `/aura escalate [작업]` → PRO 세션에서 특정 작업만 Opus 서브에이전트로 위임
+PRO 기본: 결제/인증/복잡한 비즈니스 로직. MAX: 보안 감사·아키텍처. Opus 수동 승격: `/aura escalate`.
 
 ### 🔵 Haiku 강제 라우팅 [THRIFTY 필수 — ECO/PRO 티어]
 
@@ -397,22 +386,11 @@ Health Dashboard: Match Rate · 보안 점수 · 테스트 커버리지 · Tech 
 
 ---
 
-## Q. 토큰 절감 메커니즘 / Token Saving Mechanisms
+## Q. 토큰 절감 메커니즘
 
-> ⚠️ **모든 수치는 추정치입니다 / All figures are estimates.** Aider Polyglot 64%와 같은 독립 벤치마크가 없습니다. 컨텍스트 로드 크기(v5.1 82KB → v6 20KB)는 실측값입니다.
-> Independent benchmarks (like Aider's Polyglot 64%) do not exist for AuraKit. Context load size reduction is measured; per-task savings are estimated from tier routing.
+> 모든 절감 수치는 추정치. context load 크기(v5.1 82KB → v6 20KB)는 실측값.
 
-| 메커니즘 / Mechanism | 방법 / Method | 절감 (추정) / Savings (est.) |
-|---------|------|------|
-| SKILL.md 슬림화 | 상세 내용 resource 위임, context load 75% 감소 (실측) | 로딩 절감 |
-| Tiered Model | Scout/V3: haiku, V2: sonnet | ~40% |
-| Context Isolation | Agent 서브프로세스 격리 (isolation: worktree) | ~15% |
-| Fail-Only Output | 성공 시 "Pass" 한 줄만 반환 | ~30% |
-| Progressive Load | 해당 모드에서만 resource 로딩 | ~10% |
-| Scout ConfigHash | 의존성 변경 시만 재실행 | ~10% |
-| Graceful Compact | 65% 임계값, 파일 단위 체크포인트 | 낭비 최소화 |
-| Quick Mode | `/aura!` — 프로토콜 생략 | ~60% |
-| Cache Guard | CACHE-RULE-01~07 자동 준수, 캐시 미스 방지 (cache-guard.js) | ~20% |
+Tiered Model(~40%) · Fail-Only(~30%) · Quick Mode(~60%) · Cache Guard(~20%) · Progressive Load(~10%) · ConfigHash(~10%) · Context Isolation(~15%)
 
 **토큰 표시**: `💰 [티어] | 컨텍스트: [Y]% | 오늘: ↑[N] ↓[N] = [total]([N]회) | 주간: [N] | 다음: [제안]`
 
@@ -463,37 +441,13 @@ Health Dashboard: Match Rate · 보안 점수 · 테스트 커버리지 · Tech 
 - **토큰 예산**: 잔여 컨텍스트의 30% 초과 시 증식 동결 (freeze)
 - **추적**: `.aura/agent-memory/active.json`에 실시간 상태 기록
 
-**에이전트 메모리**: 각 에이전트 결과 `.aura/agent-memory/[agent].json` 자동 저장 (teammate-idle.js 훅)
-**생명주기 훅**: subagent-start.js(등록+증식 제한) · subagent-stop.js(완료) · `.aura/agent-memory/active.json`
+**에이전트 메모리**: 각 에이전트 결과 `.aura/agent-memory/[agent].json` 자동 저장 (SubagentStop 훅)
+**생명주기 훅**: subagent-start.js(등록+증식 제한) · subagent-stop.js(완료+메모리 저장) · `.aura/agent-memory/active.json`
 
-**훅 이벤트 전체 목록** (install.sh 자동 설정):
+**훅 이벤트** (10개, install.sh 자동 설정): SessionStart · UserPromptSubmit · PreToolUse · PostToolUse · PostToolUseFailure · Stop · PreCompact · PostCompact · SubagentStart · SubagentStop
+→ 핸들러 전체 목록 및 기능 상세: `resources/agent-security.md`
 
-| 훅 이벤트 | 핸들러 | 기능 |
-|-----------|--------|------|
-| SessionStart | pre-session.sh | .env 보안 · 패키지 매니저 감지 · 스냅샷 확인 |
-| UserPromptSubmit | korean-command.js | 한글 명령어 라우팅 |
-| PreToolUse | bash-guard.js | 위험 명령 차단 (L3) |
-| PreToolUse | security-scan.sh | 시크릿 패턴 차단 (L5) |
-| PostToolUse | build-verify.sh | V1 빌드 검증 |
-| PostToolUse | bloat-check.sh | 250줄 초과 경고 |
-| PostToolUse | instinct-auto-save.js | Instinct 패턴 자동 저장 |
-| PostToolUse | auto-format.js | Prettier/gofmt/black/rustfmt 자동 포맷 |
-| PostToolUse | governance-capture.js | 아키텍처 결정 감사 로그 |
-| PostToolUseFailure | post-tool-failure.js | MCP 실패 복구 + 에러 추적 |
-| Stop | session-stop.js | 세션 메트릭 · Instinct 힌트 · 미완료 알림 |
-| PreCompact | pre-compact-snapshot.sh | 컴팩트 전 스냅샷 저장 |
-| PostCompact | post-compact-restore.sh | 컴팩트 후 컨텍스트 복원 |
-| SubagentStart | subagent-start.js | 서브에이전트 등록 + 증식 제한 |
-| SubagentStop | subagent-stop.js | 서브에이전트 완료 처리 |
-| TeammateIdle | teammate-idle.js | 에이전트 메모리 저장 |
-
-**install.sh 없이도 동작 vs 필요한 기능**:
-| 기능 | install.sh 필요 여부 |
-|------|---------------------|
-| BUILD · FIX · REVIEW 등 모든 모드 (Claude 자체 기능) | 불필요 |
-| L3 bash-guard · L5 security-scan · V1 build-verify | **필요** |
-| Instinct 자동 저장 · 글로벌 학습 승격 | **필요** |
-| auto-format · governance-capture · session 훅 | **필요** |
+**install.sh 없이는**: L1/L2(역할+도구 제한)만 활성. BUILD/FIX/REVIEW 등 Claude 자체 기능은 동작하나 훅 기반 자동화(빌드 검증·보안 스캔·Instinct 저장) 비활성.
 
 **언인스톨**: `/aura uninstall` 또는 `node hooks/uninstall.js` 실행 → settings.json에서 훅 제거
 
@@ -515,20 +469,7 @@ Health Dashboard: Match Rate · 보안 점수 · 테스트 커버리지 · Tech 
 | **Aider** | ⚠️ 부분 | `.aider.conf.yml` 설정 | BUILD/FIX 모드만 |
 | **Gemini CLI** | 🔬 실험적 | 시스템 프롬프트 등록 | 미검증 |
 
-**설치 (플랫폼별):**
-```bash
-npx @smorky85/aurakit                    # Claude Code (기본)
-npx @smorky85/aurakit --platform=codex   # Codex CLI 어댑터
-npx @smorky85/aurakit --platform=cursor  # Cursor 어댑터
-npx @smorky85/aurakit --platform=manus   # Manus 어댑터
-```
-
-**훅 호환성:**
-- Claude Code: 훅 파일 23개, 이벤트 16개 자동 등록
-- Codex CLI: sandbox pre/post 명령으로 대체
-- Cursor/Windsurf: VS Code Tasks로 대체
-- Manus: 이벤트 시스템 매핑
-- 훅 미지원 플랫폼: `node hooks/[hook].js` 수동 실행 가이드 제공
+설치 및 훅 호환성 상세 → `resources/cross-harness.md`
 
 ---
 
@@ -548,11 +489,7 @@ npx @smorky85/aurakit --platform=manus   # Manus 어댑터
 
 **동작 원리 / How it works**: BUILD/FIX 완료 후 Claude가 패턴을 `.aura/instincts/` 에 기록 → 다음 `/aura` 실행 시 자동 로딩.
 
-**⚠️ 실질적 한계 / Real limitation**:
-- `install.sh` 실행 전: 패턴 저장은 Claude 판단에 의존 → **반자동화** (semi-automated). 핵심 기능이 설치 여부에 따라 달라짐.
-- `install.sh` 실행 후: `instinct-auto-save.js` 훅이 Write/Edit마다 자동 저장 → **완전 자동화**.
-- Without install.sh: pattern saving depends on Claude's judgment after BUILD/FIX — **not fully automated**.
-- With install.sh: `instinct-auto-save.js` hook triggers on every Write/Edit — **fully automated**.
+**⚠️ 실질적 한계**: install.sh 전 → 반자동화 (Claude 판단에 의존). install.sh 후 → instinct-auto-save.js 훅으로 완전 자동화.
 
 **상세** → `resources/instinct-system.md`
 
@@ -574,35 +511,7 @@ npx @smorky85/aurakit --platform=manus   # Manus 어댑터
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-**토큰 절약률 계산 — 실측 기반 (하드코딩 아님)**:
-
-작업 완료 시 아래 공식으로 **기준선(baseline) vs 실제 사용량**을 비교:
-
-```
-[기준선] 수동 코딩 예상 토큰 (AuraKit 없이):
-  파일당 평균        = 2,500 토큰 (읽기 + 이해 + 수정 + 수동 검증)
-  재작업 비율        = ×1.4 (Discovery 없으면 30~40% 삽질/되돌리기)
-  수동 리뷰 비용     = 파일 수 × 800 토큰 (별도 요청으로 전체 다시 읽기)
-  수동 테스트 비용    = 파일 수 × 600 토큰 (테스트 작성 별도 요청)
-  컨텍스트 재로딩     = 세션당 1,500 토큰 (캐시 없이 매번 프로젝트 파악)
-
-  기준선 = (파일 수 × 2,500 × 1.4) + (파일 수 × 800) + (파일 수 × 600) + 1,500
-
-[실제] AuraKit 사용 토큰:
-  이번 세션에서 실제 소비된 토큰 (도구 호출 + 에이전트 합산)
-
-[절약률] = (1 - 실제 / 기준선) × 100%
-```
-
-**추적 항목** (완료 리포트에 표시):
-| 항목 | 측정 방법 |
-|------|----------|
-| 생성/수정 파일 수 | git diff --stat |
-| 세션 캐시 히트 | B-0에서 스킵 여부 기록 |
-| ConfigHash 스킵 | B-1에서 재실행 여부 기록 |
-| Instinct 재사용 | 로딩된 패턴 수 |
-| Scout 모델 | haiku vs sonnet (티어별) |
-| 에이전트 격리 횟수 | subagent-start.js 카운트 |
+**토큰 절약률**: 기준선(수동 예상) vs 실제 사용량 비교. 계산 공식 → `resources/token-savings.md`
 
 **표시 형식**:
 ```
@@ -634,21 +543,7 @@ npx @smorky85/aurakit --platform=manus   # Manus 어댑터
 | DEBUG | → FIX → REVIEW | |
 | BRAINSTORM | → PM → PLAN | |
 
-**세션 시작 시 자동 감지** (B-4에서 실행):
-- `.aura/snapshots/current.md`의 `last_mode`와 `status` 확인
-- 미완료 작업 → "이전 작업 이어하기" 제안
-- 완료된 작업 → 전환 맵 기반 다음 단계 제안
-- 아무 기록 없음 → "프로젝트 시작: `/aura pm:` 또는 `/aura build:`" 제안
-
-**스냅샷 기록 형식** (current.md에 자동 추가):
-```yaml
-last_mode: BUILD
-last_target: auth module
-status: completed  # completed | in_progress | failed
-completed_at: 2026-03-26T12:00:00
-next_suggested: review
-pipeline_stage: 4/7  # PM→PLAN→DESIGN→BUILD→REVIEW→ITERATE→DEPLOY
-```
+**세션 시작 시 자동 감지** (B-4): `.aura/snapshots/current.md` → 미완료 작업 이어하기 / 완료 후 전환 맵 기반 다음 단계 제안
 
 **파이프라인 진행 표시** (해당 시):
 ```
@@ -659,4 +554,4 @@ pipeline_stage: 4/7  # PM→PLAN→DESIGN→BUILD→REVIEW→ITERATE→DEPLOY
 
 ---
 
-*AuraKit v7 — Discovery-First · Tiered Model ~55% · 6중 보안 · 38모드 · 8개 언어 · 32훅 · 7에이전트 정의 · Instinct 학습 엔진 · 언어별 리뷰어(10언어) · 프레임워크 패턴 · 비즈니스 스킬 · 크로스 하네스 · Gap Detection · ConfigHash · Team Context · Convention Check · OWASP+ · Build Resolver(7언어) · E2E Playwright · MCP 14종 · Loop 오퍼레이터 · 항상-활성 보안 규칙 · Stop 훅 · 자동 포매터 · Governance 캡처 · 패키지 매니저 자동 감지*
+*AuraKit v6 — Discovery-First · Tiered Model ~55% · 6중 보안 · 46모드 · 8개 언어 · 10훅 · 23에이전트 · Instinct 학습 엔진 · 언어별 리뷰어(10언어) · 프레임워크 패턴 · 비즈니스 스킬 · 크로스 하네스 · SPEC/EARS/XLOOP/RALF/Autopus 흡수*
