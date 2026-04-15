@@ -11,6 +11,59 @@ SNAPSHOTS_DIR="${AURA_DIR}/snapshots"
 PROFILE_FILE="${AURA_DIR}/project-profile.md"
 SNAPSHOT_FILE="${SNAPSHOTS_DIR}/current.md"
 
+# ── 0. AuraKit 자동 업데이트 체크 ─────────────────────────────────────
+_META_FILE="$HOME/.claude/skills/aurakit/.install-meta.json"
+
+if [ -f "$_META_FILE" ]; then
+  _PYTHON_BIN=""
+  for _bin in python3 python; do
+    command -v "$_bin" &>/dev/null && { _PYTHON_BIN="$_bin"; break; } || true
+  done
+
+  if [ -n "$_PYTHON_BIN" ]; then
+    # stdin redirect 사용 — Windows Git Bash에서 Python이 POSIX 경로를 직접 열 수 없는 환경 대응
+    # 한 번에 버전·레포·타임스탬프 모두 읽기
+    _META_VALS=$("$_PYTHON_BIN" -c \
+      "import json,sys; d=json.load(sys.stdin); print(d.get('version','')); print(d.get('repo','')); print(d.get('lastNpmCheck',0))" \
+      < "$_META_FILE" 2>/dev/null || true)
+    _INSTALLED_VER=$(printf '%s' "$_META_VALS" | sed -n '1p' || true)
+    _REPO_PATH=$(printf '%s' "$_META_VALS" | sed -n '2p' || true)
+    _LAST_CHECK=$(printf '%s' "$_META_VALS" | sed -n '3p' || echo 0)
+
+    if [ -n "$_INSTALLED_VER" ]; then
+      # 개발 모드: 로컬 레포 버전과 비교 (즉시, 네트워크 없음)
+      if [ -n "$_REPO_PATH" ] && [ -f "$_REPO_PATH/package.json" ]; then
+        _REPO_VER=$("$_PYTHON_BIN" -c \
+          "import json,sys; print(json.load(sys.stdin).get('version',''))" \
+          < "$_REPO_PATH/package.json" 2>/dev/null || true)
+        if [ -n "$_REPO_VER" ] && [ "$_REPO_VER" != "$_INSTALLED_VER" ]; then
+          echo "🔄 AuraKit 자동 업데이트: v${_INSTALLED_VER} → v${_REPO_VER}"
+          bash "$_REPO_PATH/install.sh" --auto >/dev/null 2>&1 \
+            && echo "✅ AuraKit v${_REPO_VER} 업데이트 완료" \
+            || echo "⚠️  자동 업데이트 실패 — bash install.sh 수동 실행"
+        fi
+      # 일반 모드: npm 주 1회 체크
+      elif command -v npm &>/dev/null; then
+        _NOW_TS=$(date +%s 2>/dev/null || echo 0)
+        _DAYS_SINCE=$(( (_NOW_TS - _LAST_CHECK) / 86400 )) 2>/dev/null || _DAYS_SINCE=0
+        if [ "${_DAYS_SINCE:-0}" -ge 7 ] 2>/dev/null; then
+          # sys.argv로 경로 전달 — Windows Python에서 경로 인수로 받을 때 자동 변환됨
+          "$_PYTHON_BIN" -c \
+            "import json,sys; f=sys.argv[1]; d=json.load(open(f)); d['lastNpmCheck']=int(sys.argv[2]); json.dump(d,open(f,'w'))" \
+            "$_META_FILE" "$_NOW_TS" 2>/dev/null || true
+          _LATEST_VER=$(npm view @smorky85/aurakit version 2>/dev/null || true)
+          if [ -n "$_LATEST_VER" ] && [ "$_LATEST_VER" != "$_INSTALLED_VER" ]; then
+            echo "🔄 AuraKit 자동 업데이트: v${_INSTALLED_VER} → v${_LATEST_VER}"
+            npx @smorky85/aurakit@latest --auto >/dev/null 2>&1 \
+              && echo "✅ AuraKit v${_LATEST_VER} 업데이트 완료" \
+              || echo "⚠️  자동 업데이트 실패 — npx @smorky85/aurakit@latest 수동 실행"
+          fi
+        fi
+      fi
+    fi
+  fi
+fi
+
 # ── 1. .aura/ 디렉토리 초기화 ─────────────────────────────────────────
 if [ ! -d "${AURA_DIR}" ]; then
   mkdir -p "${SNAPSHOTS_DIR}"

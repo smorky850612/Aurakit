@@ -310,6 +310,41 @@ else
 fi
 
 # ════════════════════════════════════════════════════════════
+# 5.5. 버전 메타데이터 저장 (자동 업데이트용)
+# ════════════════════════════════════════════════════════════
+_META_DIR="$HOME/.claude/skills/aurakit"
+_META_FILE="$_META_DIR/.install-meta.json"
+_NOW_TS=$(date +%s 2>/dev/null || echo 0)
+
+_PKG_VER=""
+# stdin redirect 사용 — node/Python이 POSIX 경로를 직접 열 수 없는 Windows Git Bash 환경 대응
+for _ver_bin in python3 python; do
+  if command -v "$_ver_bin" &>/dev/null; then
+    _PKG_VER=$("$_ver_bin" -c "import json,sys; print(json.load(sys.stdin).get('version',''))" \
+      < "$AURAKIT_REPO/package.json" 2>/dev/null || true)
+    break
+  fi
+done
+
+if [ -n "$_PKG_VER" ]; then
+  mkdir -p "$_META_DIR"
+  # lastNpmCheck 보존 (기존 메타 파일이 있는 경우)
+  _LAST_NPM=0
+  if [ -f "$_META_FILE" ]; then
+    for _chk_bin in python3 python; do
+      if command -v "$_chk_bin" &>/dev/null; then
+        _LAST_NPM=$("$_chk_bin" -c "import json,sys; print(json.load(sys.stdin).get('lastNpmCheck',0))" \
+          < "$_META_FILE" 2>/dev/null || echo 0)
+        break
+      fi
+    done
+  fi
+  printf '{"version":"%s","repo":"%s","installedAt":%s,"lastNpmCheck":%s}\n' \
+    "$_PKG_VER" "$AURAKIT_REPO" "$_NOW_TS" "$_LAST_NPM" > "$_META_FILE"
+  success "Auto-update metadata saved (v${_PKG_VER})"
+fi
+
+# ════════════════════════════════════════════════════════════
 # 6. 완료
 # ════════════════════════════════════════════════════════════
 echo ""
