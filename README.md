@@ -4,7 +4,7 @@
 
 <br/>
 
-[![Version](https://img.shields.io/npm/v/%40smorky85/aurakit?style=flat-square&color=a855f7&label=v6.4.1)](https://www.npmjs.com/package/@smorky85/aurakit)
+[![Version](https://img.shields.io/npm/v/%40smorky85/aurakit?style=flat-square&color=a855f7&label=v6.5.0)](https://www.npmjs.com/package/@smorky85/aurakit)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-Native_Skill-7c3aed?style=flat-square&logo=anthropic&logoColor=white)](https://claude.ai/code)
 [![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=flat-square)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/smorky850612/Aurakit?style=flat-square&color=f59e0b&logo=github)](https://github.com/smorky850612/Aurakit/stargazers)
@@ -14,16 +14,16 @@
 
 <br/>
 
-<h3>37 Modes &nbsp;·&nbsp; 30 Hooks &nbsp;·&nbsp; 6-Layer Security &nbsp;·&nbsp; 8 Languages &nbsp;·&nbsp; ~55% Token Savings</h3>
+<h3>46 Modes &nbsp;·&nbsp; 10 Hooks &nbsp;·&nbsp; 23 Agents &nbsp;·&nbsp; 6-Layer Security &nbsp;·&nbsp; 8 Languages &nbsp;·&nbsp; ~55% Token Savings</h3>
 
 <p>
 <a href="#-before--after">Before & After</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#-quick-start">Quick Start</a>&nbsp;&nbsp;·&nbsp;&nbsp;
-<a href="#-37-modes">37 Modes</a>&nbsp;&nbsp;·&nbsp;&nbsp;
+<a href="#-46-modes">46 Modes</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#-quality-tiers">Tiers</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#%EF%B8%8F-how-it-works">Pipeline</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#-6-layer-security">Security</a>&nbsp;&nbsp;·&nbsp;&nbsp;
-<a href="#-new-in-v64">New in v6.4</a>&nbsp;&nbsp;·&nbsp;&nbsp;
+<a href="#-new-in-v65">New in v6.5</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#-why-aurakit">Why AuraKit</a>&nbsp;&nbsp;·&nbsp;&nbsp;
 <a href="#-faq">FAQ</a>
 </p>
@@ -169,11 +169,11 @@ curl -fsSL https://raw.githubusercontent.com/smorky850612/Aurakit/main/install.s
 |:-:|:----------|:----------|:----------|
 | **1** | ⚡ **FAST** | Faster than any skill | Session cache · ConfigHash · QUICK mode · Progressive Load |
 | **2** | ✨ **FLASHY** | Most informative CLI output | StatusLine · Next Actions · Token Report · Pipeline display |
-| **3** | 🔐 **SECURE** | Genuinely top-tier security | 6-layer gates · 30 hooks · SEC-01~15 · bash-guard · security-scan |
+| **3** | 🔐 **SECURE** | Genuinely top-tier security | 6-layer gates · 10 hooks · SEC-01~15 · bash-guard · security-scan |
 | **4** | 💰 **THRIFTY** | Max token savings even on Opus | Tiered Model · Fail-Only output · Progressive Load · Session cache |
 | **5** | ♾️ **IMMORTAL** | Survives context loss | 65% compact guard · Snapshots · PostCompact restore · Session resume |
 | **6** | 🧠 **EVOLVING** | Gets smarter with every use | Instinct learning · instinct:evolve · Pattern sharing |
-| **7** | 🌐 **UNIVERSAL** | Any platform, any language | 8 languages · 37 modes · 5 platforms · Non-dev QUICK mode |
+| **7** | 🌐 **UNIVERSAL** | Any platform, any language | 8 languages · 46 modes · 23 agents · 5 platforms · Non-dev QUICK mode |
 | **8** | 🏆 **TOP-TIER** | Best skill, no comparison | Sum of the above 7 |
 
 </div>
@@ -184,9 +184,9 @@ curl -fsSL https://raw.githubusercontent.com/smorky850612/Aurakit/main/install.s
 
 > "I can just prompt Claude myself" — Yes, but you'll repeat the same 20 instructions every session.
 
-| | Manual Prompting | CLAUDE.md File | **AuraKit v6.4.1** |
+| | Manual Prompting | CLAUDE.md File | **AuraKit v6.5.0** |
 |:---|:---:|:---:|:---:|
-| Security enforcement | Hope for the best | Rules, no enforcement | **30 hooks enforce at write-time** |
+| Security enforcement | Hope for the best | Rules, no enforcement | **10 hooks enforce at write-time** |
 | Context survival | Lost on compact | Partial | **Snapshot + PostCompact auto-restore** |
 | Token efficiency | Wasteful | Manual | **~55% ECO · ~75% MAX (estimated)** |
 | Code review | Manual | Manual | **4 agents in parallel** |
@@ -197,7 +197,7 @@ curl -fsSL https://raw.githubusercontent.com/smorky850612/Aurakit/main/install.s
 
 ---
 
-## 🎯 37 Modes
+## 🎯 46 Modes
 
 AuraKit detects your intent from natural language. Use a namespace prefix (`build:`, `fix:`) when the mode is ambiguous.
 
@@ -212,7 +212,7 @@ AuraKit detects your intent from natural language. Use a namespace prefix (`buil
 | **DEPLOY** | `/aura deploy:` | Framework detect → env setup → deploy config → security recheck |
 
 <details>
-<summary><strong>📋 31 Extended Modes</strong> — Quality · Planning · Platform · Utility · Auto</summary>
+<summary><strong>📋 40 Extended Modes</strong> — Quality · Planning · Platform · Utility · Autopus-ADK · Auto</summary>
 
 <br/>
 
@@ -278,6 +278,19 @@ AuraKit detects your intent from natural language. Use a namespace prefix (`buil
 | **QUICK (`!`)** | `/aura! request` | Protocol-minimal, single file, ~60% token savings |
 | **BUILD_RESOLVER** | *(auto on V1 fail)* | Language-specific build error resolver (7 languages) |
 
+**Autopus-ADK Modes** *(absorbed v6.5)*
+
+| Mode | Trigger | What It Does |
+|:-----|:--------|:-------------|
+| **SPEC** | `spec:new`, `spec:` | EARS-format spec → `spec.md` + `acceptance.md` (Given/When/Then) |
+| **LORE** | `lore:commit`, `lore:` | 9-trailer decision commit (Constraint/Rejected/Confidence/…/Related) |
+| **ANNOTATE** | `annotate:`, `ax:` | @AX inline annotations (NOTE/WARN/ANCHOR/TODO · `[AUTO]` prefix · CYCLE tracking) |
+| **EXPERIMENT** | `experiment:`, `xloop:` | XLOOP autonomous experiment loop (measure→change→decide, circuit breaker N=10) |
+| **EXPLAIN** | `explain:`, 어떻게 동작 | Step-by-step code explanation (learning-first) |
+| **ROLLBACK** | `rollback:`, undo | Safe revert with git status confirmation before reset |
+| **MIGRATE** | `migrate:`, upgrade | Version migration pipeline — dependency upgrades + breaking change handling |
+| **ESCALATE** | `escalate:` | Promote current task to Opus sub-agent · auto-return to base tier after |
+
 </details>
 
 ---
@@ -288,12 +301,12 @@ AuraKit detects your intent from natural language. Use a namespace prefix (`buil
 |:-----|:-------|:------|:--------|:---------|:-----------|:---------------|
 | **QUICK** | `/aura! request` | — | Sonnet | — | — | ~60% |
 | **ECO** *(default)* | `/aura request` | Haiku | Sonnet | Sonnet | Haiku | ~55% |
-| **PRO** | `/aura pro request` | Haiku | **Opus** | Sonnet | Haiku | ~20% |
+| **PRO** | `/aura pro request` | Haiku | **Sonnet+Amplifier v2** | Sonnet | Haiku | ~20% |
 | **MAX** | `/aura max request` | Sonnet | **Opus** | **Opus** | Sonnet | ~0% |
 
 - **QUICK** — Color changes, text edits, single-file tweaks
 - **ECO** — Feature development, most daily work *(recommended)*
-- **PRO** — Auth, payments, complex business logic
+- **PRO** — Auth, payments, complex business logic (Sonnet+Amplifier v2, Opus removed)
 - **MAX** — Security audits, architecture design, production-critical features
 
 > [!NOTE]
@@ -305,10 +318,10 @@ AuraKit detects your intent from natural language. Use a namespace prefix (`buil
 
 ```mermaid
 flowchart TD
-    A(["/aura request"]) --> B["Mode Detection\n37 modes · auto from natural language"]
+    A(["/aura request"]) --> B["Mode Detection\n46 modes · auto from natural language"]
     B --> C["Scout Agent · Haiku\nProject scan → .aura/project-profile.md\nConfigHash: skip if unchanged"]
     C --> D["Micro-Plan\n200-token file-by-file build order\nInstinct patterns loaded"]
-    D --> E["Builder Agent\nECO: Sonnet  ·  PRO/MAX: Opus\nSEC-01~15 + Language Reviewer"]
+    D --> E["Builder Agent\nECO: Sonnet  ·  PRO: Sonnet+Amp v2  ·  MAX: Opus\nSEC-01~15 + Language Reviewer"]
     E --> F["Security Hooks\nbash-guard.js · security-scan.sh\nL3 + L5 enforcement"]
     F --> G{"Triple Verify\n(parallel)"}
     G --> H["V1 · Build / Type Check"]
@@ -377,6 +390,59 @@ All 15 rules are enforced both inline (code generation) and at runtime (security
 
 ---
 
+## ✨ New in v6.5
+
+<details>
+<summary><strong>🤖 Autopus-ADK Absorption — 16 Specialized Agents + 4 New Modes</strong></summary>
+
+<br/>
+
+v6.5 fully absorbs the Autopus-ADK framework ("A harness of the agents, by the agents, for the agents"):
+
+**16 New Specialized Agents:**
+`planner` · `executor` · `tester` · `validator` · `reviewer` · `security-auditor` · `annotator` · `architect` · `debugger` · `deep-worker` · `devops` · `explorer` · `frontend-specialist` · `perf-engineer` · `spec-writer` · `ux-validator`
+
+**4 New Modes:**
+
+| Mode | Command | What It Does |
+|:-----|:--------|:-------------|
+| **SPEC** | `/aura spec:new` | EARS-format spec with Given/When/Then acceptance criteria |
+| **LORE** | `/aura lore:commit` | 9-trailer decision tracking commit for architectural decisions |
+| **ANNOTATE** | `/aura annotate:` | @AX inline code annotations (NOTE/WARN/ANCHOR/TODO) |
+| **EXPERIMENT** | `/aura experiment:` | XLOOP autonomous experiment loop with circuit breaker (N=10) |
+
+**Key Concepts Absorbed:**
+- RALF loop: RED→GREEN→REFACTOR→LOOP (max 3 retries)
+- TRUST 5 review: Tested/Readable/Unified/Secured/Trackable
+- Lead/Builder/Guardian agent team topology
+- ICE scoring + SCAMPER + MoSCoW (brainstorming)
+- Worktree isolation R1-R7 (3-check conflict detection)
+- Behavioral assertion rule (NoError 단독 금지 — observable behavior required)
+
+</details>
+
+<details>
+<summary><strong>✅ Claude Code Compliance — Hook cleanup · SKILL.md -105 lines · Resource splits</strong></summary>
+
+<br/>
+
+v6.5 brings AuraKit into full compliance with Claude Code official guidelines:
+
+| Change | Before | After |
+|:-------|:-------|:------|
+| Hook events | 16 events (incl. `TeammateIdle` which CC doesn't emit) | **10 valid CC events only** |
+| SKILL.md size | 662 lines | **557 lines** (-105 lines) |
+| `build-resolvers.md` | 1,352 lines (monolithic) | **41-line router + 7 language files** |
+| `payment-pipeline.md` | 1,043 lines (monolithic) | **251-line router + 5 provider files** |
+| PRO tier model | Opus | **Sonnet+Amplifier v2** (Opus removed from PRO) |
+
+- **TeammateIdle removed** — not a real Claude Code event; agent memory now saved via `SubagentStop` hook
+- **Progressive Load** — resource files split by language/provider so only the needed file loads per task
+
+</details>
+
+---
+
 ## ✨ New in v6.4
 
 <details>
@@ -407,7 +473,7 @@ v6.4 adds a dedicated payment pipeline for subscription billing — the most sec
 - Subscription middleware for route access control
 - `.env.example` with all required keys
 
-> ⚠️ **Default tier: PRO** (Opus) — payment code is business-critical. Security audit (VULN-001~012) runs automatically.
+> ⚠️ **Default tier: PRO** (Sonnet+Amplifier v2) — payment code is business-critical. Security audit (VULN-001~012) runs automatically.
 
 </details>
 
@@ -455,37 +521,30 @@ install.sh v2.0 installs the AuraKit Nexus status bar automatically:
 </details>
 
 <details>
-<summary><strong>🪝 30 Hook Files, 16 Events — Complete lifecycle automation</strong></summary>
+<summary><strong>🪝 10 Hook Events — Core lifecycle automation</strong></summary>
 
 <br/>
 
-v6.4 includes 30 hook handlers covering the full agent lifecycle:
+AuraKit registers 10 valid Claude Code hook events covering the full agent lifecycle:
 
 | Hook Event | Handler File | Function |
 |:-----------|:-------------|:---------|
 | `SessionStart` | `pre-session.sh` | `.env` security · package manager detect · snapshot check |
 | `UserPromptSubmit` | `korean-command.js` | IME reverse-transliteration routing |
-| `UserPromptSubmit` | `token-stats-inject.js` | Inject token stats into context |
-| `PreToolUse · Bash` | `bash-guard.js` | Dangerous command blocking **(L3)** |
-| `PreToolUse · Write/Edit` | `security-scan.sh` | Secret pattern detection **(L5)** |
-| `PreToolUse · Write/Edit` | `migration-guard.js` | Destructive DB migration guard |
-| `PreToolUse · Agent` | `subagent-start.js` | 🆕 Subagent registration + spawn limit check |
-| `PostToolUse · Write/Edit` | `build-verify.sh` | Compile / type-check after every file |
-| `PostToolUse · Write/Edit` | `bloat-check.sh` | 250-line split warning |
-| `PostToolUse · Write/Edit` | `instinct-auto-save.js` | 🆕 Instinct pattern auto-save |
-| `PostToolUse · Write/Edit` | `auto-format.js` | Prettier / gofmt / black / rustfmt |
-| `PostToolUse · Write/Edit` | `governance-capture.js` | Architecture decision audit trail |
-| `PostToolUse · Agent` | `subagent-stop.js` | 🆕 Subagent completion processing |
-| `PostToolUse · Agent` | `teammate-idle.js` | 🆕 Agent memory save |
-| `PostToolUse · Agent` | `output-filter.js` | Agent output sanitization |
-| `PostToolUse · WebFetch` | `injection-guard.js` | Prompt injection detection |
+| `UserPromptSubmit` | `auradkit-detect.js` | Autopus-ADK detect + routing |
+| `PreToolUse` | `security-scan.sh` | Secret pattern detection **(L5)** |
+| `PreToolUse` | `bash-guard.js` | Dangerous command blocking **(L3)** |
+| `PostToolUse` | `build-verify.sh` | Compile / type-check after every file |
+| `PostToolUse` | `bloat-check.sh` | 250-line split warning |
+| `PostToolUse` | `instinct-auto-save.js` | Instinct pattern auto-save |
+| `PostToolUse` | `auto-format.js` | Prettier / gofmt / black / rustfmt |
+| `PostToolUse` | `governance-capture.js` | Architecture decision audit trail |
 | `PostToolUseFailure` | `post-tool-failure.js` | MCP recovery + failure tracking |
 | `Stop` | `session-stop.js` | Session metrics · Instinct hints · incomplete task alert |
-| `Stop` | `token-tracker.js` | Token usage tracking |
 | `PreCompact` | `pre-compact-snapshot.sh` | Save context state before compaction |
 | `PostCompact` | `post-compact-restore.sh` | Restore context after compaction |
-| `SubagentStart` | `subagent-start.js` | 🆕 Agent lifecycle event |
-| `TeammateIdle` | `teammate-idle.js` | 🆕 Agent idle event handler |
+| `SubagentStart` | `subagent-start.js` | Agent lifecycle — registration + spawn limit check |
+| `SubagentStop` | `subagent-stop.js` | Agent completion + memory save (replaces TeammateIdle) |
 
 </details>
 
@@ -670,7 +729,7 @@ Agents can spawn child agents when tasks are too large. Hard limits prevent runa
 | Circuit breaker | 3 consecutive failures → freeze + user alert |
 | Token budget | 30% of remaining context per agent |
 
-Agent results auto-saved to `.aura/agent-memory/[agent].json` via `teammate-idle.js`.
+Agent results auto-saved to `.aura/agent-memory/[agent].json` via `SubagentStop` hook.
 
 </details>
 
@@ -737,7 +796,7 @@ Each iteration runs in isolation. Loop stops when the condition is met or max is
 
 | Tool | SKILL.md | Hooks | Agents | Support |
 |:-----|:--------:|:-----:|:------:|:-------:|
-| **Claude Code** *(recommended)* | ✅ | ✅ 23 files · 16 events | ✅ 7 agent types | **Full** |
+| **Claude Code** *(recommended)* | ✅ | ✅ 16 handlers · 10 events | ✅ 23 agent types | **Full** |
 | **OpenAI Codex CLI** | ✅ | ✅ sandbox pre/post | ✅ agents.md | **Full** |
 | **Cursor** | ✅ | ⚠️ VS Code Tasks | ✅ Agent Mode | **Supported** |
 | **Manus** | ✅ | ✅ event system | ✅ native multi-agent | **Supported** |
@@ -753,11 +812,11 @@ Each iteration runs in isolation. Loop stops when the condition is met or max is
 <br/>
 
 ```
-aurakit/                             # v6.4.1
+aurakit/                             # v6.5.0
 ├── skills/
 │   ├── aura/                        # Main skill — single /aura entry point
-│   │   ├── SKILL.md                 # Core instructions (~31KB, 37 modes)
-│   │   └── resources/               # 30+ mode-specific pipeline guides
+│   │   ├── SKILL.md                 # Core instructions (~20KB, 46 modes)
+│   │   └── resources/               # 60+ mode-specific pipeline guides
 │   │       ├── build-pipeline.md
 │   │       ├── fix-pipeline.md
 │   │       ├── security-rules.md    # SEC-01~15 full reference
@@ -766,51 +825,71 @@ aurakit/                             # v6.4.1
 │   │       ├── loop-pipeline.md
 │   │       ├── mcp-configs.md       # 14 MCP server configs
 │   │       ├── cross-harness.md     # 5-platform guide
-│   │       ├── status-dashboard.md  # Health Dashboard (v6.3)
-│   │       └── ...                  # +20 more guides
+│   │       ├── status-dashboard.md  # Health Dashboard
+│   │       ├── build-resolvers.md   # Router → language-specific files
+│   │       ├── build-resolvers-go.md · -rust.md · -python.md · -java.md · …
+│   │       ├── payment-pipeline.md  # Router → provider-specific files
+│   │       ├── payment-stripe.md · -lemonsqueezy.md · -polar.md · -toss.md · …
+│   │       ├── autopus-spec.md      # EARS SPEC system (v6.5)
+│   │       ├── autopus-lore.md      # Decision tracking commits (v6.5)
+│   │       ├── autopus-annotate.md  # @AX annotation system (v6.5)
+│   │       ├── autopus-pipeline.md  # 5-phase pipeline v2 (v6.5)
+│   │       └── ...                  # +40 more guides
 │   ├── aura-compact/                # Snapshot + /compact shortcut
 │   └── aura-guard/                  # Token budget monitor
-├── agents/
+├── agents/                          # 23 specialized agents
 │   ├── scout.md                     # Read-only project scanner (Haiku)
 │   ├── worker.md                    # Reviewer + TestRunner (Sonnet)
 │   ├── gap-detector.md              # Design↔implementation gap (Haiku)
 │   ├── security.md                  # OWASP Top 10 audit (Sonnet)
 │   ├── pm-discovery.md              # OST opportunity mapping (Haiku)
 │   ├── pm-strategy.md               # JTBD + Lean Canvas (Haiku)
-│   └── pm-prd.md                    # PRD generation (Sonnet)
-├── hooks/                           # 30 hook files
+│   ├── pm-prd.md                    # PRD generation (Sonnet)
+│   ├── planner.md                   # Task planning agent (v6.5)
+│   ├── executor.md                  # Stack-specific implementation (v6.5)
+│   ├── tester.md                    # Test generation + TDD (v6.5)
+│   ├── validator.md                 # 8-check Gate 2 validation (v6.5)
+│   ├── reviewer.md                  # TRUST 5 code review (v6.5)
+│   ├── security-auditor.md          # Deep security audit (v6.5)
+│   ├── annotator.md                 # @AX annotation writer (v6.5)
+│   ├── architect.md                 # Architecture design (v6.5)
+│   ├── debugger.md                  # 5-WHY systematic debug (v6.5)
+│   ├── deep-worker.md               # Complex long-running tasks (v6.5)
+│   ├── devops.md                    # CI/CD + infrastructure (v6.5)
+│   ├── explorer.md                  # Codebase exploration (v6.5)
+│   ├── frontend-specialist.md       # UI/UX + accessibility (v6.5)
+│   ├── perf-engineer.md             # Performance optimization (v6.5)
+│   ├── spec-writer.md               # EARS spec generation (v6.5)
+│   └── ux-validator.md              # UX + usability validation (v6.5)
+├── hooks/                           # 16 handler files, 10 hook events
 │   ├── lib/
 │   │   ├── common.js                # Shared: addContext, allow, block
 │   │   ├── snapshot.js              # Snapshot read/write helpers
 │   │   └── python.js                # Cross-platform Python executor
-│   ├── security-scan.sh             # Secret pattern detection (L5) ← .sh
+│   ├── security-scan.sh             # Secret pattern detection (L5)
 │   ├── bash-guard.js                # Dangerous command blocking (L3)
-│   ├── build-verify.sh              # Compile / type-check after each file ← .sh
-│   ├── bloat-check.sh               # 250-line split warning ← .sh
-│   ├── migration-guard.js           # Destructive migration blocking
-│   ├── injection-guard.js           # Prompt injection detection
-│   ├── instinct-auto-save.js        # Instinct pattern auto-save (v6.3 new)
+│   ├── build-verify.sh              # Compile / type-check after each file
+│   ├── bloat-check.sh               # 250-line split warning
+│   ├── instinct-auto-save.js        # Instinct pattern auto-save
 │   ├── auto-format.js               # Prettier / gofmt / black / rustfmt
 │   ├── governance-capture.js        # Architecture decision audit trail
 │   ├── post-tool-failure.js         # MCP recovery + failure tracking
 │   ├── session-stop.js              # Session metrics + Instinct hints
-│   ├── subagent-start.js            # Agent lifecycle (v6.3 new)
-│   ├── subagent-stop.js             # Agent lifecycle (v6.3 new)
-│   ├── teammate-idle.js             # Agent memory save (v6.3 new)
+│   ├── subagent-start.js            # Agent lifecycle — registration
+│   ├── subagent-stop.js             # Agent completion + memory save
 │   ├── korean-command.js            # IME reverse-transliteration
-│   ├── pre-compact-snapshot.sh      # Save context before compact ← .sh
-│   ├── post-compact-restore.sh      # Restore context after compact ← .sh
-│   ├── token-tracker.js             # Token usage tracking
-│   └── token-stats-inject.js        # Token stats context injection
+│   ├── auradkit-detect.js           # Autopus-ADK detect + routing
+│   ├── pre-compact-snapshot.sh      # Save context before compact
+│   └── post-compact-restore.sh      # Restore context after compact
 ├── rules/
 │   └── aurakit-security.md          # Always-active security rules
 ├── templates/
 │   ├── design-system-default.md     # CSS variable token defaults
 │   └── project-profile-template.md
-├── statusline/                      # AuraKit Nexus status bar (v6.3 new)
+├── statusline/                      # AuraKit Nexus status bar
 │   ├── statusline-command.sh
 │   └── statusline-parser.py
-├── tests/                           # AuraScore test suite (v6.3 new)
+├── tests/                           # AuraScore test suite
 │   ├── run-tests.sh
 │   ├── test-build-basic.md
 │   ├── test-scout-detect.md
@@ -888,7 +967,7 @@ Manual prompting requires re-explaining your project, conventions, and requireme
 
 Context load reduction (v5.1 82KB → v6 20KB) is **measured**. Per-task savings (~55% ECO, ~75% MAX) are **estimates** based on tier routing and prompt engineering — no independent benchmark like Aider's Polyglot 64% exists for AuraKit.
 
-**Do I need all 30 hooks? Can I use only some?**
+**Do I need all 10 hook events? Can I use only some?**
 
 Yes. Install registers all hooks, but each is independent. Remove any entry from `settings.json` to disable it. The security hooks (L3/L5) are most critical; the rest are quality-of-life.
 
@@ -910,7 +989,7 @@ Then open any project and type `/aura`.
 
 <br/>
 
-**AuraKit v6.4.1 — 37 modes · 30 hooks · 6-layer security · 5 platforms · ~55% token savings**
+**AuraKit v6.5.0 — 46 modes · 10 hooks · 23 agents · 6-layer security · 5 platforms · ~55% token savings**
 
 <br/>
 
