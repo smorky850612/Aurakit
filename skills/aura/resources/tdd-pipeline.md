@@ -30,6 +30,13 @@ TDD-Writer (model: sonnet/opus(MAX))
   - 테스트는 아직 구현되지 않은 기능을 검증해야 함
   - 실행 시 반드시 실패 (Red) 상태 확인
   - 테스트 파일 위치: [기능명].test.ts / [기능명]_test.py / [기능명]_test.go
+  
+  [Autopus-ADK 규칙] 행동 어설션 필수 (Behavioral Assertion):
+  - require.NoError(t, err) 단독 사용 금지 → 관찰 가능한 동작 검증 필수
+  - BAD:  require.NoError(t, err)  ← 충돌 없음만 확인, 동작 미검증
+  - GOOD: require.NoError(t, err) + assert.Equal(t, expected, got)
+  - GOOD: expect(result).not.toBeNull() + expect(result.id).toBeDefined()
+  - SPEC가 있으면 acceptance.md의 Given/When/Then → 테스트 함수로 1:1 매핑
 
 검증: TestRunner (haiku/sonnet(MAX)) → 실패 확인
   → 실패 확인됨: GREEN 단계 진입

@@ -58,18 +58,64 @@ HMW-5: 미래 확장성을 고려할 수 있을까?
 
 ---
 
+## Step 2.5: SCAMPER 창의적 발산 [Autopus-ADK 흡수]
+
+아이디어가 막힐 때 SCAMPER 기법으로 관점 전환:
+
+```
+S — Substitute  (대체): 이 부분을 다른 것으로 바꾸면?
+C — Combine     (결합): 두 기능을 합치면?
+A — Adapt       (적용): 다른 분야의 해결책을 가져오면?
+M — Modify      (수정): 크기/모양/속도를 바꾸면?
+P — Put to use  (다른 용도): 이 코드를 다른 곳에 쓰면?
+E — Eliminate   (제거): 없애도 되는 부분은?
+R — Reverse     (역전): 순서를 뒤집으면?
+```
+
+---
+
 ## Step 3: 아이디어 수렴 (Converge)
 
-### 3.1 우선순위 매트릭스
+### 3.1 ICE 점수 우선순위 [Autopus-ADK 흡수]
+
+각 아이디어를 ICE 점수로 수치화:
 
 ```
-높은 가치 / 낮은 노력 → 즉시 구현 (Quick Win)
+ICE Score = (Impact × Confidence × Ease) / 100
+
+Impact    (1-10): 구현 시 사용자/비즈니스에 미치는 영향
+Confidence(1-10): 이 아이디어가 실제로 작동할 확신
+Ease      (1-10): 구현 난이도의 역수 (쉬울수록 높음)
+
+예시:
+  아이디어 A: Impact=8, Confidence=7, Ease=6 → ICE=33.6 → 높음
+  아이디어 B: Impact=9, Confidence=4, Ease=3 → ICE=10.8 → 낮음
+  아이디어 C: Impact=6, Confidence=8, Ease=9 → ICE=43.2 → 최우선
+```
+
+ICE ≥ 40 → 즉시 구현 후보
+ICE 20-39 → 계획 후 구현
+ICE < 20 → backlog 또는 제거
+
+### 3.2 우선순위 매트릭스 (2×2)
+
+```
+높은 가치 / 낮은 노력 → 즉시 구현 (Quick Win) ← ICE 높음
 높은 가치 / 높은 노력 → 계획 후 구현 (Major Project)
 낮은 가치 / 낮은 노력 → 나중에 (Fill-In)
-낮은 가치 / 높은 노력 → 제거 (Time Waster)
+낮은 가치 / 높은 노력 → 제거 (Time Waster) ← ICE 낮음
 ```
 
-### 3.2 YAGNI 필터
+### 3.3 MoSCoW 우선순위 [Autopus-ADK 흡수]
+
+```
+Must have   → 없으면 실패 (ICE 최우선 + 핵심 요구사항)
+Should have → 있으면 좋음 (ICE 중간, 이번 스프린트 가능)
+Could have  → 여유 있으면 (ICE 낮음, 후순위)
+Won't have  → 이번엔 안 함 (backlog.md 저장)
+```
+
+### 3.4 YAGNI 필터
 
 ```
 질문: 지금 당장 필요한가?
@@ -77,7 +123,7 @@ HMW-5: 미래 확장성을 고려할 수 있을까?
   NO  → .aura/backlog.md에 저장 (나중을 위해)
 ```
 
-### 3.3 최종 범위 정의
+### 3.5 최종 범위 정의
 
 ```markdown
 ## 구현 범위

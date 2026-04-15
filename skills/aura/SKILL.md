@@ -1,6 +1,6 @@
 ---
 name: aura
-description: "All-in-one fullstack dev engine. /aura: 38 modes (build/fix/clean/deploy/review/payment/debug/qa/orchestrate/escalate+), 6-layer security with 32 hooks, tiered models (ZERO/ECO/PRO/MAX), 8 languages, instinct learning. ~55% token savings."
+description: "All-in-one fullstack dev engine. /aura: 46 modes (build/fix/clean/deploy/review/spec/lore/ax/experiment/payment/debug/qa/orchestrate/escalate+), 6-layer security with 32 hooks, tiered models (ZERO/ECO/PRO/MAX), 8 languages, 16 specialized agents, SPEC/EARS/TRUST5/XLOOP/RALF/Autopus absorbed. ~55% token savings."
 argument-hint: "[자연어 설명]"
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob, Agent, WebFetch
 ---
@@ -20,7 +20,7 @@ AuraKit은 이 8가지 원칙을 모든 모드, 모든 턴, 모든 출력에서 
 | 4 | THRIFTY | Opus를 써도 토큰 절약 최대. | Tiered Model, Fail-Only, Progressive Load, 세션캐시, **CACHE-RULE-01~07 auto-enforcement** |
 | 5 | IMMORTAL | 컨텍스트가 날아가도 죽지 않는다. | 65% 컴팩트 방어, 스냅샷, PostCompact 복원, 세션 재개 |
 | 6 | EVOLVING | 쓸수록 똑똑해진다. 멈추지 않는다. | Instinct 학습, 글로벌 패턴 공유, instinct:evolve |
-| 7 | UNIVERSAL | 어디서든, 누구든, 어떤 언어든. | 8언어, 37모드, 크로스하네스 5플랫폼, 비개발자 QUICK모드 |
+| 7 | UNIVERSAL | 어디서든, 누구든, 어떤 언어든. | 8언어, 46모드, 16 전문 에이전트, 크로스하네스 5플랫폼, 비개발자 QUICK모드 |
 | 8 | TOP-TIER | 스킬 중 탑티어. 비교 대상 없음. | 위 7개의 총합 |
 
 > Full-stack Claude Code skill. One command builds, fixes, reviews, deploys — with security enforcement, token optimization, and project memory.
@@ -106,6 +106,10 @@ claude --dangerously-skip-permissions
 | **MIGRATE** | `migrate:` | 마이그레이션, migrate, 버전 업, upgrade |
 | **PAYMENT** | `payment:` | 결제, stripe, lemon, polar, toss, steppay, 구독, subscription |
 | **ESCALATE** | `escalate:` | 현재 작업을 Opus로 승격, 수동 전용, 완료 후 자동 복귀 |
+| **SPEC** | `spec:` | SPEC 작성/구현/검증 (spec:new, spec:implement, spec:validate) |
+| **LORE** | `lore:` | Lore 커밋 (9-trailer 결정 추적, lore:commit, lore:check, lore:validate) |
+| **AX** | `ax:` / `annotate:` | @AX 어노테이션 (NOTE/WARN/ANCHOR/TODO, ax:scan, ax:todo) |
+| **EXPERIMENT** | `experiment:` | XLOOP 자율 개선 루프 (experiment:init, experiment:commit, experiment:summary) |
 
 다국어 56개+ 명령 → `resources/mode-reference.md`
 
@@ -330,6 +334,15 @@ GapDetector(ECO/PRO: haiku, MAX: sonnet) → Match Rate ≥90%: 완료 / <90%: I
 | **BUILD_RESOLVER** | `build-resolvers.md` | 언어별 빌드 에러 해결 (Go/Rust/Java/Kotlin/C++/Swift/Python) |
 | **STATUS:HEALTH** | `status-dashboard.md` | Health Dashboard — Match Rate · 보안 점수 · 커버리지 · Tech Debt |
 | **PAYMENT** | `payment-pipeline.md` | Stripe · LemonSqueezy · Polar · TossPayments · StepPay 구독 결제 완성 (기본 PRO 티어) |
+| **SPEC** | `autopus-spec-system.md` | EARS 형식 SPEC (spec.md + acceptance.md + plan.md), Given/When/Then 인수 기준 |
+| **LORE** | `autopus-lore-commit.md` | 9-trailer 결정 추적 커밋 (Constraint/Rejected/Confidence/Scope-risk/Reversibility/Directive/Tested/Not-tested/Related) |
+| **AX/ANNOTATE** | `autopus-ax-annotation.md` | @AX 코드 어노테이션 시스템 (NOTE/WARN/ANCHOR/TODO, [AUTO] 접두사, CYCLE 추적) |
+| **PIPELINE_V2** | `autopus-pipeline-v2.md` | 5단계 파이프라인 v2 (Phase 1.5 테스트 스캐폴드, 1.8 문서 페치, 2.5 어노테이션, 3.5 UX 검증, RALF 루프) |
+| **EXECUTOR_PROFILES** | `autopus-executor-profiles.md` | 스택별 실행 프로필 (Go/TypeScript/Python/Rust/Frontend) |
+| **VALIDATOR_GATES** | `autopus-validator-gates.md` | Gate 2 8개 체크 (빌드/테스트/린트/커버리지/구조/시임 탐지/승인 커버리지/마이그레이션) |
+| **EXPERIMENT** | `autopus-experiment-loop.md` | XLOOP 자율 개선 루프 (메트릭 기반 변경 → 유지/폐기 → 서킷 브레이커) |
+| **AGENT_TEAMS** | `autopus-agent-teams.md` | Lead/Builder/Guardian 팀 구조, SendMessage 패턴, 서브에이전트 폴백 |
+| **WORKTREE_RULES** | `autopus-worktree-isolation.md` | Worktree 격리 R1-R7 (충돌 감지 3체크, GC 억제, 지수 백오프) |
 
 ---
 
