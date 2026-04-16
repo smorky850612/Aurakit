@@ -199,42 +199,64 @@ except Exception:
 
 d['hooks'] = {
     'SessionStart': [
-        {'type': 'command', 'command': f'{hp}/pre-session.sh'}
+        {'matcher': '', 'hooks': [
+            {'type': 'command', 'command': f'{hp}/pre-session.sh'}
+        ]}
     ],
     'UserPromptSubmit': [
-        {'type': 'command', 'command': f'node {hp}/korean-command.js'}
+        {'matcher': '', 'hooks': [
+            {'type': 'command', 'command': f'node {hp}/korean-command.js'}
+        ]}
     ],
     'PreToolUse': [
-        {'type': 'command', 'command': f'{hp}/security-scan.sh'},
-        {'type': 'command', 'command': f'node {hp}/bash-guard.js'}
+        {'matcher': '', 'hooks': [
+            {'type': 'command', 'command': f'{hp}/security-scan.sh'},
+            {'type': 'command', 'command': f'node {hp}/bash-guard.js'}
+        ]}
     ],
     'PostToolUse': [
-        {'type': 'command', 'command': f'{hp}/build-verify.sh'},
-        {'type': 'command', 'command': f'{hp}/bloat-check.sh'},
-        {'type': 'command', 'command': f'node {hp}/instinct-auto-save.js'},
-        {'type': 'command', 'command': f'node {hp}/auto-format.js'},
-        {'type': 'command', 'command': f'node {hp}/governance-capture.js'}
+        {'matcher': '', 'hooks': [
+            {'type': 'command', 'command': f'{hp}/build-verify.sh'},
+            {'type': 'command', 'command': f'{hp}/bloat-check.sh'},
+            {'type': 'command', 'command': f'node {hp}/instinct-auto-save.js'},
+            {'type': 'command', 'command': f'node {hp}/auto-format.js'},
+            {'type': 'command', 'command': f'node {hp}/governance-capture.js'}
+        ]}
     ],
     'PostToolUseFailure': [
-        {'type': 'command', 'command': f'node {hp}/post-tool-failure.js'}
+        {'matcher': '', 'hooks': [
+            {'type': 'command', 'command': f'node {hp}/post-tool-failure.js'}
+        ]}
     ],
     'Stop': [
-        {'type': 'command', 'command': f'node {hp}/session-stop.js'}
+        {'matcher': '', 'hooks': [
+            {'type': 'command', 'command': f'node {hp}/session-stop.js'}
+        ]}
     ],
     'PreCompact': [
-        {'type': 'command', 'command': f'{hp}/pre-compact-snapshot.sh'}
+        {'matcher': '', 'hooks': [
+            {'type': 'command', 'command': f'{hp}/pre-compact-snapshot.sh'}
+        ]}
     ],
     'PostCompact': [
-        {'type': 'command', 'command': f'{hp}/post-compact-restore.sh'}
+        {'matcher': '', 'hooks': [
+            {'type': 'command', 'command': f'{hp}/post-compact-restore.sh'}
+        ]}
     ],
     'SubagentStart': [
-        {'type': 'command', 'command': f'node {hp}/subagent-start.js'}
+        {'matcher': '', 'hooks': [
+            {'type': 'command', 'command': f'node {hp}/subagent-start.js'}
+        ]}
     ],
     'SubagentStop': [
-        {'type': 'command', 'command': f'node {hp}/subagent-stop.js'}
+        {'matcher': '', 'hooks': [
+            {'type': 'command', 'command': f'node {hp}/subagent-stop.js'}
+        ]}
     ],
     'TeammateIdle': [
-        {'type': 'command', 'command': f'node {hp}/teammate-idle.js'}
+        {'matcher': '', 'hooks': [
+            {'type': 'command', 'command': f'node {hp}/teammate-idle.js'}
+        ]}
     ]
 }
 d['statusLine'] = {
@@ -271,17 +293,17 @@ _update_settings_jq() {
     --arg sast "node ${HOOKS_PATH}/subagent-stop.js" \
     --arg ti "node ${HOOKS_PATH}/teammate-idle.js" \
     '.hooks = {
-      "SessionStart": [{"type":"command","command":$ss}],
-      "UserPromptSubmit": [{"type":"command","command":$kc}],
-      "PreToolUse": [{"type":"command","command":$sc},{"type":"command","command":$bg}],
-      "PostToolUse": [{"type":"command","command":$bv},{"type":"command","command":$bc},{"type":"command","command":$ia},{"type":"command","command":$af},{"type":"command","command":$gc}],
-      "PostToolUseFailure": [{"type":"command","command":$ptf}],
-      "Stop": [{"type":"command","command":$stp}],
-      "PreCompact": [{"type":"command","command":$pre}],
-      "PostCompact": [{"type":"command","command":$post}],
-      "SubagentStart": [{"type":"command","command":$sas}],
-      "SubagentStop": [{"type":"command","command":$sast}],
-      "TeammateIdle": [{"type":"command","command":$ti}]
+      "SessionStart": [{"matcher":"","hooks":[{"type":"command","command":$ss}]}],
+      "UserPromptSubmit": [{"matcher":"","hooks":[{"type":"command","command":$kc}]}],
+      "PreToolUse": [{"matcher":"","hooks":[{"type":"command","command":$sc},{"type":"command","command":$bg}]}],
+      "PostToolUse": [{"matcher":"","hooks":[{"type":"command","command":$bv},{"type":"command","command":$bc},{"type":"command","command":$ia},{"type":"command","command":$af},{"type":"command","command":$gc}]}],
+      "PostToolUseFailure": [{"matcher":"","hooks":[{"type":"command","command":$ptf}]}],
+      "Stop": [{"matcher":"","hooks":[{"type":"command","command":$stp}]}],
+      "PreCompact": [{"matcher":"","hooks":[{"type":"command","command":$pre}]}],
+      "PostCompact": [{"matcher":"","hooks":[{"type":"command","command":$post}]}],
+      "SubagentStart": [{"matcher":"","hooks":[{"type":"command","command":$sas}]}],
+      "SubagentStop": [{"matcher":"","hooks":[{"type":"command","command":$sast}]}],
+      "TeammateIdle": [{"matcher":"","hooks":[{"type":"command","command":$ti}]}]
     } | .statusLine = {"type":"command","command":"bash ~/.claude/statusline-command.sh"}')
   echo "$UPDATED" > "$SETTINGS_FILE"
 }
