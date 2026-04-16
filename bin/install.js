@@ -20,6 +20,20 @@ console.log('');
 log('Installing AuraKit v6.5...');
 console.log('');
 
+// 0. 기존 settings.json 수리 (v6.5.2 이하 잘못된 hooks 형식 마이그레이션)
+try {
+  const settingsPath = path.join(HOME, '.claude', 'settings.json');
+  if (fs.existsSync(settingsPath)) {
+    const { repairHooks } = require('./repair.js');
+    const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+    const { repaired, count } = repairHooks(settings);
+    if (repaired) {
+      fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2), 'utf8');
+      ok(`Repaired ${count} hook entries (legacy format → matcher+hooks)`);
+    }
+  }
+} catch (e) { /* repair is best-effort */ }
+
 // 1. skills/aura/ → ~/.claude/skills/aura/
 try {
   const src = path.join(SRC, 'skills', 'aura');
@@ -40,6 +54,17 @@ try {
     ok('16 hooks + lib installed');
   }
 } catch (e) { warn('Hook copy failed: ' + e.message); }
+
+// 2.5. bin/ → ~/.claude/skills/aurakit/bin/ (repair.js 등)
+try {
+  const src = path.join(SRC, 'bin');
+  if (fs.existsSync(src)) {
+    const dest = path.join(AURAKIT_DIR, 'bin');
+    fs.mkdirSync(dest, { recursive: true });
+    fs.cpSync(src, dest, { recursive: true });
+    ok('bin/ tools installed (repair, install)');
+  }
+} catch (e) { /* optional */ }
 
 // 3. agents/ → ~/.claude/skills/aurakit/agents/
 try {

@@ -155,6 +155,24 @@ chmod +x "$HOOKS_DEST"/*.sh 2>/dev/null || true
 success "Hooks installed"
 
 # ════════════════════════════════════════════════════════════
+# 3.2. bin/ 도구 설치 (repair.js 등)
+# ════════════════════════════════════════════════════════════
+info "Installing bin tools..."
+BIN_DEST="$HOME/.claude/skills/aurakit/bin"
+mkdir -p "$BIN_DEST"
+cp "$AURAKIT_REPO/bin/"*.js "$BIN_DEST/" 2>/dev/null || true
+success "bin/ tools installed (repair, install)"
+
+# ════════════════════════════════════════════════════════════
+# 3.3. 기존 settings.json 수리 (v6.5.2 이하 hooks 형식 마이그레이션)
+# ════════════════════════════════════════════════════════════
+if [ -f "$SETTINGS_FILE" ] && command -v node &>/dev/null; then
+  node "$BIN_DEST/repair.js" --silent 2>/dev/null \
+    && success "settings.json hooks format verified/repaired" \
+    || true
+fi
+
+# ════════════════════════════════════════════════════════════
 # 3.5. 보안 규칙 설치
 # ════════════════════════════════════════════════════════════
 if [ -f "$AURAKIT_REPO/rules/aurakit-security.md" ]; then

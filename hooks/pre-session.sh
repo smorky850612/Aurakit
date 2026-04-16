@@ -11,6 +11,14 @@ SNAPSHOTS_DIR="${AURA_DIR}/snapshots"
 PROFILE_FILE="${AURA_DIR}/project-profile.md"
 SNAPSHOT_FILE="${SNAPSHOTS_DIR}/current.md"
 
+# ── 0-pre. settings.json 자가 수리 (hooks 형식 검증) ──────────────────
+# 한번 수리되면 이후 세션에서도 형식이 유지됨 — 재발 방지용
+_REPAIR_SCRIPT="$HOME/.claude/skills/aurakit/bin/repair.js"
+[ ! -f "$_REPAIR_SCRIPT" ] && _REPAIR_SCRIPT="$HOME/.claude/skills/aurakit/hooks/../bin/repair.js"
+if command -v node &>/dev/null && [ -f "$_REPAIR_SCRIPT" ]; then
+  node "$_REPAIR_SCRIPT" --silent 2>/dev/null || true
+fi
+
 # ── 0. AuraKit 자동 업데이트 체크 ─────────────────────────────────────
 _META_FILE="$HOME/.claude/skills/aurakit/.install-meta.json"
 
